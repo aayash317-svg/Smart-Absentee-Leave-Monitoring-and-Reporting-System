@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  database:
+    image: mongo:6.0
+    container_name: smart_erp_mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    restart: always
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: smart_erp_backend
+    ports:
+      - "8000:8000"
+    environment:
+      - MONGO_URI=mongodb://database:27017/
+      - MONGO_DB_NAME=smart_absentee_db_v2
+      - JWT_SECRET=super-secret-key-for-jwt-2026-enterprise-app
+      - JWT_ALGORITHM=HS256
+      - ACCESS_TOKEN_EXPIRE_MINUTES=30
+      - REFRESH_TOKEN_EXPIRE_DAYS=7
+    depends_on:
+      - database
+    restart: always
+
+volumes:
+  mongodb_data:

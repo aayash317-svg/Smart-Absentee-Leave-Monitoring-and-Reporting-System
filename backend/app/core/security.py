@@ -10,5 +10,7 @@ from .permissions import (
     require_management,
     require_student,
     require_dean,
+    require_hod,
+    require_admin,
     check_department_scope
 )
