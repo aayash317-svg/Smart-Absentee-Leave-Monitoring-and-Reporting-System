@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Fine Payment Receipt - Attendance Hub</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-30deg);
+            opacity: 0.03;
+            pointer-events: none;
+            user-select: none;
+            white-space: nowrap;
+            z-index: 0;
+        }
+        @media print {
+            .no-print { display: none; }
+            .print-only { display: block; }
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-highest": "#e1e2ed",
+                        "secondary-container": "#7cf994",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-fixed-variant": "#005320",
+                        "primary-fixed": "#dbe1ff",
+                        "on-tertiary-fixed": "#360f00",
+                        "on-primary-fixed": "#00174b",
+                        "on-secondary-fixed": "#002109",
+                        "on-background": "#191b23",
+                        "secondary-fixed": "#7ffc97",
+                        "inverse-on-surface": "#f0f0fb",
+                        "primary": "#004ac6",
+                        "on-tertiary-container": "#ffede6",
+                        "inverse-surface": "#2e3039",
+                        "surface-tint": "#0053db",
+                        "on-secondary": "#ffffff",
+                        "primary-container": "#2563eb",
+                        "secondary-fixed-dim": "#62df7d",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "on-surface-variant": "#434655",
+                        "on-primary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "surface-container-high": "#e7e7f3",
+                        "surface-container-low": "#f3f3fe",
+                        "on-tertiary-fixed-variant": "#7d2d00",
+                        "tertiary-container": "#bc4800",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-container": "#eeefff",
+                        "on-error": "#ffffff",
+                        "inverse-primary": "#b4c5ff",
+                        "tertiary-fixed": "#ffdbcd",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "outline-variant": "#c3c6d7",
+                        "surface-dim": "#d9d9e5",
+                        "on-error-container": "#93000a",
+                        "surface-bright": "#faf8ff",
+                        "on-surface": "#191b23",
+                        "on-secondary-container": "#007230",
+                        "secondary": "#006e2d",
+                        "background": "#faf8ff",
+                        "surface-variant": "#e1e2ed",
+                        "error-container": "#ffdad6",
+                        "outline": "#737686",
+                        "tertiary-fixed-dim": "#ffb596",
+                        "surface": "#faf8ff",
+                        "tertiary": "#943700",
+                        "surface-container": "#ededf9"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "sm": "8px",
+                        "xl": "32px",
+                        "md": "16px",
+                        "gutter": "24px",
+                        "xs": "4px",
+                        "xxl": "48px",
+                        "margin-desktop": "32px",
+                        "lg": "24px",
+                        "margin-mobile": "16px"
+                    },
+                    "fontFamily": {
+                        "small": ["Inter"],
+                        "label": ["Inter"],
+                        "h3": ["Inter"],
+                        "h1-mobile": ["Inter"],
+                        "h1": ["Inter"],
+                        "body": ["Inter"],
+                        "section-title": ["Inter"],
+                        "h2": ["Inter"]
+                    },
+                    "fontSize": {
+                        "small": ["14px", {"lineHeight": "1.5", "fontWeight": "500"}],
+                        "label": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "h3": ["22px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                        "h1-mobile": ["28px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                        "h1": ["36px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "section-title": ["18px", {"lineHeight": "1.5", "fontWeight": "600"}],
+                        "h2": ["28px", {"lineHeight": "1.3", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface font-body text-body min-h-screen flex flex-col items-center">
+<!-- TopAppBar -->
+<header class="w-full top-0 sticky bg-surface border-b border-outline-variant z-50 flex justify-between items-center px-lg py-md">
+<div class="flex items-center gap-md">
+<button class="material-symbols-outlined text-primary p-xs hover:bg-surface-container-high transition-colors rounded-full active:scale-95" data-icon="arrow_back">arrow_back</button>
+<h1 class="font-h3 text-h3 text-primary">Attendance Hub</h1>
+</div>
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container font-bold overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of an academic coordinator in a formal suit, set against a clean, blurred office background. The lighting is soft and professional, emphasizing a modern corporate SaaS aesthetic with deep blues and crisp whites. High resolution and sharp focus." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBFteUkYn_JkJYvRnFWwsgy88BgHlscB7ZufVilswBSTxlURVguPCx7lb6vZ_EwDkUSHPDQ3TBCgDsMewa5Q_OejeOpadSD1JAb-Wjf46z_MsP9HN-CnXAvF7Hms17CLEmQprcfXndEXxqXleYGYB_5QHzX7gc3IsvZ2-nGHIBnptNn8yGA3JVqmGud3zOvBQ9T897HLMSEclrpQs6aRq0jftI39U2vKutZtkSfzyTFaDpMtEhD4bfEr74QTCwyKgtUoKrPPK6_jVc"/>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow w-full max-w-2xl px-margin-mobile md:px-margin-desktop py-xl flex flex-col items-center space-y-xl mb-32">
+<!-- Success State Header -->
+<div class="text-center space-y-md animate-in fade-in slide-in-from-top-4 duration-700">
+<div class="inline-flex items-center justify-center w-20 h-20 bg-secondary-container text-on-secondary-container rounded-full mb-md shadow-sm">
+<span class="material-symbols-outlined text-[48px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<h2 class="font-h2 text-h2 text-on-surface">Payment Successful</h2>
+<p class="text-on-surface-variant font-body text-body">Your fine has been successfully cleared and recorded in the system.</p>
+</div>
+<!-- Receipt Card -->
+<div class="w-full bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden shadow-sm relative" id="receipt-card">
+<!-- Branding Watermark -->
+<div class="watermark font-h1 text-h1 uppercase">Attendance Hub Official</div>
+<!-- Receipt Header -->
+<div class="p-lg border-b border-outline-variant flex justify-between items-start">
+<div class="space-y-xs">
+<p class="font-label text-label text-primary uppercase tracking-widest">Official Receipt</p>
+<p class="font-body text-body font-bold text-on-surface">#AH-FINE-2023-8842</p>
+</div>
+<div class="text-right">
+<p class="font-label text-label text-on-surface-variant">DATE</p>
+<p class="font-body text-body text-on-surface">Oct 24, 2023 | 10:45 AM</p>
+</div>
+</div>
+<!-- Receipt Body -->
+<div class="p-lg space-y-lg relative z-10">
+<!-- Student Info -->
+<div class="grid grid-cols-2 gap-lg">
+<div>
+<p class="font-label text-label text-on-surface-variant mb-xs">STUDENT NAME</p>
+<p class="font-body text-body font-semibold text-on-surface">Arjun Sharma</p>
+</div>
+<div>
+<p class="font-label text-label text-on-surface-variant mb-xs">STUDENT ID</p>
+<p class="font-body text-body font-semibold text-on-surface">CS2021-045</p>
+</div>
+<div class="col-span-2">
+<p class="font-label text-label text-on-surface-variant mb-xs">DEPARTMENT</p>
+<p class="font-body text-body font-semibold text-on-surface">Computer Science & Engineering</p>
+</div>
+</div>
+<div class="h-px bg-outline-variant/50 w-full"></div>
+<!-- Payment Details -->
+<div class="space-y-md">
+<div class="flex justify-between items-center">
+<p class="text-on-surface-variant">Fine Reason</p>
+<p class="font-semibold text-on-surface">Late Submission (Assignment #4)</p>
+</div>
+<div class="flex justify-between items-center">
+<p class="text-on-surface-variant">Payment Method</p>
+<p class="font-semibold text-on-surface">UPI (GPay)</p>
+</div>
+<div class="flex justify-between items-center">
+<p class="text-on-surface-variant">Transaction ID</p>
+<p class="font-body text-body font-mono text-on-surface">TXN992834110293</p>
+</div>
+</div>
+<!-- Total Amount Card -->
+<div class="bg-surface-container-low p-md rounded-lg flex justify-between items-center border border-primary/10">
+<span class="font-section-title text-section-title text-on-surface">Total Amount Paid</span>
+<span class="font-h2 text-h2 text-primary">₹500.00</span>
+</div>
+</div>
+<!-- Receipt Footer -->
+<div class="p-lg bg-surface-container-high/30 text-center border-t border-dashed border-outline-variant">
+<p class="font-label text-label text-on-surface-variant">This is a system-generated receipt. No physical signature required.</p>
+<div class="mt-md flex justify-center gap-sm opacity-60">
+<div class="w-8 h-8 rounded-full bg-outline-variant"></div>
+<div class="w-8 h-8 rounded-full bg-outline-variant"></div>
+</div>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="w-full space-y-md no-print">
+<button class="w-full bg-primary text-on-primary font-section-title text-section-title py-md rounded-xl shadow-sm flex items-center justify-center gap-sm hover:brightness-110 active:scale-[0.98] transition-all" onclick="window.print()">
+<span class="material-symbols-outlined" data-icon="download">download</span>
+                Download Receipt (PDF)
+            </button>
+<button class="w-full bg-surface border border-outline text-on-surface font-section-title text-section-title py-md rounded-xl flex items-center justify-center gap-sm hover:bg-surface-container-high transition-colors active:scale-[0.98]">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+                Back to Dashboard
+            </button>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="md:hidden fixed bottom-0 w-full z-50 rounded-t-xl bg-surface border-t border-outline-variant shadow-lg flex justify-around items-center px-4 py-2 w-full">
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-high px-4 py-1 transition-all rounded-xl" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-label text-label mt-1">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-high px-4 py-1 transition-all rounded-xl" href="#">
+<span class="material-symbols-outlined" data-icon="list_alt">list_alt</span>
+<span class="font-label text-label mt-1">Requests</span>
+</a>
+<!-- Reports Active -->
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-2xl px-4 py-1 scale-95 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="bar_chart" style="font-variation-settings: 'FILL' 1;">bar_chart</span>
+<span class="font-label text-label mt-1">Reports</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-high px-4 py-1 transition-all rounded-xl" href="#">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+<span class="font-label text-label mt-1">Profile</span>
+</a>
+</nav>
+<script>
+        // Simple micro-interaction for the card on load
+        document.addEventListener('DOMContentLoaded', () => {
+            const card = document.getElementById('receipt-card');
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            
+            setTimeout(() => {
+                card.style.transition = 'all 0.6s cubic-bezier(0.22, 1, 0.36, 1)';
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, 300);
+        });
+
+        // Toggle dark mode (example trigger)
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark');
+        }
+    </script>
+</body></html>

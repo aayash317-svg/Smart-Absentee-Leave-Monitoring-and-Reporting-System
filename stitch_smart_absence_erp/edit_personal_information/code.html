@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Edit Personal Information - Student Portal</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "tertiary-container": "#bc4800",
+                      "surface-container-low": "#f3f3fe",
+                      "surface-dim": "#d9d9e5",
+                      "primary-fixed-dim": "#b4c5ff",
+                      "primary-fixed": "#dbe1ff",
+                      "on-primary-fixed-variant": "#003ea8",
+                      "error": "#ba1a1a",
+                      "secondary-fixed": "#7ffc97",
+                      "primary": "#004ac6",
+                      "tertiary-fixed": "#ffdbcd",
+                      "surface-container": "#ededf9",
+                      "on-surface": "#191b23",
+                      "on-secondary": "#ffffff",
+                      "surface": "#faf8ff",
+                      "on-tertiary-fixed-variant": "#7d2d00",
+                      "tertiary-fixed-dim": "#ffb596",
+                      "surface-variant": "#e1e2ed",
+                      "secondary-fixed-dim": "#62df7d",
+                      "inverse-on-surface": "#f0f0fb",
+                      "on-primary-fixed": "#00174b",
+                      "on-background": "#191b23",
+                      "on-secondary-fixed-variant": "#005320",
+                      "surface-container-high": "#e7e7f3",
+                      "surface-bright": "#faf8ff",
+                      "on-error-container": "#93000a",
+                      "primary-container": "#2563eb",
+                      "on-primary-container": "#eeefff",
+                      "secondary": "#006e2d",
+                      "inverse-primary": "#b4c5ff",
+                      "on-primary-container": "#eeefff",
+                      "surface-tint": "#0053db",
+                      "secondary-container": "#7cf994",
+                      "on-primary": "#ffffff",
+                      "on-tertiary-fixed": "#360f00",
+                      "on-tertiary-container": "#ffede6",
+                      "outline": "#737686",
+                      "on-surface-variant": "#434655",
+                      "on-error": "#ffffff",
+                      "surface-container-lowest": "#ffffff",
+                      "surface-container-highest": "#e1e2ed",
+                      "inverse-surface": "#2e3039",
+                      "on-tertiary": "#ffffff",
+                      "error-container": "#ffdad6",
+                      "outline-variant": "#c3c6d7",
+                      "on-secondary-fixed": "#002109",
+                      "background": "#faf8ff",
+                      "tertiary": "#943700"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "margin-desktop": "32px",
+                      "md": "16px",
+                      "lg": "24px",
+                      "sm": "8px",
+                      "xs": "4px",
+                      "gutter": "24px",
+                      "xl": "32px",
+                      "margin-mobile": "16px",
+                      "xxl": "48px"
+              },
+              "fontFamily": {
+                      "body": ["Inter"],
+                      "section-title": ["Inter"],
+                      "h3": ["Inter"],
+                      "h1-mobile": ["Inter"],
+                      "h2": ["Inter"],
+                      "label": ["Inter"],
+                      "h1": ["Inter"],
+                      "small": ["Inter"]
+              },
+              "fontSize": {
+                      "body": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                      "section-title": ["18px", {"lineHeight": "1.5", "fontWeight": "600"}],
+                      "h3": ["22px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                      "h1-mobile": ["28px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                      "h2": ["28px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                      "label": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                      "h1": ["36px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "small": ["14px", {"lineHeight": "1.5", "fontWeight": "500"}]
+              }
+            },
+          },
+        }
+      </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface min-h-screen">
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 w-full z-50 bg-surface border-b border-outline-variant h-16 flex items-center justify-between px-margin-mobile md:px-margin-desktop">
+<div class="flex items-center gap-sm cursor-pointer active:opacity-80 transition-opacity">
+<span class="material-symbols-outlined text-primary" data-icon="school">school</span>
+<span class="font-h2 text-h2 font-bold text-primary">Student Portal</span>
+</div>
+<div class="flex items-center gap-md">
+<div class="hidden md:flex items-center gap-sm mr-lg">
+<span class="text-primary font-bold font-label text-label cursor-pointer px-4 py-2 hover:bg-surface-container-low rounded-lg transition-colors">Overview</span>
+<span class="text-on-surface-variant font-label text-label cursor-pointer px-4 py-2 hover:bg-surface-container-low rounded-lg transition-colors">Academics</span>
+</div>
+<div class="w-10 h-10 rounded-full overflow-hidden border-2 border-primary-container">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a university student with a friendly expression, wearing casual academic attire. The background is a soft-focus campus library with warm, natural sunlight filtering through windows, maintaining a clean and modern academic aesthetic with high-key lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDwOFzC_m2upPCLO8LmQMZfe2SVVm9P0MN98CB79PGgjM05LwslJWNkaYl5scNnUPKsM4cUtTcUeVnByPfaFRLfsF_ggkLMHEGCKLqZisTjwwXuaMhx9vUjxxlrHMiDYqGKzBdwLq-EQklpHLgdz7e6aALXRzy_qiWjkqe4i9avHF7W08EhZszNs1GeVm0l__QpS4xQxERpgYofVXn4QAug_W_ogThKP842jjT_XmCq3EyyqSkmvoZZ-8pw2-Q9lBHIiTZDu-RJK3o"/>
+</div>
+</div>
+</header>
+<!-- Sidebar Navigation (Desktop) -->
+<aside class="fixed left-0 top-0 h-full w-[280px] hidden lg:flex flex-col gap-sm py-lg bg-inverse-surface z-40 pt-20">
+<div class="px-lg mb-lg flex flex-col gap-xs">
+<h3 class="font-h3 text-h3 text-primary-fixed">Alex Rivers</h3>
+<p class="text-surface-variant text-small font-small">ID: 2024-8842</p>
+<p class="text-surface-variant text-label font-label uppercase tracking-wider opacity-70">Computer Science Dept</p>
+</div>
+<nav class="flex flex-col">
+<div class="flex items-center gap-md text-surface-variant pl-5 py-3 hover:bg-on-surface-variant/10 transition-all cursor-pointer">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label text-label">Overview</span>
+</div>
+<div class="flex items-center gap-md text-primary-fixed-dim font-bold border-l-4 border-primary-container pl-4 py-3 bg-on-surface-variant/10 transition-all cursor-pointer">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-label text-label">Personal Info</span>
+</div>
+<div class="flex items-center gap-md text-surface-variant pl-5 py-3 hover:bg-on-surface-variant/10 transition-all cursor-pointer">
+<span class="material-symbols-outlined" data-icon="menu_book">menu_book</span>
+<span class="font-label text-label">Academics</span>
+</div>
+<div class="flex items-center gap-md text-surface-variant pl-5 py-3 hover:bg-on-surface-variant/10 transition-all cursor-pointer">
+<span class="material-symbols-outlined" data-icon="calendar_today">calendar_today</span>
+<span class="font-label text-label">Attendance</span>
+</div>
+<div class="flex items-center gap-md text-surface-variant pl-5 py-3 hover:bg-on-surface-variant/10 transition-all cursor-pointer">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-label text-label">Settings</span>
+</div>
+</nav>
+</aside>
+<!-- Main Content Area -->
+<main class="pt-24 pb-24 lg:pl-[280px] px-margin-mobile md:px-margin-desktop min-h-screen">
+<div class="max-w-4xl mx-auto">
+<!-- Breadcrumbs -->
+<nav class="flex items-center gap-xs text-on-surface-variant mb-lg font-small text-small">
+<span>Account</span>
+<span class="material-symbols-outlined text-[16px]" data-icon="chevron_right">chevron_right</span>
+<span class="text-primary font-semibold">Edit Personal Information</span>
+</nav>
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden shadow-sm">
+<!-- Header Section -->
+<div class="px-lg py-xl border-b border-outline-variant bg-surface-bright">
+<h1 class="font-h2 text-h2 text-on-surface mb-xs">Personal Information</h1>
+<p class="text-on-surface-variant font-body text-body">Update your student records and contact details below.</p>
+</div>
+<div class="p-lg md:p-xl">
+<!-- Profile Photo Section -->
+<div class="flex flex-col md:flex-row items-center gap-lg mb-xxl">
+<div class="relative group">
+<div class="w-32 h-32 rounded-full border-4 border-surface-container-high overflow-hidden shadow-md">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" data-alt="A close-up studio portrait of a student, Alex Rivers, looking directly at the camera with a confident and warm smile. The lighting is soft and professional, highlighting skin textures and vibrant eyes. The background is a minimalist, light blue textured wall that aligns with a modern SaaS and academic color palette." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDik-Z1pcvtqjgrdifZZNn8dsSAPBniywNHqWgGaXzN2-M2PiJzywvL2sYTaiBSURp9s-m4cJM_udS9LniGgCtovBuw-mIIg_dH8mwzkT9nGVji0yddXM3X84mneL8_auX_zcTBYAf79tB1cfzVeUcU2C5Za00g7g1IU5zmymu-HZbh55UaJZ92hkSfGw5KKoqJx4rX-z2VNgCN7auYLL-PyFbE5O2gp0pr6JeorMBACP2zaaNh7IIILRqmFqEztdLXRsheWTW1ELA"/>
+</div>
+<button class="absolute bottom-1 right-1 bg-primary text-white p-2 rounded-full shadow-lg hover:bg-primary-container transition-colors active:scale-90 flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]" data-icon="photo_camera">photo_camera</span>
+</button>
+</div>
+<div class="text-center md:text-left">
+<h3 class="font-section-title text-section-title text-on-surface">Edit Profile Photo</h3>
+<p class="text-on-surface-variant font-small text-small mt-1">PNG or JPG. Max size of 800K.</p>
+<div class="mt-3 flex gap-sm justify-center md:justify-start">
+<button class="px-4 py-2 border border-outline-variant rounded-lg font-label text-label text-on-surface-variant hover:bg-surface-container transition-colors">Upload New</button>
+<button class="px-4 py-2 text-error font-label text-label hover:bg-error-container/10 rounded-lg transition-colors">Remove</button>
+</div>
+</div>
+</div>
+<!-- Form Fields -->
+<form class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+<!-- Full Name -->
+<div class="flex flex-col gap-xs">
+<label class="font-label text-label text-on-surface-variant ml-1">Full Name</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]" data-icon="person">person</span>
+<input class="w-full pl-10 pr-4 py-3 rounded-xl border border-outline-variant bg-surface focus:ring-2 focus:ring-primary focus:border-primary transition-all font-body text-body" placeholder="Enter full name" type="text" value="Alex Rivers"/>
+</div>
+</div>
+<!-- University Email -->
+<div class="flex flex-col gap-xs">
+<label class="font-label text-label text-on-surface-variant ml-1">University Email</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]" data-icon="mail">mail</span>
+<input class="w-full pl-10 pr-4 py-3 rounded-xl border border-outline-variant bg-surface-container-low text-on-surface-variant cursor-not-allowed font-body text-body" readonly="" type="email" value="alex.rivers@university.edu"/>
+</div>
+<span class="text-[10px] text-on-surface-variant ml-1 italic">Contact Registrar to change official email.</span>
+</div>
+<!-- Phone Number -->
+<div class="flex flex-col gap-xs">
+<label class="font-label text-label text-on-surface-variant ml-1">Phone Number</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]" data-icon="call">call</span>
+<input class="w-full pl-10 pr-4 py-3 rounded-xl border border-outline-variant bg-surface focus:ring-2 focus:ring-primary focus:border-primary transition-all font-body text-body" placeholder="+1 (000) 000-0000" type="tel" value="+1 (555) 902-8842"/>
+</div>
+</div>
+<!-- Date of Birth -->
+<div class="flex flex-col gap-xs">
+<label class="font-label text-label text-on-surface-variant ml-1">Date of Birth</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]" data-icon="calendar_month">calendar_month</span>
+<input class="w-full pl-10 pr-4 py-3 rounded-xl border border-outline-variant bg-surface focus:ring-2 focus:ring-primary focus:border-primary transition-all font-body text-body" type="date" value="2002-05-14"/>
+</div>
+</div>
+<!-- Residential Address -->
+<div class="md:col-span-2 flex flex-col gap-xs">
+<label class="font-label text-label text-on-surface-variant ml-1">Residential Address</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-4 text-on-surface-variant text-[20px]" data-icon="home_pin">home_pin</span>
+<textarea class="w-full pl-10 pr-4 py-3 rounded-xl border border-outline-variant bg-surface focus:ring-2 focus:ring-primary focus:border-primary transition-all font-body text-body" placeholder="Enter your current residential address" rows="3">422 Academic Way, North Campus Dorm B, Room 204, Boston, MA 02115</textarea>
+</div>
+</div>
+</form>
+<!-- Form Footer Actions -->
+<div class="mt-xxl pt-lg border-t border-outline-variant flex flex-col md:flex-row items-center justify-between gap-md">
+<div class="flex items-center gap-xs text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]" data-icon="info">info</span>
+<p class="font-small text-small">Last updated: Oct 24, 2023</p>
+</div>
+<div class="flex items-center gap-md w-full md:w-auto">
+<button class="flex-1 md:flex-none px-xl py-3 border border-outline-variant rounded-xl font-label text-label text-on-surface hover:bg-surface-container transition-colors">Cancel</button>
+<button class="flex-1 md:flex-none px-xxl py-3 bg-primary text-white rounded-xl font-label text-label shadow-lg hover:shadow-xl hover:bg-primary-container active:scale-95 transition-all flex items-center justify-center gap-sm">
+<span class="material-symbols-outlined text-[20px]" data-icon="save">save</span>
+                                Save Changes
+                            </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Additional Help / Info Cards -->
+<div class="mt-lg grid grid-cols-1 md:grid-cols-2 gap-gutter">
+<div class="p-lg bg-surface-container-low border border-outline-variant rounded-xl flex items-start gap-md">
+<div class="bg-primary/10 p-2 rounded-lg">
+<span class="material-symbols-outlined text-primary" data-icon="shield_person">shield_person</span>
+</div>
+<div>
+<h4 class="font-section-title text-section-title text-on-surface">Data Privacy</h4>
+<p class="font-small text-small text-on-surface-variant mt-1">Your personal information is only visible to authorized registrar and department staff.</p>
+</div>
+</div>
+<div class="p-lg bg-surface-container-low border border-outline-variant rounded-xl flex items-start gap-md">
+<div class="bg-secondary/10 p-2 rounded-lg">
+<span class="material-symbols-outlined text-secondary" data-icon="verified">verified</span>
+</div>
+<div>
+<h4 class="font-section-title text-section-title text-on-surface">Verified Record</h4>
+<p class="font-small text-small text-on-surface-variant mt-1">Changes to key fields like Name or ID may require administrative approval.</p>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation Bar (Mobile) -->
+<nav class="fixed bottom-0 w-full z-50 lg:hidden bg-surface border-t border-outline-variant shadow-md h-16 flex justify-around items-center px-margin-mobile">
+<div class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:bg-surface-container transition-colors cursor-pointer">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-label text-label">Home</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:bg-surface-container transition-colors cursor-pointer">
+<span class="material-symbols-outlined" data-icon="school">school</span>
+<span class="font-label text-label">Academic</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:bg-surface-container transition-colors cursor-pointer">
+<span class="material-symbols-outlined" data-icon="event_available">event_available</span>
+<span class="font-label text-label">Attendance</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-xl px-4 py-1 active:scale-95 transition-all cursor-pointer">
+<span class="material-symbols-outlined" data-icon="account_circle" style="font-variation-settings: 'FILL' 1;">account_circle</span>
+<span class="font-label text-label">Profile</span>
+</div>
+</nav>
+<script>
+        // Simple micro-interaction for the save button
+        const saveBtn = document.querySelector('button:has(span[data-icon="save"])');
+        if (saveBtn) {
+            saveBtn.addEventListener('click', () => {
+                const originalContent = saveBtn.innerHTML;
+                saveBtn.innerHTML = `
+                    <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Updating...
+                `;
+                saveBtn.disabled = true;
+                setTimeout(() => {
+                    saveBtn.innerHTML = `
+                        <span class="material-symbols-outlined text-[20px]" data-icon="check_circle">check_circle</span>
+                        Saved Successfully
+                    `;
+                    saveBtn.classList.remove('bg-primary');
+                    saveBtn.classList.add('bg-secondary');
+                    setTimeout(() => {
+                        saveBtn.innerHTML = originalContent;
+                        saveBtn.classList.remove('bg-secondary');
+                        saveBtn.classList.add('bg-primary');
+                        saveBtn.disabled = false;
+                    }, 2000);
+                }, 1500);
+            });
+        }
+    </script>
+</body></html>

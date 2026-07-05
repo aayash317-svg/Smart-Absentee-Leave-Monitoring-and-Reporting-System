@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Student Dashboard | Attendance Hub</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #faf8ff;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(8px);
+            border: 1px solid #e2e8f0;
+        }
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 24px;
+        }
+        @media (max-width: 768px) {
+            .bento-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-secondary-fixed-variant": "#005320",
+                      "on-background": "#191b23",
+                      "on-tertiary-fixed": "#360f00",
+                      "surface-variant": "#e1e2ed",
+                      "outline-variant": "#c3c6d7",
+                      "primary": "#004ac6",
+                      "tertiary-fixed": "#ffdbcd",
+                      "on-error-container": "#93000a",
+                      "background": "#faf8ff",
+                      "tertiary-container": "#bc4800",
+                      "on-secondary-fixed": "#002109",
+                      "error": "#ba1a1a",
+                      "on-primary-fixed-variant": "#003ea8",
+                      "on-tertiary": "#ffffff",
+                      "surface-bright": "#faf8ff",
+                      "inverse-surface": "#2e3039",
+                      "outline": "#737686",
+                      "error-container": "#ffdad6",
+                      "tertiary": "#943700",
+                      "secondary-fixed": "#7ffc97",
+                      "on-primary": "#ffffff",
+                      "surface-container-lowest": "#ffffff",
+                      "surface-dim": "#d9d9e5",
+                      "secondary-container": "#7cf994",
+                      "on-surface": "#191b23",
+                      "primary-fixed": "#dbe1ff",
+                      "surface-tint": "#0053db",
+                      "on-surface-variant": "#434655",
+                      "surface-container-highest": "#e1e2ed",
+                      "surface": "#faf8ff",
+                      "surface-container-low": "#f3f3fe",
+                      "on-error": "#ffffff",
+                      "primary-fixed-dim": "#b4c5ff",
+                      "on-tertiary-container": "#ffede6",
+                      "on-primary-fixed": "#00174b",
+                      "on-secondary": "#ffffff",
+                      "surface-container-high": "#e7e7f3",
+                      "tertiary-fixed-dim": "#ffb596",
+                      "surface-container": "#ededf9",
+                      "on-primary-container": "#eeefff",
+                      "primary-container": "#2563eb",
+                      "secondary": "#006e2d",
+                      "secondary-fixed-dim": "#62df7d",
+                      "on-secondary-container": "#007230",
+                      "inverse-on-surface": "#f0f0fb",
+                      "on-tertiary-fixed-variant": "#7d2d00",
+                      "inverse-primary": "#b4c5ff"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "16px",
+                      "xl": "24px",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "md": "16px",
+                      "lg": "24px",
+                      "margin-mobile": "16px",
+                      "xs": "4px",
+                      "xl": "32px",
+                      "sm": "8px",
+                      "gutter": "24px",
+                      "xxl": "48px",
+                      "margin-desktop": "32px"
+              },
+              "fontFamily": {
+                      "h1": ["Inter"], "label": ["Inter"], "small": ["Inter"], "section-title": ["Inter"],
+                      "h2": ["Inter"], "body": ["Inter"], "h3": ["Inter"], "h1-mobile": ["Inter"]
+              },
+              "fontSize": {
+                      "h1": ["36px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "label": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                      "small": ["14px", {"lineHeight": "1.5", "fontWeight": "500"}],
+                      "section-title": ["18px", {"lineHeight": "1.5", "fontWeight": "600"}],
+                      "h2": ["28px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                      "body": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                      "h3": ["22px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                      "h1-mobile": ["28px", {"lineHeight": "1.2", "fontWeight": "700"}]
+              }
+            },
+          },
+        }
+      </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col">
+<!-- TopAppBar -->
+<header class="w-full top-0 sticky z-40 bg-surface border-b border-outline-variant flex justify-between items-center px-lg py-md">
+<div class="flex items-center gap-md">
+<button class="material-symbols-outlined text-primary p-xs hover:bg-surface-container-high transition-colors rounded-full">menu</button>
+<h1 class="font-h2 text-h2 font-bold text-primary">Attendance Hub</h1>
+</div>
+<div class="flex items-center gap-md">
+<div class="hidden md:flex gap-md px-md">
+<span class="font-h3 text-h3 text-primary font-bold">Dashboard</span>
+</div>
+<div class="w-10 h-10 rounded-full bg-primary-fixed-dim flex items-center justify-center overflow-hidden border-2 border-primary-container">
+<img class="w-full h-full object-cover" data-alt="A professional studio portrait of a university student with a friendly expression, wearing a minimalist navy blue academic sweater. The background is a soft, out-of-focus modern campus library with natural light, maintaining a clean light-mode aesthetic with cool blue and white tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBcoF-9T_0p7oX5xKwcC3TpyL-UGAYainKwt2tFW2oWFqq1KEoZRbhXMcoPYuxf_pHc35_FeGVPAKqpMzK74Q3dEDHSoTCeyG4M2Q10JaFr19W0odo53Xr24Bv5FshwgCca4i_uVxrO3uAvUDhuv47jZ_dEKSNH9mZ1a_M1xu5ATkLXYz4Fx3KQD6o7NuyxKQ3EijeykPxi7Lh28OyDT8SzhZ7Xr8cbZpO2mUiodpHiY4TJUs3ySGSaQhvxXgYiGsysIQ7OUkz1Ybk"/>
+</div>
+</div>
+</header>
+<main class="flex-grow p-margin-mobile md:p-margin-desktop max-w-7xl mx-auto w-full pb-32">
+<!-- Hero Section: Today's Status -->
+<section class="mb-xl">
+<div class="relative overflow-hidden rounded-xl bg-primary text-on-primary p-xl flex flex-col md:flex-row justify-between items-center gap-lg">
+<div class="absolute inset-0 opacity-10 pointer-events-none">
+
+</div>
+<div class="relative z-10 space-y-sm">
+<p class="font-label text-label uppercase tracking-widest opacity-80">Today's Status</p>
+<h2 class="font-h1 text-h1">Good Morning, Alex</h2>
+<div class="flex items-center gap-sm mt-md">
+<span class="bg-secondary-container text-on-secondary-container px-md py-xs rounded-full font-label text-label flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                            Marked Present
+                        </span>
+<span class="text-on-primary/70 font-small text-small">Checked in at 08:45 AM</span>
+</div>
+</div>
+<div class="relative z-10 flex flex-col items-end">
+<div class="text-right">
+<p class="font-label text-label opacity-80">Department of Computer Science</p>
+<p class="font-h3 text-h3">3rd Year • Semester VI</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Bento Grid: KPIs and Quick Actions -->
+<div class="bento-grid">
+<!-- KPI: Leave Balance -->
+<div class="col-span-12 md:col-span-4 bg-surface rounded-lg p-lg border border-outline-variant hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start mb-md">
+<div class="p-sm bg-primary-fixed rounded-lg text-primary">
+<span class="material-symbols-outlined">event_available</span>
+</div>
+<span class="bg-primary/10 text-primary px-sm py-xs rounded-full font-label text-[10px]">REMAINING</span>
+</div>
+<h3 class="font-section-title text-section-title text-on-surface-variant mb-xs">Leave Balance</h3>
+<p class="font-h1 text-h1 text-on-surface">12 <span class="text-h3 font-normal text-outline">Days</span></p>
+<div class="mt-lg w-full bg-surface-container-high h-2 rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[60%]"></div>
+</div>
+</div>
+<!-- KPI: Pending Leave -->
+<div class="col-span-12 md:col-span-4 bg-surface rounded-lg p-lg border border-outline-variant hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start mb-md">
+<div class="p-sm bg-tertiary-fixed rounded-lg text-tertiary">
+<span class="material-symbols-outlined">pending_actions</span>
+</div>
+<span class="bg-tertiary/10 text-tertiary px-sm py-xs rounded-full font-label text-[10px]">REVIEWING</span>
+</div>
+<h3 class="font-section-title text-section-title text-on-surface-variant mb-xs">Pending Requests</h3>
+<p class="font-h1 text-h1 text-on-surface">02 <span class="text-h3 font-normal text-outline">Items</span></p>
+<p class="mt-lg font-small text-small text-outline">Next review scheduled for today, 4 PM.</p>
+</div>
+<!-- KPI: Pending Fine -->
+<div class="col-span-12 md:col-span-4 bg-surface rounded-lg p-lg border border-outline-variant hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start mb-md">
+<div class="p-sm bg-error-container rounded-lg text-error">
+<span class="material-symbols-outlined">payments</span>
+</div>
+<span class="bg-error/10 text-error px-sm py-xs rounded-full font-label text-[10px]">ACTION REQUIRED</span>
+</div>
+<h3 class="font-section-title text-section-title text-on-surface-variant mb-xs">Outstanding Dues</h3>
+<p class="font-h1 text-h1 text-on-surface">$45.00</p>
+<button class="mt-lg w-full py-sm bg-error text-white rounded-lg font-label uppercase tracking-wider hover:opacity-90 transition-opacity">
+                    Pay Now
+                </button>
+</div>
+<!-- Quick Actions -->
+<div class="col-span-12 md:col-span-8 bg-surface rounded-lg p-lg border border-outline-variant">
+<h3 class="font-section-title text-section-title mb-lg">Quick Actions</h3>
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-md">
+<button class="flex flex-col items-center justify-center gap-sm p-lg bg-surface-container hover:bg-primary-fixed transition-all rounded-lg group">
+<span class="material-symbols-outlined text-primary group-hover:scale-110 transition-transform">add_circle</span>
+<span class="font-label text-label">Apply Leave</span>
+</button>
+<button class="flex flex-col items-center justify-center gap-sm p-lg bg-surface-container hover:bg-primary-fixed transition-all rounded-lg group">
+<span class="material-symbols-outlined text-primary group-hover:scale-110 transition-transform">history</span>
+<span class="font-label text-label">View History</span>
+</button>
+<button class="flex flex-col items-center justify-center gap-sm p-lg bg-surface-container hover:bg-primary-fixed transition-all rounded-lg group">
+<span class="material-symbols-outlined text-primary group-hover:scale-110 transition-transform">credit_card</span>
+<span class="font-label text-label">Payment Logs</span>
+</button>
+</div>
+</div>
+<!-- Recent Notifications -->
+<div class="col-span-12 md:col-span-4 bg-surface rounded-lg p-lg border border-outline-variant">
+<h3 class="font-section-title text-section-title mb-lg">Notifications</h3>
+<div class="space-y-md">
+<div class="flex gap-md pb-md border-b border-outline-variant last:border-0 last:pb-0">
+<div class="w-2 h-2 rounded-full bg-primary mt-2 flex-shrink-0"></div>
+<div>
+<p class="font-body text-body font-semibold">Attendance Shortage Alert</p>
+<p class="font-small text-small text-outline">Calculated attendance for 'Data Mining' is 72%.</p>
+<p class="font-label text-[10px] text-outline-variant mt-xs">2 hours ago</p>
+</div>
+</div>
+<div class="flex gap-md pb-md border-b border-outline-variant last:border-0 last:pb-0">
+<div class="w-2 h-2 rounded-full bg-secondary mt-2 flex-shrink-0"></div>
+<div>
+<p class="font-body text-body font-semibold">Leave Approved</p>
+<p class="font-small text-small text-outline">Your request for Oct 24th has been approved.</p>
+<p class="font-label text-[10px] text-outline-variant mt-xs">Yesterday</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Visual Anchor: Contextual Image -->
+<section class="mt-xl">
+<div class="w-full h-48 rounded-xl overflow-hidden relative border border-outline-variant">
+<div class="absolute inset-0 bg-gradient-to-r from-primary/40 to-transparent z-10"></div>
+<img class="w-full h-full object-cover" data-alt="A wide-angle interior shot of a minimalist, tech-driven university student lounge. Large floor-to-ceiling windows reveal a green courtyard. The furniture is ergonomic and modern, with students quietly working on laptops. The lighting is soft and ambient, emphasizing a calm and focused academic atmosphere. The aesthetic is ultra-clean with a light-blue and white color theme." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDorQ2TqT_Cdm6hkcAMNYcQ2cP0yBDVYsKV7KLNZOnJPizzLeBNg18-Q_QKFvqBuKTQjGbBxyVBJHKZmehN8-686LsebL9gLiICOzyMX8Ip3SQ7AzSEycYRt7_sbKag3R5FiKY95luBETGGrzNMbVvL83UNHI8Pnhh-M6sWpFHNMhbrfdXvAlSKautH_7UU_wknrxvQz2IumQhI5ZrNXVwzjNfYNxda3cXtb4nQ1UeJ9X7OuQaS6r0iOuOK7lThiiok6TzwjhZn3L4"/>
+<div class="absolute bottom-lg left-lg z-20 text-white">
+<p class="font-h3 text-h3">Digital Campus Life</p>
+<p class="font-body text-body opacity-90">Manage your academic availability with ease.</p>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="md:hidden fixed bottom-0 w-full z-50 rounded-t-xl bg-surface border-t border-outline-variant shadow-lg flex justify-around items-center px-4 py-2">
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-2xl px-4 py-1 transition-all duration-200 active:scale-90" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="font-label text-label">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-colors px-4 py-1" href="#">
+<span class="material-symbols-outlined">list_alt</span>
+<span class="font-label text-label">Requests</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-colors px-4 py-1" href="#">
+<span class="material-symbols-outlined">bar_chart</span>
+<span class="font-label text-label">Reports</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-colors px-4 py-1" href="#">
+<span class="material-symbols-outlined">account_circle</span>
+<span class="font-label text-label">Profile</span>
+</a>
+</nav>
+<!-- Sidebar for Desktop -->
+<aside class="hidden md:flex fixed left-0 top-0 h-full w-[280px] flex-col py-xl bg-on-background shadow-md z-50">
+<div class="px-lg mb-xl">
+<h2 class="font-h3 text-h3 text-surface font-bold">Attendance Hub</h2>
+<div class="mt-lg flex items-center gap-md">
+<div class="w-12 h-12 rounded-lg bg-surface/10 flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A clean, close-up minimalist avatar of a computer science student, characterized by simplified geometric shapes, set against a dark background with subtle blue accents. The style is professional, modern, and aligned with enterprise software design." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCLVJhauS5GJto7-WULFn0p5SPHEtIG0Exs3bunrJvNnVirPlj95R72u5Iggr3jFJZwUp4_g_ipqgDzw0-fgsiM_8r_gQNYO3fjyDoOy4XcQhzuc7lZKd01I7R5i_pqeuFD4otexaAafdPwss_O9v0vnnbjn40ZQOOWVx1zYawbzJoqL45UC4nIb2CF02O33ltlu_EQkMKD41vsRiFODmbiTIP71oLBLh21SFDMjGjPQpb4RrmP2eM0OXW5t2vMaGIqsSXsZQpzVt8"/>
+</div>
+<div class="overflow-hidden">
+<p class="font-body text-body text-surface font-semibold truncate">Alex Rivera</p>
+<p class="font-label text-label text-outline-variant truncate">ID: ST-2024-001</p>
+</div>
+</div>
+</div>
+<nav class="flex-grow">
+<ul class="space-y-sm">
+<li>
+<a class="flex items-center gap-md px-lg py-md border-l-4 border-primary text-primary-fixed bg-surface-container-highest/10 transition-all" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-body text-body">Dashboard</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md px-lg py-md text-outline-variant hover:text-surface-bright hover:bg-white/5 transition-all" href="#">
+<span class="material-symbols-outlined">event_note</span>
+<span class="font-body text-body">My Attendance</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md px-lg py-md text-outline-variant hover:text-surface-bright hover:bg-white/5 transition-all" href="#">
+<span class="material-symbols-outlined">send_and_archive</span>
+<span class="font-body text-body">Leave Requests</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md px-lg py-md text-outline-variant hover:text-surface-bright hover:bg-white/5 transition-all" href="#">
+<span class="material-symbols-outlined">account_balance_wallet</span>
+<span class="font-body text-body">Fees &amp; Fines</span>
+</a>
+</li>
+</ul>
+</nav>
+<div class="mt-auto px-lg">
+<button class="flex items-center gap-md w-full py-md text-outline-variant hover:text-error transition-colors">
+<span class="material-symbols-outlined">logout</span>
+<span class="font-body text-body">Sign Out</span>
+</button>
+</div>
+</aside>
+<!-- Adjust Main Content for Desktop Sidebar -->
+<style>
+        @media (min-width: 768px) {
+            body { padding-left: 280px; }
+            header { left: 280px; width: calc(100% - 280px); }
+        }
+    </style>
+<script>
+        // Check authentication
+        const token = localStorage.getItem('access_token');
+        if (!token) {
+            window.location.href = '/erp/login_attendance_hub/code.html';
+        }
+
+        // Fetch metrics and update dashboard
+        async function loadDashboard() {
+            try {
+                const response = await fetch('/api/dashboard/metrics', {
+                    headers: {
+                        'Authorization': 'Bearer ' + token
+                    }
+                });
+
+                if (response.status === 401) {
+                    localStorage.clear();
+                    window.location.href = '/erp/login_attendance_hub/code.html';
+                    return;
+                }
+
+                if (!response.ok) {
+                    throw new Error('Failed to load dashboard metrics');
+                }
+
+                const data = await response.json();
+                
+                // 1. Update Hero Details
+                document.querySelector('h2.font-h1.text-h1').textContent = 'Good Morning, ' + data.studentInfo.fullName.split(' ')[0];
+                document.querySelector('p.font-label.text-label.opacity-80').textContent = data.studentInfo.departmentName;
+                document.querySelector('p.font-h3.text-h3').textContent = `${data.studentInfo.year} Year • Semester ${data.studentInfo.semester}`;
+
+                // 2. Update Sidebar Details
+                const sidebarName = document.querySelector('aside p.font-body.text-body.text-surface');
+                if (sidebarName) sidebarName.textContent = data.studentInfo.fullName;
+                const sidebarId = document.querySelector('aside p.font-label.text-label.text-outline-variant');
+                if (sidebarId) sidebarId.textContent = 'Reg No: ' + data.studentInfo.registerNo;
+
+                // 3. Update Attendance Rate KPI (modified from Leave Balance)
+                document.querySelector('.bento-grid > div:nth-child(1) h3').textContent = 'Attendance Rate';
+                document.querySelector('.bento-grid > div:nth-child(1) p.font-h1').innerHTML = `${data.attendancePercentage}%`;
+                document.querySelector('.bento-grid > div:nth-child(1) .bg-primary').style.width = `${data.attendancePercentage}%`;
+
+                // 4. Update Pending Requests KPI
+                document.querySelector('.bento-grid > div:nth-child(2) p.font-h1').innerHTML = `${String(data.pendingLeavesCount).padStart(2, '0')} <span class="text-h3 font-normal text-outline">Items</span>`;
+
+                // 5. Update Outstanding Dues KPI
+                document.querySelector('.bento-grid > div:nth-child(3) p.font-h1').textContent = `Rs. ${data.totalFine}`;
+
+                // 6. Update Notifications List
+                const notifsContainer = document.querySelector('.bento-grid > div:nth-child(5) .space-y-md');
+                if (notifsContainer && data.notifications.length > 0) {
+                    notifsContainer.innerHTML = '';
+                    data.notifications.forEach(n => {
+                        const dateText = new Date(n.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                        const bulletColor = n.type === 'Warning' ? 'bg-error' : 'bg-primary';
+                        const itemHtml = `
+                            <div class="flex gap-md pb-md border-b border-outline-variant last:border-0 last:pb-0">
+                                <div class="w-2 h-2 rounded-full ${bulletColor} mt-2 flex-shrink-0"></div>
+                                <div>
+                                    <p class="font-body text-body font-semibold">${n.title}</p>
+                                    <p class="font-small text-small text-outline">${n.message}</p>
+                                    <p class="font-label text-[10px] text-outline-variant mt-xs">${dateText}</p>
+                                </div>
+                            </div>
+                        `;
+                        notifsContainer.insertAdjacentHTML('beforeend', itemHtml);
+                    });
+                } else if (notifsContainer) {
+                    notifsContainer.innerHTML = '<p class="font-small text-small text-outline">No new notifications</p>';
+                }
+
+                // Bind Quick Action clicks
+                const actionButtons = document.querySelectorAll('.bento-grid > div:nth-child(4) button');
+                if (actionButtons[0]) {
+                    actionButtons[0].addEventListener('click', () => {
+                        window.location.href = '/erp/apply_for_leave/code.html';
+                    });
+                }
+                if (actionButtons[1]) {
+                    actionButtons[1].addEventListener('click', () => {
+                        // Redirect to leave history
+                        window.location.href = '/erp/apply_for_leave/code.html';
+                    });
+                }
+                if (actionButtons[2]) {
+                    actionButtons[2].addEventListener('click', () => {
+                        window.location.href = '/erp/fine_payment_receipt/code.html';
+                    });
+                }
+
+                // Bind Pay Now button
+                const payButton = document.querySelector('.bento-grid > div:nth-child(3) button');
+                if (payButton) {
+                    payButton.addEventListener('click', () => {
+                        window.location.href = '/erp/fine_management/code.html';
+                    });
+                }
+
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        // Run on load
+        loadDashboard();
+
+        // Sign Out action
+        const signOutBtn = document.querySelector('button.flex.items-center.gap-md.w-full');
+        if (signOutBtn) {
+            signOutBtn.addEventListener('click', () => {
+                localStorage.clear();
+                window.location.href = '/erp/login_attendance_hub/code.html';
+            });
+        }
+
+        // KPI Card micro-interactions
+        document.querySelectorAll('.bento-grid > div').forEach(card => {
+            card.addEventListener('mousedown', () => {
+                card.style.transform = 'scale(0.98)';
+                card.style.transition = 'transform 0.1s';
+            });
+            card.addEventListener('mouseup', () => {
+                card.style.transform = 'scale(1)';
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'scale(1)';
+            });
+        });
+    </script>
+</body></html>

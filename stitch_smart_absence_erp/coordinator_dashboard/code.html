@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Coordinator Dashboard | Attendance Hub</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .sidebar-active {
+            border-left-width: 4px;
+            border-color: #004ac6;
+            background-color: rgba(255, 255, 255, 0.05);
+            color: #dbe1ff;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8FAFC;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-fixed-variant": "#005320",
+                        "on-background": "#191b23",
+                        "on-tertiary-fixed": "#360f00",
+                        "surface-variant": "#e1e2ed",
+                        "outline-variant": "#c3c6d7",
+                        "primary": "#004ac6",
+                        "tertiary-fixed": "#ffdbcd",
+                        "on-error-container": "#93000a",
+                        "background": "#faf8ff",
+                        "tertiary-container": "#bc4800",
+                        "on-secondary-fixed": "#002109",
+                        "error": "#ba1a1a",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "on-tertiary": "#ffffff",
+                        "surface-bright": "#faf8ff",
+                        "inverse-surface": "#2e3039",
+                        "outline": "#737686",
+                        "error-container": "#ffdad6",
+                        "tertiary": "#943700",
+                        "secondary-fixed": "#7ffc97",
+                        "on-primary": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-dim": "#d9d9e5",
+                        "secondary-container": "#7cf994",
+                        "on-surface": "#191b23",
+                        "primary-fixed": "#dbe1ff",
+                        "surface-tint": "#0053db",
+                        "on-surface-variant": "#434655",
+                        "surface-container-highest": "#e1e2ed",
+                        "surface": "#faf8ff",
+                        "surface-container-low": "#f3f3fe",
+                        "on-error": "#ffffff",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "on-tertiary-container": "#ffede6",
+                        "on-primary-fixed": "#00174b",
+                        "on-secondary": "#ffffff",
+                        "surface-container-high": "#e7e7f3",
+                        "tertiary-fixed-dim": "#ffb596",
+                        "surface-container": "#ededf9",
+                        "on-primary-container": "#eeefff",
+                        "primary-container": "#2563eb",
+                        "secondary": "#006e2d",
+                        "secondary-fixed-dim": "#62df7d",
+                        "on-secondary-container": "#007230",
+                        "inverse-on-surface": "#f0f0fb",
+                        "on-tertiary-fixed-variant": "#7d2d00",
+                        "inverse-primary": "#b4c5ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "md": "16px",
+                        "lg": "24px",
+                        "margin-mobile": "16px",
+                        "xs": "4px",
+                        "xl": "32px",
+                        "sm": "8px",
+                        "gutter": "24px",
+                        "xxl": "48px",
+                        "margin-desktop": "32px"
+                    },
+                    "fontFamily": {
+                        "h1": ["Inter"], "label": ["Inter"], "small": ["Inter"], "section-title": ["Inter"], "h2": ["Inter"], "body": ["Inter"], "h3": ["Inter"], "h1-mobile": ["Inter"]
+                    },
+                    "fontSize": {
+                        "h1": ["36px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "label": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "small": ["14px", {"lineHeight": "1.5", "fontWeight": "500"}],
+                        "section-title": ["18px", {"lineHeight": "1.5", "fontWeight": "600"}],
+                        "h2": ["28px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                        "body": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "h3": ["22px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                        "h1-mobile": ["28px", {"lineHeight": "1.2", "fontWeight": "700"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface antialiased">
+<!-- Navigation Drawer (Desktop Sidebar) -->
+<aside class="hidden md:flex flex-col fixed left-0 top-0 h-full w-[280px] bg-on-background shadow-md z-40 py-xl overflow-y-auto">
+<div class="px-lg mb-xl">
+<h2 class="font-h3 text-h3 text-surface">Attendance Hub</h2>
+</div>
+<div class="px-lg mb-xl flex items-center gap-md">
+<div class="w-12 h-12 rounded-full overflow-hidden bg-surface-container">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of an academic coordinator in their 40s, wearing business casual attire, with a clean office background. High-quality corporate photography style, soft natural lighting from a window, muted professional tones of navy and grey, sharp focus on the subject's friendly but authoritative expression." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB7n7noaeefwotXgHaXYxC-6S2PemHK_NHIq-t0rWj5o7bNyUYams2VJoCyWaaYGCUM-CU9mNp2gklDk3Zbpc7k-UpOLTVbGDCkpMiGKWFeoaIBa-9ONR17TnAWF33xsZvRo6e-8hYeNiZV41NPjLHpbqtpU6CqXZaqNIj2LfCsfCcQTbWZmdLJjhsJ2EaqFvTiPHvc4KPiMuUCI-y6PtdBX582b3RlwkId4muEM44rDzWIZnYq29yJTtvim0MGVxC25VgRTCT8GDM"/>
+</div>
+<div class="flex flex-col">
+<span class="font-body text-body text-surface font-semibold">Academic Coordinator</span>
+<span class="font-small text-small text-outline-variant">Department of CS</span>
+</div>
+</div>
+<nav class="flex-1 flex flex-col gap-xs">
+<a class="flex items-center gap-md px-lg py-md border-l-4 border-primary text-primary-fixed bg-surface-container-highest/10 transition-all" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-body text-body">Dashboard</span>
+</a>
+<a class="flex items-center gap-md px-lg py-md text-outline-variant hover:text-surface-bright hover:bg-white/5 transition-all" href="#">
+<span class="material-symbols-outlined">person_off</span>
+<span class="font-body text-body">Absentees</span>
+</a>
+<a class="flex items-center gap-md px-lg py-md text-outline-variant hover:text-surface-bright hover:bg-white/5 transition-all" href="#">
+<span class="material-symbols-outlined">event_busy</span>
+<span class="font-body text-body">Leave Requests</span>
+</a>
+<a class="flex items-center gap-md px-lg py-md text-outline-variant hover:text-surface-bright hover:bg-white/5 transition-all" href="#">
+<span class="material-symbols-outlined">payments</span>
+<span class="font-body text-body">Fine Reports</span>
+</a>
+<a class="flex items-center gap-md px-lg py-md text-outline-variant hover:text-surface-bright hover:bg-white/5 transition-all" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-body text-body">Analytics</span>
+</a>
+</nav>
+</aside>
+<!-- Top AppBar -->
+<header class="w-full top-0 sticky z-30 flex justify-between items-center px-lg py-md bg-surface border-b border-outline-variant md:pl-[312px]">
+<div class="flex items-center gap-md">
+<button class="md:hidden p-sm rounded-lg hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h1 class="font-h3 text-h3 text-primary font-bold">Attendance Hub</h1>
+</div>
+<div class="flex items-center gap-md">
+<button class="p-sm rounded-full hover:bg-surface-container-high transition-colors relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-1 right-1 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<div class="w-10 h-10 rounded-full border border-outline-variant overflow-hidden cursor-pointer active:scale-95 transition-transform duration-150">
+<img class="w-full h-full object-cover" data-alt="Close-up of a high-quality user avatar, minimalist illustration style with a soft blue background, representing a professional administrator. Clean lines, vector aesthetic, professional and modern feel." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDIwe-k-Uguhe3dFYoDc4E695nNbz-SjFfgK8gtTCGtbjThZF8quCJil5ReJ38r1dwK6HS5XB3CmTAEgb8Ysh3uGwramX6tttC668znWW2an3Bjud0b2kx_rjEJVNtVPAJfHZ-Yy5gO6CG_GIpz9mafM2iLyTtCIDhMI4hENqeRLutmwPUlLobU86tzmaxK3fKypMtQ2GqEt4I_T8WWroCYEuQUV7V928PNCx6g3MUQ7iVImWg9yUo1dpitiusXB7ipwjoZXlLPnw8"/>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="md:ml-[280px] p-margin-mobile md:p-margin-desktop min-h-screen">
+<!-- Welcome Section -->
+<section class="mb-xl">
+<h2 class="font-h2 text-h2 text-on-background mb-xs">Coordinator Dashboard</h2>
+<p class="font-body text-body text-on-surface-variant">Real-time attendance insights and student management.</p>
+</section>
+<!-- KPI Bento Grid -->
+<section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter mb-xl">
+<!-- Today's Absentees -->
+<div class="bg-white p-lg rounded-xl border border-outline-variant hover:shadow-md transition-shadow group">
+<div class="flex justify-between items-start mb-md">
+<div class="p-sm bg-error-container/10 rounded-lg text-error">
+<span class="material-symbols-outlined">person_off</span>
+</div>
+<span class="font-label text-label text-on-secondary-container bg-secondary-container/10 px-sm py-1 rounded-full">+4% vs yesterday</span>
+</div>
+<h3 class="font-section-title text-section-title text-on-surface-variant mb-xs">Today's Absentees</h3>
+<p class="font-h1 text-h1 text-on-background">24</p>
+</div>
+<!-- Pending Leaves -->
+<div class="bg-white p-lg rounded-xl border border-outline-variant hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start mb-md">
+<div class="p-sm bg-tertiary-container/10 rounded-lg text-tertiary">
+<span class="material-symbols-outlined">pending_actions</span>
+</div>
+</div>
+<h3 class="font-section-title text-section-title text-on-surface-variant mb-xs">Pending Leaves</h3>
+<p class="font-h1 text-h1 text-on-background">12</p>
+</div>
+<!-- Approved Leaves -->
+<div class="bg-white p-lg rounded-xl border border-outline-variant hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start mb-md">
+<div class="p-sm bg-secondary-container/10 rounded-lg text-secondary">
+<span class="material-symbols-outlined">check_circle</span>
+</div>
+</div>
+<h3 class="font-section-title text-section-title text-on-surface-variant mb-xs">Approved Leaves</h3>
+<p class="font-h1 text-h1 text-on-background">48</p>
+</div>
+<!-- Pending Fines -->
+<div class="bg-white p-lg rounded-xl border border-outline-variant hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start mb-md">
+<div class="p-sm bg-primary-container/10 rounded-lg text-primary">
+<span class="material-symbols-outlined">payments</span>
+</div>
+<span class="font-label text-label text-error bg-error-container/10 px-sm py-1 rounded-full">Action Required</span>
+</div>
+<h3 class="font-section-title text-section-title text-on-surface-variant mb-xs">Pending Fines</h3>
+<p class="font-h1 text-h1 text-on-background">₹3,450</p>
+</div>
+</section>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-gutter">
+<!-- Activity Feed -->
+<section class="lg:col-span-2">
+<div class="bg-white rounded-xl border border-outline-variant overflow-hidden">
+<div class="px-lg py-md border-b border-outline-variant flex justify-between items-center bg-surface-container-low">
+<h3 class="font-section-title text-section-title">Recent Activity Feed</h3>
+<button class="text-primary font-label text-label hover:underline">View All</button>
+</div>
+<div class="divide-y divide-outline-variant">
+<!-- Activity Item 1 -->
+<div class="px-lg py-md flex items-start gap-md hover:bg-surface-container-low transition-colors">
+<div class="w-10 h-10 rounded-full flex-shrink-0 bg-primary-container/10 text-primary flex items-center justify-center">
+<span class="material-symbols-outlined">person</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between">
+<span class="font-body text-body font-semibold">Arjun Sharma (CS-402)</span>
+<span class="font-small text-small text-outline">10m ago</span>
+</div>
+<p class="font-body text-body text-on-surface-variant">Consecutive absence detected (3 days). Automated alert sent to student portal.</p>
+<div class="mt-sm flex gap-sm">
+<span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-error-container/20 text-error">Critical Alert</span>
+<button class="text-[10px] font-bold uppercase tracking-wider text-primary hover:underline">Review Profile</button>
+</div>
+</div>
+</div>
+<!-- Activity Item 2 -->
+<div class="px-lg py-md flex items-start gap-md hover:bg-surface-container-low transition-colors">
+<div class="w-10 h-10 rounded-full flex-shrink-0 bg-secondary-container/10 text-secondary flex items-center justify-center">
+<span class="material-symbols-outlined">task_alt</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between">
+<span class="font-body text-body font-semibold">Leave Request Approved</span>
+<span class="font-small text-small text-outline">1h ago</span>
+</div>
+<p class="font-body text-body text-on-surface-variant">Sarah Jenkins (CS-102) medical leave for Sep 12-14 approved by HOD.</p>
+</div>
+</div>
+<!-- Activity Item 3 -->
+<div class="px-lg py-md flex items-start gap-md hover:bg-surface-container-low transition-colors">
+<div class="w-10 h-10 rounded-full flex-shrink-0 bg-tertiary-container/10 text-tertiary flex items-center justify-center">
+<span class="material-symbols-outlined">warning</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between">
+<span class="font-body text-body font-semibold">Fine Generated</span>
+<span class="font-small text-small text-outline">3h ago</span>
+</div>
+<p class="font-body text-body text-on-surface-variant">System generated ₹250 fine for Vikram Das (Attendance below 75%).</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Quick Actions -->
+<aside class="flex flex-col gap-gutter">
+<div class="bg-white rounded-xl border border-outline-variant p-lg shadow-sm">
+<h3 class="font-section-title text-section-title mb-lg">Quick Actions</h3>
+<div class="flex flex-col gap-md">
+<button class="flex items-center justify-between w-full p-md rounded-xl bg-primary text-white hover:bg-primary-fixed-variant transition-colors shadow-sm group">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined">edit_square</span>
+<span class="font-body text-body font-medium">Mark Attendance</span>
+</div>
+<span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">chevron_right</span>
+</button>
+<button class="flex items-center justify-between w-full p-md rounded-xl bg-white border border-outline-variant text-on-surface hover:bg-surface-container-high transition-colors group">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-on-surface-variant">analytics</span>
+<span class="font-body text-body font-medium">Generate Report</span>
+</div>
+<span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">chevron_right</span>
+</button>
+<button class="flex items-center justify-between w-full p-md rounded-xl bg-white border border-outline-variant text-on-surface hover:bg-surface-container-high transition-colors group">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-error">picture_as_pdf</span>
+<span class="font-body text-body font-medium">Export PDF</span>
+</div>
+<span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">download</span>
+</button>
+</div>
+</div>
+<div class="bg-primary-container text-on-primary-container rounded-xl p-lg relative overflow-hidden">
+<div class="relative z-10">
+<h4 class="font-section-title text-section-title mb-xs">Daily Summary</h4>
+<p class="font-small text-small opacity-80 mb-md">Total students recorded for today: 420/450.</p>
+<div class="w-full bg-white/20 h-2 rounded-full overflow-hidden">
+<div class="bg-white h-full" style="width: 93%;"></div>
+</div>
+</div>
+<!-- Decorative Element -->
+<div class="absolute -right-4 -bottom-4 opacity-10">
+<span class="material-symbols-outlined" style="font-size: 120px;">pie_chart</span>
+</div>
+</div>
+</aside>
+</div>
+</main>
+<!-- Bottom Navigation (Mobile) -->
+<nav class="md:hidden fixed bottom-0 w-full z-50 rounded-t-xl bg-surface border-t border-outline-variant shadow-lg flex justify-around items-center px-4 py-2">
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-2xl px-4 py-1 active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label text-label">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-colors px-4 py-1" href="#">
+<span class="material-symbols-outlined">list_alt</span>
+<span class="font-label text-label">Requests</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-colors px-4 py-1" href="#">
+<span class="material-symbols-outlined">bar_chart</span>
+<span class="font-label text-label">Reports</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-colors px-4 py-1" href="#">
+<span class="material-symbols-outlined">account_circle</span>
+<span class="font-label text-label">Profile</span>
+</a>
+</nav>
+<script>
+        // Check authentication
+        const token = localStorage.getItem('access_token');
+        if (!token) {
+            window.location.href = '/erp/login_attendance_hub/code.html';
+        }
+
+        // Fetch metrics and update coordinator dashboard
+        async function loadDashboard() {
+            try {
+                const response = await fetch('/api/dashboard/metrics', {
+                    headers: {
+                        'Authorization': 'Bearer ' + token
+                    }
+                });
+
+                if (response.status === 401) {
+                    localStorage.clear();
+                    window.location.href = '/erp/login_attendance_hub/code.html';
+                    return;
+                }
+
+                if (!response.ok) {
+                    throw new Error('Failed to load dashboard metrics');
+                }
+
+                const data = await response.json();
+                
+                // 1. Update Staff Sidebar Profile
+                const userObj = JSON.parse(localStorage.getItem('user') || '{}');
+                const sidebarName = document.querySelector('aside .font-body.text-body.text-surface font-semibold, aside span.text-surface');
+                if (sidebarName) sidebarName.textContent = userObj.fullName || 'Academic Coordinator';
+                const sidebarDept = document.querySelector('aside span.text-outline-variant');
+                if (sidebarDept) sidebarDept.textContent = 'Coordinator (CS Department)';
+
+                // 2. Update KPI values
+                // Today's Absentees -> Average Attendance
+                document.querySelector('.grid.grid-cols-1.sm\\:grid-cols-2.lg\\:grid-cols-4 > div:nth-child(1) h3').textContent = 'Average Attendance';
+                document.querySelector('.grid.grid-cols-1.sm\\:grid-cols-2.lg\\:grid-cols-4 > div:nth-child(1) p.font-h1').textContent = `${data.averageAttendance}%`;
+                
+                // Pending Leaves
+                document.querySelector('.grid.grid-cols-1.sm\\:grid-cols-2.lg\\:grid-cols-4 > div:nth-child(2) p.font-h1').textContent = data.pendingLeavesCount;
+                
+                // Approved Leaves -> Total Students
+                document.querySelector('.grid.grid-cols-1.sm\\:grid-cols-2.lg\\:grid-cols-4 > div:nth-child(3) h3').textContent = 'Total Students';
+                document.querySelector('.grid.grid-cols-1.sm\\:grid-cols-2.lg\\:grid-cols-4 > div:nth-child(3) p.font-h1').textContent = data.totalStudents;
+                
+                // Pending Fines -> Low Attendance Students Count
+                document.querySelector('.grid.grid-cols-1.sm\\:grid-cols-2.lg\\:grid-cols-4 > div:nth-child(4) h3').textContent = 'Low Attendance (<75%)';
+                document.querySelector('.grid.grid-cols-1.sm\\:grid-cols-2.lg\\:grid-cols-4 > div:nth-child(4) p.font-h1').textContent = data.lowAttendanceCount;
+
+                // 3. Update Pending Leaves Table/List
+                const feedTitle = document.querySelector('section.lg\\:col-span-2 h3');
+                if (feedTitle) feedTitle.textContent = 'Pending Leave Applications';
+                
+                const feedContainer = document.querySelector('section.lg\\:col-span-2 .divide-y');
+                if (feedContainer) {
+                    if (data.pendingLeaves.length === 0) {
+                        feedContainer.innerHTML = '<div class="p-lg text-center font-small text-outline">No pending leave applications.</div>';
+                    } else {
+                        feedContainer.innerHTML = '';
+                        data.pendingLeaves.forEach(l => {
+                            const start = new Date(l.startDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                            const end = new Date(l.endDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                            const itemHtml = `
+                                <div class="px-lg py-md flex items-start gap-md hover:bg-surface-container-low transition-colors" data-id="${l._id}">
+                                    <div class="w-10 h-10 rounded-full flex-shrink-0 bg-primary-container/10 text-primary flex items-center justify-center">
+                                        <span class="material-symbols-outlined">event_busy</span>
+                                    </div>
+                                    <div class="flex-1">
+                                        <div class="flex justify-between">
+                                            <span class="font-body text-body font-semibold">${l.studentName} (${l.registerNo})</span>
+                                            <span class="font-small text-small text-outline">${start} - ${end}</span>
+                                        </div>
+                                        <p class="font-body text-body text-on-surface-variant mt-xs"><strong>Type:</strong> ${l.leaveType} | <strong>Reason:</strong> ${l.reason}</p>
+                                        <div class="mt-md flex gap-sm">
+                                            <button onclick="handleLeaveAction('${l._id}', 'approve')" class="px-md py-1 text-xs font-semibold bg-primary text-white rounded hover:opacity-90">Approve</button>
+                                            <button onclick="handleLeaveAction('${l._id}', 'reject')" class="px-md py-1 text-xs font-semibold bg-error text-white rounded hover:opacity-90">Reject</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                            feedContainer.insertAdjacentHTML('beforeend', itemHtml);
+                        });
+                    }
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        async function handleLeaveAction(appId, action) {
+            try {
+                const url = `/api/leave/${action}/${appId}`;
+                const response = await fetch(url, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': 'Bearer ' + token
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Failed to ${action} leave application`);
+                }
+
+                alert(`Leave application ${action}d successfully!`);
+                loadDashboard(); // Refresh
+            } catch (err) {
+                alert(err.message);
+            }
+        }
+
+        // Run
+        loadDashboard();
+
+        // Sign Out action
+        const signOutBtn = document.querySelector('aside button.flex.items-center');
+        if (signOutBtn) {
+            signOutBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                localStorage.clear();
+                window.location.href = '/erp/login_attendance_hub/code.html';
+            });
+        }
+        
+        // Bind Quick Actions
+        const quickMark = document.querySelector('main button.bg-primary');
+        if (quickMark) {
+            quickMark.addEventListener('click', () => {
+                window.location.href = '/erp/faculty_attendance_marking/code.html';
+            });
+        }
+
+        // Simple Interaction logic for demo buttons
+        document.querySelectorAll('button, a').forEach(el => {
+            el.addEventListener('mousedown', () => {
+                el.classList.add('scale-95');
+            });
+            el.addEventListener('mouseup', () => {
+                el.classList.remove('scale-95');
+            });
+            el.addEventListener('mouseleave', () => {
+                el.classList.remove('scale-95');
+            });
+        });
+    </script>
+</body></html>

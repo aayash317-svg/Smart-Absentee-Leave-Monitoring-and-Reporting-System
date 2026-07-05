@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>HOD Dashboard - Department of Computer Science</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-tint": "#0053db",
+                    "on-primary-container": "#eeefff",
+                    "inverse-primary": "#b4c5ff",
+                    "secondary": "#006e2d",
+                    "on-tertiary-fixed": "#360f00",
+                    "on-tertiary-container": "#ffede6",
+                    "secondary-container": "#7cf994",
+                    "on-primary": "#ffffff",
+                    "on-surface-variant": "#434655",
+                    "outline": "#737686",
+                    "surface-container-lowest": "#ffffff",
+                    "on-error": "#ffffff",
+                    "on-tertiary": "#ffffff",
+                    "inverse-surface": "#2e3039",
+                    "surface-container-highest": "#e1e2ed",
+                    "background": "#faf8ff",
+                    "outline-variant": "#c3c6d7",
+                    "on-secondary-fixed": "#002109",
+                    "error-container": "#ffdad6",
+                    "tertiary": "#943700",
+                    "primary-fixed-dim": "#b4c5ff",
+                    "surface-dim": "#d9d9e5",
+                    "tertiary-container": "#bc4800",
+                    "surface-container-low": "#f3f3fe",
+                    "on-primary-fixed-variant": "#003ea8",
+                    "error": "#ba1a1a",
+                    "primary-fixed": "#dbe1ff",
+                    "secondary-fixed": "#7ffc97",
+                    "on-surface": "#191b23",
+                    "tertiary-fixed": "#ffdbcd",
+                    "surface-container": "#ededf9",
+                    "primary": "#004ac6",
+                    "tertiary-fixed-dim": "#ffb596",
+                    "surface-variant": "#e1e2ed",
+                    "on-tertiary-fixed-variant": "#7d2d00",
+                    "surface": "#faf8ff",
+                    "on-secondary": "#ffffff",
+                    "on-secondary-fixed-variant": "#005320",
+                    "on-primary-fixed": "#00174b",
+                    "on-background": "#191b23",
+                    "secondary-fixed-dim": "#62df7d",
+                    "inverse-on-surface": "#f0f0fb",
+                    "on-error-container": "#93000a",
+                    "surface-container-high": "#e7e7f3",
+                    "surface-bright": "#faf8ff",
+                    "primary-container": "#2563eb",
+                    "on-secondary-container": "#007230"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "md": "16px",
+                    "lg": "24px",
+                    "margin-desktop": "32px",
+                    "xl": "32px",
+                    "margin-mobile": "16px",
+                    "xxl": "48px",
+                    "sm": "8px",
+                    "xs": "4px",
+                    "gutter": "24px"
+            },
+            "fontFamily": {
+                    "section-title": ["Inter"],
+                    "body": ["Inter"],
+                    "small": ["Inter"],
+                    "label": ["Inter"],
+                    "h1": ["Inter"],
+                    "h2": ["Inter"],
+                    "h3": ["Inter"],
+                    "h1-mobile": ["Inter"]
+            },
+            "fontSize": {
+                    "section-title": ["18px", {"lineHeight": "1.5", "fontWeight": "600"}],
+                    "body": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "small": ["14px", {"lineHeight": "1.5", "fontWeight": "500"}],
+                    "label": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "h1": ["36px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "h2": ["28px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                    "h3": ["22px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                    "h1-mobile": ["28px", {"lineHeight": "1.2", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; background-color: #F8FAFC; }
+        .glass-card {
+            background: #FFFFFF;
+            border: 1px solid #E2E8F0;
+            transition: all 0.2s ease-in-out;
+        }
+        .glass-card:hover {
+            box-shadow: 0px 4px 12px rgba(15, 23, 42, 0.05);
+        }
+        .sidebar-active {
+            border-left: 4px solid #2563EB;
+            background-color: rgba(180, 197, 255, 0.2);
+            color: #004ac6;
+            font-weight: 700;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background">
+<!-- Desktop Navigation Drawer -->
+<aside class="fixed left-0 top-0 h-full w-[280px] bg-[#0F172A] hidden lg:flex flex-col z-40">
+<div class="p-lg flex flex-col h-full">
+<div class="mb-xxl flex items-center gap-md">
+<div class="w-10 h-10 rounded-lg bg-primary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary-container" style="font-variation-settings: 'FILL' 1;">corporate_fare</span>
+</div>
+<h1 class="font-h3 text-h3 text-white">Leave Monitor</h1>
+</div>
+<nav class="flex-1 space-y-2">
+<a class="sidebar-active flex items-center gap-md p-md rounded-r-lg transition-colors text-white" href="#">
+<span class="material-symbols-outlined">corporate_fare</span>
+<span class="font-body text-body">Departmental Overview</span>
+</a>
+<a class="flex items-center gap-md p-md rounded-r-lg text-slate-400 hover:bg-slate-800 hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined">history_edu</span>
+<span class="font-body text-body">Leave Requests</span>
+</a>
+<a class="flex items-center gap-md p-md rounded-r-lg text-slate-400 hover:bg-slate-800 hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined">groups</span>
+<span class="font-body text-body">Staff Directory</span>
+</a>
+<a class="flex items-center gap-md p-md rounded-r-lg text-slate-400 hover:bg-slate-800 hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined">description</span>
+<span class="font-body text-body">Monthly Reports</span>
+</a>
+<a class="flex items-center gap-md p-md rounded-r-lg text-slate-400 hover:bg-slate-800 hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-body text-body">Settings</span>
+</a>
+</nav>
+<div class="mt-auto pt-lg border-t border-slate-800 flex items-center gap-md">
+<div class="w-10 h-10 rounded-full overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a middle-aged academic administrator with a warm smile, wearing a professional navy blue suit. The background is a clean, modern university office with soft, natural lighting coming from a large window. The overall aesthetic is trustworthy and enterprise-grade, matching the clean blue professional brand." src="https://lh3.googleusercontent.com/aida-public/AB6AXuALVVTCbv5Pgrb3mG9A9JzOIxvKM1fT2SwFkKK8ODIH2GmfrgENBp2LZ0zR5nsuPiFGjhZBthFKEHjtokcFfM8r-gm5BBgedXUO3BhrrN92WBuq2NGkYrR5HxIvlo8b7hBL7-kPDENQuL8J1kYjl1Z1O2QQORc5RV8RULaUTLYk_rbjSmDv0LY4XkubSu6xez032NFjYqETCdcfRfFUMAFmW-ELbqw0HuSOsV0wLgmigQRCbJo8mV-yMgIIvRjeY9GGHfxZPOt8orI"/>
+</div>
+<div class="flex flex-col">
+<span class="font-label text-label text-white uppercase">Academic Admin</span>
+<span class="text-[12px] text-slate-400">Dept. of Engineering</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="lg:ml-[280px] min-h-screen">
+<!-- TopAppBar -->
+<header class="w-full top-0 sticky bg-surface border-b border-outline-variant z-30">
+<div class="flex justify-between items-center px-margin-mobile md:px-margin-desktop py-4 w-full">
+<div class="flex flex-col">
+<h2 class="font-h2 text-h2 text-primary">HOD Dashboard</h2>
+<p class="font-body text-small text-on-surface-variant">Department of Computer Science</p>
+</div>
+<div class="flex items-center gap-md">
+<button class="p-2 rounded-full hover:bg-surface-container-high transition-colors text-on-surface-variant relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full border-2 border-surface"></span>
+</button>
+<div class="w-10 h-10 rounded-full bg-primary-fixed-dim flex items-center justify-center cursor-pointer">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">account_circle</span>
+</div>
+</div>
+</div>
+</header>
+<!-- Page Content -->
+<div class="p-margin-mobile md:p-margin-desktop space-y-xl">
+<!-- Bento Grid Metrics -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-lg">
+<div class="glass-card p-lg rounded-xl flex flex-col gap-sm">
+<div class="flex justify-between items-start">
+<span class="font-label text-label text-on-surface-variant uppercase">Dept. Attendance</span>
+<span class="material-symbols-outlined text-secondary">trending_up</span>
+</div>
+<div class="text-h1 font-h1 text-on-surface">88%</div>
+<div class="text-small text-secondary font-small flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px]">arrow_upward</span> 2.4% from last week
+                    </div>
+</div>
+<div class="glass-card p-lg rounded-xl flex flex-col gap-sm">
+<div class="flex justify-between items-start">
+<span class="font-label text-label text-on-surface-variant uppercase">Pending Reports</span>
+<span class="material-symbols-outlined text-tertiary">fact_check</span>
+</div>
+<div class="text-h1 font-h1 text-on-surface">05</div>
+<div class="text-small text-tertiary font-small">Requires sign-off</div>
+</div>
+<div class="glass-card p-lg rounded-xl flex flex-col gap-sm">
+<div class="flex justify-between items-start">
+<span class="font-label text-label text-on-surface-variant uppercase">Active Leave</span>
+<span class="material-symbols-outlined text-primary">event_busy</span>
+</div>
+<div class="text-h1 font-h1 text-on-surface">12</div>
+<div class="text-small text-on-surface-variant font-small">Staff &amp; Students</div>
+</div>
+<div class="glass-card p-lg rounded-xl flex flex-col gap-sm">
+<div class="flex justify-between items-start">
+<span class="font-label text-label text-on-surface-variant uppercase">Frequent Absentees</span>
+<span class="material-symbols-outlined text-error">warning</span>
+</div>
+<div class="text-h1 font-h1 text-on-surface">08</div>
+<div class="text-small text-error font-small">Critical monitoring needed</div>
+</div>
+</div>
+<!-- Main Layout Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-lg">
+<!-- Section 1: Department Summary with Progress Rings -->
+<div class="lg:col-span-8 glass-card rounded-xl overflow-hidden flex flex-col">
+<div class="p-lg border-b border-outline-variant flex justify-between items-center">
+<h3 class="font-section-title text-section-title text-on-surface">Department Summary</h3>
+<div class="flex gap-xs">
+<span class="w-3 h-3 rounded-full bg-primary-container"></span>
+<span class="font-label text-label text-on-surface-variant">Attendance by Academic Year</span>
+</div>
+</div>
+<div class="p-lg grid grid-cols-2 sm:grid-cols-4 gap-lg flex-1">
+<!-- Progress Ring 1 -->
+<div class="flex flex-col items-center gap-md">
+<div class="relative w-24 h-24">
+<svg class="w-full h-full" viewbox="0 0 36 36">
+<path class="text-surface-container-highest stroke-current" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke-width="3"></path>
+<path class="text-primary stroke-current" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke-dasharray="92, 100" stroke-linecap="round" stroke-width="3"></path>
+</svg>
+<div class="absolute inset-0 flex items-center justify-center font-h3 text-h3 text-on-surface">92%</div>
+</div>
+<span class="font-label text-label text-on-surface-variant uppercase">1st Year</span>
+</div>
+<!-- Progress Ring 2 -->
+<div class="flex flex-col items-center gap-md">
+<div class="relative w-24 h-24">
+<svg class="w-full h-full" viewbox="0 0 36 36">
+<path class="text-surface-container-highest stroke-current" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke-width="3"></path>
+<path class="text-secondary stroke-current" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke-dasharray="85, 100" stroke-linecap="round" stroke-width="3"></path>
+</svg>
+<div class="absolute inset-0 flex items-center justify-center font-h3 text-h3 text-on-surface">85%</div>
+</div>
+<span class="font-label text-label text-on-surface-variant uppercase">2nd Year</span>
+</div>
+<!-- Progress Ring 3 -->
+<div class="flex flex-col items-center gap-md">
+<div class="relative w-24 h-24">
+<svg class="w-full h-full" viewbox="0 0 36 36">
+<path class="text-surface-container-highest stroke-current" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke-width="3"></path>
+<path class="text-tertiary stroke-current" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke-dasharray="78, 100" stroke-linecap="round" stroke-width="3"></path>
+</svg>
+<div class="absolute inset-0 flex items-center justify-center font-h3 text-h3 text-on-surface">78%</div>
+</div>
+<span class="font-label text-label text-on-surface-variant uppercase">3rd Year</span>
+</div>
+<!-- Progress Ring 4 -->
+<div class="flex flex-col items-center gap-md">
+<div class="relative w-24 h-24">
+<svg class="w-full h-full" viewbox="0 0 36 36">
+<path class="text-surface-container-highest stroke-current" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke-width="3"></path>
+<path class="text-primary-container stroke-current" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke-dasharray="96, 100" stroke-linecap="round" stroke-width="3"></path>
+</svg>
+<div class="absolute inset-0 flex items-center justify-center font-h3 text-h3 text-on-surface">96%</div>
+</div>
+<span class="font-label text-label text-on-surface-variant uppercase">4th Year</span>
+</div>
+</div>
+</div>
+<!-- Section 4: Quick Actions -->
+<div class="lg:col-span-4 flex flex-col gap-lg">
+<div class="glass-card p-lg rounded-xl flex-1">
+<h3 class="font-section-title text-section-title text-on-surface mb-lg">Quick Actions</h3>
+<div class="space-y-md">
+<button class="w-full flex items-center gap-md p-md bg-primary text-white rounded-lg hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-body text-body">Generate Dept. Report</span>
+</button>
+<button class="w-full flex items-center gap-md p-md bg-surface-container border border-outline-variant text-on-surface rounded-lg hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-primary">mail</span>
+<span class="font-body text-body">Email Dean</span>
+</button>
+<button class="w-full flex items-center gap-md p-md bg-surface-container border border-outline-variant text-on-surface rounded-lg hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-primary">contact_page</span>
+<span class="font-body text-body">View Staff Directory</span>
+</button>
+</div>
+</div>
+<div class="h-32 rounded-xl overflow-hidden relative group">
+<img class="w-full h-full object-cover" data-alt="A modern, abstract architectural detail of a university building's glass facade, reflecting a bright blue sky. The visual style is minimalist and clean, utilizing the core professional blue palette. The image creates a sense of openness and high-end institutional quality." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCMjJtOB9j64L9o1gfb0yRPgc7yYE5PHEecfLcnoANKj8Ud28N9RWXWzxjgYUaeQsuxHBplepdvyJ1cfGnybRtO_vSJf1YmGb_oajxIQj0sWjkqpuY_JhpVU86q6ueud0mWAmH0Kc3_5VdE8qEFuPvJCV9bfBA0DzRPe2mBcOGXnD4YYgi1m7mGxFWQPdLPwSYiX-7ZbiqKl3E08FCNDBjBFvnDpZA_yk6TRs2hYX9px9bFihfdBUgfmQJMmN_sza8VKGP8ica4Jh8"/>
+<div class="absolute inset-0 bg-gradient-to-t from-primary/80 to-transparent flex items-end p-md">
+<span class="text-white font-label text-label">University Portal Update v2.4</span>
+</div>
+</div>
+</div>
+<!-- Section 2: Action Required -->
+<div class="lg:col-span-6 glass-card rounded-xl overflow-hidden flex flex-col">
+<div class="p-lg border-b border-outline-variant flex justify-between items-center">
+<h3 class="font-section-title text-section-title text-on-surface">Action Required</h3>
+<span class="px-2 py-1 bg-tertiary/10 text-tertiary text-label rounded">05 Pending</span>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead>
+<tr class="bg-surface-container-low">
+<th class="px-lg py-md font-label text-label text-on-surface-variant uppercase">Report Name</th>
+<th class="px-lg py-md font-label text-label text-on-surface-variant uppercase">Submitted By</th>
+<th class="px-lg py-md font-label text-label text-on-surface-variant uppercase text-right">Action</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-lg py-md">
+<div class="font-body text-body text-on-surface">Lab Attendance Q3</div>
+<div class="text-small text-on-surface-variant">Submitted 2h ago</div>
+</td>
+<td class="px-lg py-md font-small text-on-surface">Dr. Sarah Johnson</td>
+<td class="px-lg py-md text-right">
+<button class="text-primary font-label text-label hover:underline">Review &amp; Sign</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-lg py-md">
+<div class="font-body text-body text-on-surface">Faculty Leave Log</div>
+<div class="text-small text-on-surface-variant">Submitted 5h ago</div>
+</td>
+<td class="px-lg py-md font-small text-on-surface">Prof. Michael Chen</td>
+<td class="px-lg py-md text-right">
+<button class="text-primary font-label text-label hover:underline">Review &amp; Sign</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-lg py-md">
+<div class="font-body text-body text-on-surface">Annual Staff Appraisal</div>
+<div class="text-small text-on-surface-variant">Submitted yesterday</div>
+</td>
+<td class="px-lg py-md font-small text-on-surface">HR Department</td>
+<td class="px-lg py-md text-right">
+<button class="text-primary font-label text-label hover:underline">Review &amp; Sign</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Section 3: Frequent Absentees -->
+<div class="lg:col-span-6 glass-card rounded-xl overflow-hidden flex flex-col">
+<div class="p-lg border-b border-outline-variant flex justify-between items-center">
+<h3 class="font-section-title text-section-title text-on-surface">Frequent Absentees</h3>
+<button class="text-primary font-label text-label flex items-center gap-xs">View All <span class="material-symbols-outlined text-[16px]">chevron_right</span></button>
+</div>
+<div class="p-lg space-y-md">
+<div class="flex items-center justify-between p-md rounded-lg border border-outline-variant bg-surface-container-lowest">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-error/10 flex items-center justify-center font-bold text-error">AA</div>
+<div>
+<div class="font-body text-body text-on-surface">Alex Anderson</div>
+<div class="text-small text-on-surface-variant">ID: CS-2023-045</div>
+</div>
+</div>
+<div class="flex flex-col items-end">
+<span class="font-h3 text-h3 text-error">12</span>
+<span class="text-label text-on-surface-variant uppercase">Absences</span>
+</div>
+</div>
+<div class="flex items-center justify-between p-md rounded-lg border border-outline-variant bg-surface-container-lowest">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-error/10 flex items-center justify-center font-bold text-error">EM</div>
+<div>
+<div class="font-body text-body text-on-surface">Elena Martinez</div>
+<div class="text-small text-on-surface-variant">ID: CS-2022-112</div>
+</div>
+</div>
+<div class="flex flex-col items-end">
+<span class="font-h3 text-h3 text-error">09</span>
+<span class="text-label text-on-surface-variant uppercase">Absences</span>
+</div>
+</div>
+<div class="flex items-center justify-between p-md rounded-lg border border-outline-variant bg-surface-container-lowest">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-error/10 flex items-center justify-center font-bold text-error">DW</div>
+<div>
+<div class="font-body text-body text-on-surface">David Wright</div>
+<div class="text-small text-on-surface-variant">ID: CS-2021-089</div>
+</div>
+</div>
+<div class="flex flex-col items-end">
+<span class="font-h3 text-h3 text-error">08</span>
+<span class="text-label text-on-surface-variant uppercase">Absences</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation Bar (Mobile only) -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center h-16 px-2 bg-surface shadow-[0px_-4px_12px_rgba(0,0,0,0.05)] lg:hidden z-50">
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-4 py-1" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label text-[10px]">Overview</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-2" href="#">
+<span class="material-symbols-outlined">fact_check</span>
+<span class="font-label text-[10px]">Approvals</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-2" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-label text-[10px]">Analytics</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-2" href="#">
+<span class="material-symbols-outlined">trending_up</span>
+<span class="font-label text-[10px]">Trends</span>
+</a>
+</nav>
+<script>
+        // Check authentication
+        const token = localStorage.getItem('access_token');
+        if (!token) {
+            window.location.href = '/erp/login_attendance_hub/code.html';
+        }
+
+        // Fetch metrics for HOD
+        async function loadHODMetrics() {
+            try {
+                const response = await fetch('/api/dashboard/metrics', {
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+                if (response.status === 401) {
+                    localStorage.clear();
+                    window.location.href = '/erp/login_attendance_hub/code.html';
+                }
+                const data = await response.json();
+                
+                // Update HOD basic metrics
+                const kpis = document.querySelectorAll('.grid p.text-4xl, .grid p.font-h1, .grid p.text-[40px], .grid h3 + p');
+                if (kpis[0]) kpis[0].textContent = data.totalStudents;
+                if (kpis[1]) kpis[1].textContent = `${data.averageAttendance}%`;
+                if (kpis[2]) kpis[2].textContent = data.lowAttendanceCount;
+                if (kpis[3]) kpis[3].textContent = data.pendingLeavesCount;
+            } catch (err) {
+                console.error(err);
+            }
+        }
+        loadHODMetrics();
+
+        // Sign Out action
+        const asideLogout = document.querySelector('aside button.flex.items-center, aside button:last-child');
+        if (asideLogout) {
+            asideLogout.addEventListener('click', (e) => {
+                e.preventDefault();
+                localStorage.clear();
+                window.location.href = '/erp/login_attendance_hub/code.html';
+            });
+        }
+
+        // Micro-interactions and hover effects
+        document.querySelectorAll('.glass-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-2px)';
+            });
+            card.style.transition = 'transform 0.2s';
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0)';
+            });
+        });
+    </script>
+</body></html>

@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Login | Attendance Hub</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary-fixed-variant": "#005320",
+                    "on-background": "#191b23",
+                    "on-tertiary-fixed": "#360f00",
+                    "surface-variant": "#e1e2ed",
+                    "outline-variant": "#c3c6d7",
+                    "primary": "#004ac6",
+                    "tertiary-fixed": "#ffdbcd",
+                    "on-error-container": "#93000a",
+                    "background": "#faf8ff",
+                    "tertiary-container": "#bc4800",
+                    "on-secondary-fixed": "#002109",
+                    "error": "#ba1a1a",
+                    "on-primary-fixed-variant": "#003ea8",
+                    "on-tertiary": "#ffffff",
+                    "surface-bright": "#faf8ff",
+                    "inverse-surface": "#2e3039",
+                    "outline": "#737686",
+                    "error-container": "#ffdad6",
+                    "tertiary": "#943700",
+                    "secondary-fixed": "#7ffc97",
+                    "on-primary": "#ffffff",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-dim": "#d9d9e5",
+                    "secondary-container": "#7cf994",
+                    "on-surface": "#191b23",
+                    "primary-fixed": "#dbe1ff",
+                    "surface-tint": "#0053db",
+                    "on-surface-variant": "#434655",
+                    "surface-container-highest": "#e1e2ed",
+                    "surface": "#faf8ff",
+                    "surface-container-low": "#f3f3fe",
+                    "on-error": "#ffffff",
+                    "primary-fixed-dim": "#b4c5ff",
+                    "on-tertiary-container": "#ffede6",
+                    "on-primary-fixed": "#00174b",
+                    "on-secondary": "#ffffff",
+                    "surface-container-high": "#e7e7f3",
+                    "tertiary-fixed-dim": "#ffb596",
+                    "surface-container": "#ededf9",
+                    "on-primary-container": "#eeefff",
+                    "primary-container": "#2563eb",
+                    "secondary": "#006e2d",
+                    "secondary-fixed-dim": "#62df7d",
+                    "on-secondary-container": "#007230",
+                    "inverse-on-surface": "#f0f0fb",
+                    "on-tertiary-fixed-variant": "#7d2d00",
+                    "inverse-primary": "#b4c5ff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "md": "16px",
+                    "lg": "24px",
+                    "margin-mobile": "16px",
+                    "xs": "4px",
+                    "xl": "32px",
+                    "sm": "8px",
+                    "gutter": "24px",
+                    "xxl": "48px",
+                    "margin-desktop": "32px"
+            },
+            "fontFamily": {
+                    "h1": ["Inter"],
+                    "label": ["Inter"],
+                    "small": ["Inter"],
+                    "section-title": ["Inter"],
+                    "h2": ["Inter"],
+                    "body": ["Inter"],
+                    "h3": ["Inter"],
+                    "h1-mobile": ["Inter"]
+            },
+            "fontSize": {
+                    "h1": ["36px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "label": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "small": ["14px", {"lineHeight": "1.5", "fontWeight": "500"}],
+                    "section-title": ["18px", {"lineHeight": "1.5", "fontWeight": "600"}],
+                    "h2": ["28px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                    "body": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "h3": ["22px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                    "h1-mobile": ["28px", {"lineHeight": "1.2", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #faf8ff;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(226, 232, 240, 0.5);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-0 md:p-sm">
+<!-- Login Container -->
+<main class="w-full max-w-[1440px] min-h-screen md:min-h-[800px] bg-surface flex flex-col md:flex-row overflow-hidden md:rounded-xl md:shadow-lg">
+<!-- Brand/Visual Side -->
+<section class="relative w-full md:w-1/2 lg:w-3/5 bg-on-background flex flex-col justify-between p-lg md:p-xxl overflow-hidden">
+<!-- Animated Background Placeholder -->
+<div class="absolute inset-0 z-0 opacity-40">
+
+</div>
+<!-- Content Overlay -->
+<div class="relative z-10 flex flex-col h-full justify-between">
+<div>
+<div class="flex items-center gap-sm mb-xl">
+<div class="bg-primary-container p-xs rounded-lg">
+<span class="material-symbols-outlined text-on-primary-container" style="font-variation-settings: 'FILL' 1;">domain</span>
+</div>
+<span class="font-h2 text-h2 font-extrabold text-surface tracking-tight">Attendance Hub</span>
+</div>
+<div class="max-w-md">
+<h1 class="font-h1 text-h1 text-surface mb-md">Smart Absentee Monitoring.</h1>
+<p class="font-body text-body text-outline-variant opacity-90">
+                            Enterprise-grade leave management and automated reporting for academic and corporate excellence. Efficiency redefined for modern leadership.
+                        </p>
+</div>
+</div>
+<div class="hidden lg:block mt-auto">
+<div class="grid grid-cols-2 gap-lg">
+<div class="p-lg rounded-xl bg-white/5 border border-white/10 backdrop-blur-sm">
+<span class="material-symbols-outlined text-secondary-fixed mb-sm">analytics</span>
+<h3 class="font-section-title text-section-title text-surface mb-xs">Real-time Analytics</h3>
+<p class="font-small text-small text-outline-variant">Immediate insights into workforce availability and patterns.</p>
+</div>
+<div class="p-lg rounded-xl bg-white/5 border border-white/10 backdrop-blur-sm">
+<span class="material-symbols-outlined text-secondary-fixed mb-sm">verified_user</span>
+<h3 class="font-section-title text-section-title text-surface mb-xs">Automated Compliance</h3>
+<p class="font-small text-small text-outline-variant">Streamlined reporting following institutional policies.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Background Image Decor (Mobile Top / Desktop Right) -->
+<div class="absolute -right-20 -bottom-20 w-[400px] h-[400px] opacity-10 pointer-events-none">
+<div class="w-full h-full bg-cover bg-center rounded-full" data-alt="A professional architectural photograph of a modern university building with clean glass lines and minimalist concrete structures. The scene is bathed in a bright morning sun creating soft gradients and a sophisticated, academic atmosphere with a blue and white color palette." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAyynxdc820ryNKEflh3LqnAJnRqFQss9-cXLB8CN5p1ukiOmFerxDsmiQSy8VByrsHgDXldyo4uOq0gDfS0638BqoVtKdDkQG6UgNx0-Z7GewjX4VRDJi2hp8D06AFQa69QR_Nxz-WIdX0eAXwfGyCPreC1lJmn_3s0-a4Jqe5SewUqdG-db1TwX1vO504rBSegJtgcBBw53PquNDhsP1snt-DZt6-BABxe6HEo-WfNJoehyK7JmXXzwrqGJKdTyrhpyjfKIY22RI')"></div>
+</div>
+</section>
+<!-- Form Side -->
+<section class="w-full md:w-1/2 lg:w-2/5 bg-surface flex items-center justify-center p-lg md:p-xxl">
+<div class="w-full max-w-sm flex flex-col gap-xl">
+<header class="text-center md:text-left">
+<h2 class="font-h2 text-h2 text-on-background mb-xs">Welcome back</h2>
+<p class="font-body text-body text-on-surface-variant">Please enter your credentials to access the hub.</p>
+</header>
+<form id="loginForm" class="flex flex-col gap-lg">
+<!-- Email Field -->
+<div class="flex flex-col gap-xs">
+<label class="font-label text-label text-on-surface-variant px-xs" for="email">OFFICIAL EMAIL</label>
+<div class="relative group">
+<div class="absolute inset-y-0 left-0 pl-md flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-outline group-focus-within:text-primary transition-colors">mail</span>
+</div>
+<input class="w-full pl-xl pr-md py-md bg-surface-container-low border border-outline-variant rounded-xl font-body text-on-surface placeholder:text-outline focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" id="email" name="email" placeholder="name@university.edu" required="" type="email"/>
+</div>
+</div>
+<!-- Password Field -->
+<div class="flex flex-col gap-xs">
+<div class="flex justify-between items-center px-xs">
+<label class="font-label text-label text-on-surface-variant uppercase" for="password">Password</label>
+<a class="font-small text-small text-primary hover:underline transition-all" href="#">Forgot Password?</a>
+</div>
+<div class="relative group">
+<div class="absolute inset-y-0 left-0 pl-md flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-outline group-focus-within:text-primary transition-colors">lock</span>
+</div>
+<input class="w-full pl-xl pr-xl py-md bg-surface-container-low border border-outline-variant rounded-xl font-body text-on-surface placeholder:text-outline focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" id="password" name="password" placeholder="••••••••" required="" type="password"/>
+<button class="absolute inset-y-0 right-0 pr-md flex items-center text-outline hover:text-on-surface transition-colors" type="button">
+<span class="material-symbols-outlined">visibility</span>
+</button>
+</div>
+</div>
+<!-- Remember Me -->
+<div class="flex items-center gap-sm px-xs">
+<input class="w-5 h-5 rounded border-outline-variant text-primary focus:ring-primary cursor-pointer" id="remember" name="remember" type="checkbox"/>
+<label class="font-small text-small text-on-surface-variant cursor-pointer select-none" for="remember">Remember this device for 30 days</label>
+</div>
+<!-- Action Button -->
+<button class="w-full py-md bg-primary hover:bg-primary-fixed-dim hover:text-on-primary-fixed text-on-primary rounded-xl font-section-title text-section-title shadow-md active:scale-[0.98] transition-all flex items-center justify-center gap-sm group" type="submit">
+                        Sign In to Dashboard
+                        <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</form>
+<footer class="flex flex-col gap-md">
+<p class="text-center font-small text-small text-outline-variant mt-lg">
+                        © 2024 Attendance Hub. All Rights Reserved. <br/>
+                        Authorized Personnel Only.
+                    </p>
+</footer>
+</div>
+</section>
+</main>
+<script>
+        // Micro-interaction for the password visibility toggle
+        const toggleBtn = document.querySelector('button[type="button"]');
+        const passwordInput = document.getElementById('password');
+        const toggleIcon = toggleBtn.querySelector('.material-symbols-outlined');
+
+        toggleBtn.addEventListener('click', () => {
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.textContent = 'visibility_off';
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.textContent = 'visibility';
+            }
+        });
+
+        // Subtle parallax effect on the background shader
+        document.addEventListener('mousemove', (e) => {
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
+            const shader = document.querySelector('webgl-shader');
+            if(shader) {
+                shader.style.transform = `translate(${x * 10}px, ${y * 10}px) scale(1.05)`;
+            }
+        });
+        // Form submission handler to bind to FastAPI API
+        const loginForm = document.getElementById('loginForm');
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = passwordInput.value;
+            
+            // Show loading state
+            const submitBtn = loginForm.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = 'Signing In...';
+            
+            try {
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email, password }),
+                });
+                
+                const data = await response.json();
+                if (!response.ok) {
+                    throw new Error(data.detail || 'Login failed');
+                }
+                
+                // Store authentication token
+                localStorage.setItem('access_token', data.access_token);
+                localStorage.setItem('user', JSON.stringify(data.user));
+                
+                // Role-based routing
+                const role = data.user.role;
+                if (role === 'Student') {
+                    window.location.href = '/erp/student_dashboard/code.html';
+                } else if (role === 'Coordinator') {
+                    window.location.href = '/erp/coordinator_dashboard/code.html';
+                } else if (role === 'HOD') {
+                    window.location.href = '/erp/hod_dashboard/code.html';
+                } else if (role === 'Dean') {
+                    window.location.href = '/erp/dean_dashboard/code.html';
+                } else if (role === 'Faculty') {
+                    window.location.href = '/erp/faculty_attendance_marking/code.html';
+                } else {
+                    alert('Unknown user role: ' + role);
+                }
+            } catch (err) {
+                alert(err.message);
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnText;
+            }
+        });
+    </script>
+</body></html>

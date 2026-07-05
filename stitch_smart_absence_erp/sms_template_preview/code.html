@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SMS Template Preview - Attendance Hub</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-high": "#e7e7f3",
+                    "on-background": "#191b23",
+                    "primary-fixed": "#dbe1ff",
+                    "secondary-fixed-dim": "#62df7d",
+                    "surface-container-lowest": "#ffffff",
+                    "on-tertiary-container": "#ffede6",
+                    "on-tertiary-fixed-variant": "#7d2d00",
+                    "on-error-container": "#93000a",
+                    "surface-container": "#ededf9",
+                    "secondary-fixed": "#7ffc97",
+                    "inverse-surface": "#2e3039",
+                    "surface-dim": "#d9d9e5",
+                    "on-tertiary-fixed": "#360f00",
+                    "on-secondary": "#ffffff",
+                    "on-error": "#ffffff",
+                    "tertiary-fixed-dim": "#ffb596",
+                    "outline": "#737686",
+                    "on-secondary-container": "#007230",
+                    "tertiary-fixed": "#ffdbcd",
+                    "error-container": "#ffdad6",
+                    "inverse-primary": "#b4c5ff",
+                    "on-secondary-fixed-variant": "#005320",
+                    "surface-container-low": "#f3f3fe",
+                    "on-surface": "#191b23",
+                    "primary-fixed-dim": "#b4c5ff",
+                    "surface-container-highest": "#e1e2ed",
+                    "on-surface-variant": "#434655",
+                    "secondary-container": "#7cf994",
+                    "on-secondary-fixed": "#002109",
+                    "primary-container": "#2563eb",
+                    "secondary": "#006e2d",
+                    "primary": "#004ac6",
+                    "on-primary-fixed-variant": "#003ea8",
+                    "inverse-on-surface": "#f0f0fb",
+                    "tertiary": "#943700",
+                    "on-tertiary": "#ffffff",
+                    "on-primary-fixed": "#00174b",
+                    "tertiary-container": "#bc4800",
+                    "surface": "#faf8ff",
+                    "on-primary": "#ffffff",
+                    "surface-variant": "#e1e2ed",
+                    "surface-tint": "#0053db",
+                    "outline-variant": "#c3c6d7",
+                    "on-primary-container": "#eeefff",
+                    "background": "#faf8ff",
+                    "error": "#ba1a1a",
+                    "surface-bright": "#faf8ff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "margin-mobile": "16px",
+                    "md": "16px",
+                    "xxl": "48px",
+                    "lg": "24px",
+                    "margin-desktop": "32px",
+                    "gutter": "24px",
+                    "sm": "8px",
+                    "xs": "4px",
+                    "xl": "32px"
+            },
+            "fontFamily": {
+                    "label": ["Inter"],
+                    "h1-mobile": ["Inter"],
+                    "h1": ["Inter"],
+                    "body": ["Inter"],
+                    "h2": ["Inter"],
+                    "small": ["Inter"],
+                    "h3": ["Inter"],
+                    "section-title": ["Inter"]
+            },
+            "fontSize": {
+                    "label": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "h1-mobile": ["28px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "h1": ["36px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "h2": ["28px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                    "small": ["14px", {"lineHeight": "1.5", "fontWeight": "500"}],
+                    "h3": ["22px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                    "section-title": ["18px", {"lineHeight": "1.5", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: #F8FAFC; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .glass-card { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); border: 1px solid rgba(226, 232, 240, 1); }
+        .phone-frame { width: 320px; height: 640px; border: 12px solid #0F172A; border-radius: 40px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); position: relative; overflow: hidden; background: #000; }
+        .phone-screen { height: 100%; width: 100%; background: #F3F4F6; display: flex; flex-col; overflow: hidden; }
+        .status-bar { height: 24px; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; font-size: 10px; font-weight: 600; color: #000; }
+        .imessage-bubble { background: #E5E7EB; border-radius: 18px; padding: 12px 16px; position: relative; max-width: 85%; align-self: flex-start; color: #000; font-size: 14px; line-height: 1.4; }
+        .imessage-bubble::after { content: ''; position: absolute; bottom: 0; left: -8px; width: 20px; height: 20px; background: #E5E7EB; border-bottom-right-radius: 15px; z-index: -1; }
+        @keyframes subtle-pulse { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
+        .pulse-active { animation: subtle-pulse 2s infinite ease-in-out; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface min-h-screen pb-20 md:pb-0">
+<!-- Top Navigation Anchor -->
+<header class="fixed top-0 w-full z-50 bg-surface dark:bg-surface-dim border-b border-outline-variant dark:border-outline flex items-center justify-between px-margin-mobile md:px-margin-desktop h-14 w-full">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary dark:text-primary-fixed cursor-pointer active:scale-95 transition-all">menu</span>
+<h1 class="font-h2 text-h2-mobile md:text-h2 font-bold tracking-tight text-primary dark:text-primary-fixed">Attendance Hub</h1>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer active:scale-95 transition-all">account_circle</span>
+</div>
+</header>
+<!-- Sidebar (Desktop) -->
+<aside class="hidden md:flex fixed left-0 top-0 h-full w-[280px] z-40 bg-inverse-surface dark:bg-surface-container-lowest flex-col py-lg shadow-sm">
+<div class="px-6 mb-8">
+<h3 class="font-h3 text-h3 text-primary-fixed">Admin Portal</h3>
+<p class="text-surface-variant opacity-80 text-xs">v1.2.0 • HR Department</p>
+</div>
+<nav class="flex-1 space-y-1">
+<div class="flex items-center px-6 py-3 gap-3 text-surface-variant opacity-80 hover:bg-surface-container-highest/20 transition-all cursor-pointer">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label text-label">Dashboard</span>
+</div>
+<div class="flex items-center px-6 py-3 gap-3 border-l-4 border-primary bg-primary-container/10 text-primary-fixed-dim transition-all cursor-pointer">
+<span class="material-symbols-outlined">description</span>
+<span class="font-label text-label">Templates</span>
+</div>
+<div class="flex items-center px-6 py-3 gap-3 text-surface-variant opacity-80 hover:bg-surface-container-highest/20 transition-all cursor-pointer">
+<span class="material-symbols-outlined">notifications</span>
+<span class="font-label text-label">Notifications</span>
+</div>
+<div class="flex items-center px-6 py-3 gap-3 text-surface-variant opacity-80 hover:bg-surface-container-highest/20 transition-all cursor-pointer">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label text-label">Settings</span>
+</div>
+</nav>
+<div class="mt-auto px-6 pt-6 border-t border-white/10">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a female HR administrator in her 40s, wearing business attire, looking confident and smiling. The background is a blurred modern office setting with cool tones, maintaining the minimalist and professional SaaS aesthetic of the brand." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD5G97ZLRlmNU5iC4QEA6bbebe3FI8SRLUN-mIylYGdC5WEYN3ZeGw7_JUjyDq9gINFgcP1BWrVV4lCybB6HysU9Nze3qX4DqHahGkUjN2lR7MZ-_fa7tQ6p_DNq_KxfoWT7YJlajSkD6AuN_hiQiqi-MQAOF-Ds3D9c2EsqpcCQ_ki9hd8wbK6ASbIlC-7C2b-kUGZtbDV4lZfAMGaQ5fzFJpd9NsEOewfT1a-qP-GvhaG2ub5674Zan6SMV3z6A26IGTr55Wnc0k"/>
+</div>
+<div>
+<p class="text-white text-sm font-semibold">Sarah Jenkins</p>
+<p class="text-surface-variant text-xs">Chief Admin</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="pt-20 pb-12 px-margin-mobile md:pl-[312px] md:pr-margin-desktop min-h-screen">
+<div class="max-w-6xl mx-auto">
+<!-- Breadcrumbs & Action Header -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
+<div>
+<div class="flex items-center gap-2 text-on-surface-variant text-sm mb-2">
+<span>Templates</span>
+<span class="material-symbols-outlined text-xs">chevron_right</span>
+<span class="text-primary font-medium">SMS Absence Alert</span>
+</div>
+<h2 class="font-h1-mobile md:font-h1 text-h1-mobile md:text-h1 text-on-background">Notification Center</h2>
+<p class="text-on-surface-variant mt-2 max-w-xl">Preview and test automated SMS triggers for student absences. Changes made here affect real-time parent notifications across all departments.</p>
+</div>
+<div class="flex items-center gap-3">
+<button class="bg-white border border-outline-variant text-on-surface px-6 py-2.5 rounded-xl font-label text-label flex items-center gap-2 hover:bg-surface-container-low transition-all active:scale-95 shadow-sm">
+<span class="material-symbols-outlined text-lg">edit</span>
+                        Edit Template
+                    </button>
+<button class="bg-primary text-white px-6 py-2.5 rounded-xl font-label text-label flex items-center gap-2 hover:opacity-90 transition-all active:scale-95 shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-lg">send</span>
+                        Send Test SMS
+                    </button>
+</div>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<!-- Left Column: Settings & Details -->
+<div class="lg:col-span-7 space-y-gutter">
+<!-- Template Configuration Card -->
+<div class="glass-card rounded-xxl p-lg">
+<div class="flex items-center justify-between mb-6">
+<h3 class="font-section-title text-section-title text-on-background">Template Logic</h3>
+<div class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary-container/20 text-on-secondary-container">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="text-[10px] font-bold uppercase tracking-wider">Active</span>
+</div>
+</div>
+<div class="space-y-6">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div class="p-4 rounded-xl bg-surface-container-low border border-outline-variant">
+<p class="text-xs font-label text-on-surface-variant mb-1">Trigger Condition</p>
+<p class="text-sm font-semibold">Marked Absent by 10:00 AM</p>
+</div>
+<div class="p-4 rounded-xl bg-surface-container-low border border-outline-variant">
+<p class="text-xs font-label text-on-surface-variant mb-1">Recipient Group</p>
+<p class="text-sm font-semibold">Primary Guardian (SMS)</p>
+</div>
+</div>
+<div class="space-y-3">
+<label class="text-sm font-semibold text-on-surface">Message Script (Raw)</label>
+<div class="bg-surface p-4 rounded-xl border border-outline font-mono text-sm leading-relaxed text-on-surface-variant">
+                                    Dear Parent, your ward {student_name} ({roll_number}) was marked ABSENT today, {date}. Please submit a leave request or contact the department. - Attendance Hub
+                                </div>
+<p class="text-xs text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">info</span>
+                                    Characters: 148/160 (1 SMS Segment)
+                                </p>
+</div>
+</div>
+</div>
+<!-- Statistics Card -->
+<div class="grid grid-cols-3 gap-4">
+<div class="glass-card rounded-xl p-4 text-center">
+<p class="text-xs text-on-surface-variant font-label mb-1">Delivery Rate</p>
+<p class="text-xl font-bold text-secondary">99.2%</p>
+</div>
+<div class="glass-card rounded-xl p-4 text-center">
+<p class="text-xs text-on-surface-variant font-label mb-1">Open Rate</p>
+<p class="text-xl font-bold text-primary">87.5%</p>
+</div>
+<div class="glass-card rounded-xl p-4 text-center">
+<p class="text-xs text-on-surface-variant font-label mb-1">Avg Response</p>
+<p class="text-xl font-bold text-tertiary">14m</p>
+</div>
+</div>
+<!-- Notification Flow Image -->
+<div class="relative h-48 rounded-xxl overflow-hidden group">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="A clean, minimalist high-tech illustration of digital nodes connecting a university server to a satellite, which then beams a message to a smartphone. The style uses glowing blue lines on a dark #0F172A background, representing professional infrastructure and reliable data transmission." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC0v1gNmZXw-2BDvm0Sf8rpzKfltSfRHJ7T8SUiFZCLV60q7cfOp0WKMbekjMTFB2_polrdcYQwcz8btWhxdWSI-nRBxX9e1EDAZDWVurDErKHbI2lYVOmgElaQqqc1yraq9IO3g_7lW6YZiYUUActd_Fo9HwptIlyy_hvJ0FThHnPV37GY1WgVcdycKk8A4oXzVOJJhipzmwWzGmc-DVe8COBHvWjg-5JdZJSdm7xDe6_Epiz8yX3suzhv5UY7VBNpSF9pUF7OAqo"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-6">
+<div class="text-white">
+<p class="text-sm font-bold">Reliable Infrastructure</p>
+<p class="text-xs opacity-80">99.9% SMS Gateway Uptime Guaranteed.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Mobile Mockup Preview -->
+<div class="lg:col-span-5 flex flex-col items-center justify-start">
+<div class="mb-6 flex flex-col items-center">
+<span class="bg-secondary/10 text-secondary px-4 py-1.5 rounded-full font-label text-[11px] mb-3 flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+                            Delivered via SMS
+                        </span>
+<p class="text-sm text-on-surface-variant font-medium">Real-time Rendering</p>
+</div>
+<!-- iPhone Mockup -->
+<div class="phone-frame pulse-active">
+<div class="phone-screen">
+<!-- iOS Style Status Bar -->
+<div class="status-bar pt-4">
+<span class="font-bold">9:41</span>
+<div class="flex gap-1.5 items-center">
+<span class="material-symbols-outlined text-[14px]">signal_cellular_4_bar</span>
+<span class="material-symbols-outlined text-[14px]">wifi</span>
+<span class="material-symbols-outlined text-[18px]">battery_full</span>
+</div>
+</div>
+<!-- Messaging App Header -->
+<div class="px-4 py-6 text-center border-b border-gray-200 bg-white/95 flex flex-col items-center">
+<div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center mb-1">
+<span class="material-symbols-outlined text-gray-500">person</span>
+</div>
+<span class="text-[10px] text-gray-500 font-bold tracking-tight">Attendance Hub</span>
+<span class="text-[10px] text-gray-400">iMessage</span>
+</div>
+<!-- Chat Content -->
+<div class="flex-1 p-4 overflow-y-auto space-y-6">
+<div class="text-center">
+<span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Today 10:02 AM</span>
+</div>
+<div class="imessage-bubble shadow-sm">
+                                    Dear Parent, your ward <span class="font-bold">Alex Anderson (CS-102)</span> was marked <span class="text-error font-bold">ABSENT</span> today, Oct 24th. Please submit a leave request or contact the department. - Attendance Hub
+                                </div>
+<div class="flex items-center gap-1 ml-4 mt-1">
+<span class="text-[10px] text-gray-400">Delivered</span>
+</div>
+</div>
+<!-- Message Input Field -->
+<div class="p-3 pb-8 bg-white/95 border-t border-gray-200 flex items-center gap-3">
+<span class="material-symbols-outlined text-gray-400">add_circle</span>
+<div class="flex-1 h-9 rounded-full border border-gray-300 bg-white px-4 flex items-center text-gray-400 text-xs">
+                                    iMessage
+                                </div>
+<span class="material-symbols-outlined text-gray-400">mic</span>
+</div>
+<!-- iOS Home Indicator -->
+<div class="absolute bottom-2 left-1/2 -translate-x-1/2 w-32 h-1 bg-black/20 rounded-full"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation Bar (Mobile only) -->
+<nav class="md:hidden fixed bottom-0 w-full z-50 bg-surface-container dark:bg-surface-container-highest flex justify-around items-center h-16 w-full px-sm border-t border-outline-variant shadow-md">
+<div class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-colors active:scale-90 p-2 cursor-pointer">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label text-label mt-1">Home</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-xl px-4 py-1 active:scale-90 transition-transform cursor-pointer">
+<span class="material-symbols-outlined">mail_lock</span>
+<span class="font-label text-label mt-1">Templates</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-colors active:scale-90 p-2 cursor-pointer">
+<span class="material-symbols-outlined">notifications_active</span>
+<span class="font-label text-label mt-1">Alerts</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-colors active:scale-90 p-2 cursor-pointer">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label text-label mt-1">Profile</span>
+</div>
+</nav>
+<script>
+        // Simple micro-interaction for buttons
+        document.querySelectorAll('button').forEach(button => {
+            button.addEventListener('mousedown', () => {
+                button.classList.add('scale-95');
+            });
+            button.addEventListener('mouseup', () => {
+                button.classList.remove('scale-95');
+            });
+        });
+        
+        // Dark mode simulation (manual toggle)
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark');
+        }
+    </script>
+</body></html>

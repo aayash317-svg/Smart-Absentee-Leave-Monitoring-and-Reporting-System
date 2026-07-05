@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Fine Management - Attendance Hub</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-container": "#ffede6",
+                        "primary-fixed": "#dbe1ff",
+                        "on-surface": "#191b23",
+                        "secondary-container": "#7cf994",
+                        "secondary": "#006e2d",
+                        "tertiary-container": "#bc4800",
+                        "surface-container-highest": "#e1e2ed",
+                        "secondary-fixed-dim": "#62df7d",
+                        "inverse-surface": "#2e3039",
+                        "secondary-fixed": "#7ffc97",
+                        "on-background": "#191b23",
+                        "on-primary": "#ffffff",
+                        "on-tertiary-fixed-variant": "#7d2d00",
+                        "tertiary-fixed": "#ffdbcd",
+                        "surface-container": "#ededf9",
+                        "background": "#faf8ff",
+                        "on-secondary-fixed": "#002109",
+                        "on-secondary": "#ffffff",
+                        "on-primary-container": "#eeefff",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-low": "#f3f3fe",
+                        "primary-container": "#2563eb",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "surface": "#faf8ff",
+                        "surface-container-high": "#e7e7f3",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "tertiary-fixed-dim": "#ffb596",
+                        "on-surface-variant": "#434655",
+                        "inverse-on-surface": "#f0f0fb",
+                        "tertiary": "#943700",
+                        "outline-variant": "#c3c6d7",
+                        "surface-variant": "#e1e2ed",
+                        "on-secondary-container": "#007230",
+                        "surface-dim": "#d9d9e5",
+                        "on-error-container": "#93000a",
+                        "on-secondary-fixed-variant": "#005320",
+                        "inverse-primary": "#b4c5ff",
+                        "on-error": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-fixed": "#360f00",
+                        "error": "#ba1a1a",
+                        "outline": "#737686",
+                        "surface-bright": "#faf8ff",
+                        "surface-tint": "#0053db",
+                        "on-primary-fixed": "#00174b",
+                        "primary": "#004ac6",
+                        "error-container": "#ffdad6"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-desktop": "32px",
+                        "xl": "32px",
+                        "xxl": "48px",
+                        "gutter": "24px",
+                        "md": "16px",
+                        "xs": "4px",
+                        "lg": "24px",
+                        "sm": "8px",
+                        "margin-mobile": "16px"
+                    },
+                    "fontSize": {
+                        "body": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "small": ["14px", {"lineHeight": "1.5", "fontWeight": "500"}],
+                        "h2": ["28px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                        "h1": ["36px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "section-title": ["18px", {"lineHeight": "1.5", "fontWeight": "600"}],
+                        "label": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "h3": ["22px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                        "h1-mobile": ["28px", {"lineHeight": "1.2", "fontWeight": "700"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface">
+<!-- TopAppBar -->
+<header class="w-full top-0 sticky z-40 flex justify-between items-center px-lg py-md w-full bg-surface border-b border-outline-variant transition-colors">
+<div class="flex items-center gap-md">
+<button class="material-symbols-outlined p-sm rounded-full hover:bg-surface-container-high transition-colors" data-icon="menu">menu</button>
+<h1 class="font-h2 text-h2 font-bold text-primary">Attendance Hub</h1>
+</div>
+<div class="flex items-center gap-md">
+<div class="hidden md:flex gap-lg items-center mr-lg">
+<span class="text-on-surface-variant font-label text-label cursor-pointer hover:text-primary transition-colors">Dashboard</span>
+<span class="text-on-surface-variant font-label text-label cursor-pointer hover:text-primary transition-colors">Absentees</span>
+<span class="text-on-surface-variant font-label text-label cursor-pointer hover:text-primary transition-colors">Leave Requests</span>
+<span class="text-primary font-bold font-label text-label cursor-pointer transition-colors">Fine Reports</span>
+</div>
+<div class="w-10 h-10 rounded-full bg-surface-container-highest border border-outline-variant overflow-hidden flex items-center justify-center">
+<img class="w-full h-full object-cover" data-alt="Professional headshot of a middle-aged academic coordinator with a warm smile, wearing professional business attire. The image is captured in high-resolution with a soft-focus office background, matching the clean and authoritative blue-toned enterprise UI of the system." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBNg23RNf--smlUferfbDstZonbj4m8nRya4A-QpVdtEJ_dkMzqbUdK4fMRtWAFJM-fYZXd55aEpzQGIfl3j5azamSWF0SuevJBcdemWHmz1qDLLPj2hLRSW5Ok0DLchPkugV1LZJiexFaZRrRb42o9McQWb4ULChgGzKD34bY5RzialLfNAcSuA8iJEq3QbWZC8ccr3CUY2ZMSJ0Hacp6Efw7blst_CUXkopS-6yJwayaRpY2NLaTiDHXtrRyWOhU6yBG-h3bc23M"/>
+</div>
+</div>
+</header>
+<!-- NavigationDrawer (Desktop Only) -->
+<aside class="hidden md:flex flex-col h-full py-xl fixed left-0 top-0 h-full w-[280px] bg-on-background shadow-md z-30 pointer-events-none opacity-0 lg:opacity-100 lg:pointer-events-auto transition-opacity">
+<div class="px-lg mb-xl">
+<h2 class="font-h3 text-h3 text-surface">Attendance Hub</h2>
+<div class="mt-lg flex items-center gap-md p-md rounded-xl bg-white/5">
+<div class="w-12 h-12 rounded-lg overflow-hidden bg-primary-container">
+<img class="w-full h-full object-cover" data-alt="Minimalist abstract portrait of an academic professional used as a placeholder. The background is a gradient of deep blue and professional gray, aligning with the SaaS dashboard aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAobjnaID92n-AxbJNH6l5loBdM1ToKfNQmUJpeIUSiOlHbeuwcRusg6uOZvo3onztEfJccNSK9_iAhqHWGVI6X7Bq9aWM3jheUKQfyl3p3J-cDam6lnLlSC42IacdIWq_sFXnfMFR2epieCzK5GCGovd7RkQ2141koIfOWyC9FcYv5G3Xz650J4JL3MbuF1nmFf7wcuELv49qs3M3CuHitcmdgUsoJFTL2BDIMcbndAzc5saI8EZiDjLaTgKLomG_KKya7ctFWA6E"/>
+</div>
+<div>
+<p class="font-body text-small text-surface font-bold">Academic Coordinator</p>
+<p class="font-body text-label text-outline-variant">Department of CS</p>
+</div>
+</div>
+</div>
+<nav class="flex flex-col">
+<a class="flex items-center gap-md px-lg py-md text-outline-variant hover:bg-white/5 hover:text-surface-bright transition-all group" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-body text-body">Dashboard</span>
+</a>
+<a class="flex items-center gap-md px-lg py-md text-outline-variant hover:bg-white/5 hover:text-surface-bright transition-all group" href="#">
+<span class="material-symbols-outlined" data-icon="person_off">person_off</span>
+<span class="font-body text-body">Absentees</span>
+</a>
+<a class="flex items-center gap-md px-lg py-md text-outline-variant hover:bg-white/5 hover:text-surface-bright transition-all group" href="#">
+<span class="material-symbols-outlined" data-icon="event_busy">event_busy</span>
+<span class="font-body text-body">Leave Requests</span>
+</a>
+<a class="flex items-center gap-md px-lg py-md border-l-4 border-primary text-primary-fixed bg-surface-container-highest/10 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+<span class="font-body text-body">Fine Reports</span>
+</a>
+<a class="flex items-center gap-md px-lg py-md text-outline-variant hover:bg-white/5 hover:text-surface-bright transition-all group" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="font-body text-body">Analytics</span>
+</a>
+</nav>
+</aside>
+<!-- Main Content Canvas -->
+<main class="lg:ml-[280px] min-h-screen px-margin-mobile md:px-margin-desktop py-xl pb-24 lg:pb-xl">
+<!-- Dashboard Header -->
+<div class="mb-xxl flex flex-col md:flex-row md:items-center justify-between gap-md">
+<div>
+<h2 class="font-h1 text-h1-mobile md:text-h1 text-on-surface">Fine Management</h2>
+<p class="font-body text-body text-on-surface-variant">Review and manage academic compliance fines</p>
+</div>
+<div class="flex items-center gap-sm">
+<button class="bg-white border border-outline-variant text-on-surface px-md py-sm rounded-xl font-body text-small flex items-center gap-sm hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-icon="download">download</span>
+                    Export CSV
+                </button>
+<button class="bg-primary text-white px-md py-sm rounded-xl font-body text-small flex items-center gap-sm hover:opacity-90 transition-opacity shadow-sm">
+<span class="material-symbols-outlined text-[20px]" data-icon="add">add</span>
+                    New Entry
+                </button>
+</div>
+</div>
+<!-- KPI Grid -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter mb-xxl">
+<!-- Pending Fines -->
+<div class="bg-surface-container-lowest border border-outline-variant p-lg rounded-xl flex flex-col gap-sm shadow-sm">
+<div class="flex items-center justify-between">
+<span class="font-label text-label text-on-surface-variant">PENDING FINES</span>
+<span class="material-symbols-outlined text-error" data-icon="pending_actions">pending_actions</span>
+</div>
+<div class="flex items-baseline gap-xs">
+<span class="font-h2 text-h2">1,248</span>
+<span class="font-body text-small text-on-surface-variant">Records</span>
+</div>
+<div class="text-error font-body text-small flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px]" data-icon="arrow_upward">arrow_upward</span>
+                    12% increase vs last month
+                </div>
+</div>
+<!-- Collected Fines -->
+<div class="bg-surface-container-lowest border border-outline-variant p-lg rounded-xl flex flex-col gap-sm shadow-sm">
+<div class="flex items-center justify-between">
+<span class="font-label text-label text-on-surface-variant">COLLECTED FINES</span>
+<span class="material-symbols-outlined text-secondary" data-icon="verified">verified</span>
+</div>
+<div class="flex items-baseline gap-xs">
+<span class="font-h2 text-h2">4,892</span>
+<span class="font-body text-small text-on-surface-variant">Records</span>
+</div>
+<div class="text-secondary font-body text-small flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px]" data-icon="trending_up">trending_up</span>
+                    94.2% collection rate
+                </div>
+</div>
+<!-- Total Revenue -->
+<div class="bg-surface-container-lowest border border-outline-variant p-lg rounded-xl flex flex-col gap-sm shadow-sm">
+<div class="flex items-center justify-between">
+<span class="font-label text-label text-on-surface-variant">TOTAL REVENUE</span>
+<span class="material-symbols-outlined text-primary" data-icon="payments">payments</span>
+</div>
+<div class="flex items-baseline gap-xs">
+<span class="font-h2 text-h2">₹248,500</span>
+<span class="font-body text-small text-on-surface-variant">INR</span>
+</div>
+<div class="text-primary font-body text-small flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px]" data-icon="savings">savings</span>
+                    Highest monthly yield recorded
+                </div>
+</div>
+</div>
+<!-- Bento Layout Actions & List -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<!-- Quick Actions -->
+<div class="lg:col-span-4 flex flex-col gap-gutter">
+<div class="bg-on-background text-surface p-lg rounded-xl flex flex-col gap-md shadow-md relative overflow-hidden group transition-transform hover:-translate-y-1">
+<div class="relative z-10">
+<div class="w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center mb-md">
+<span class="material-symbols-outlined text-primary-fixed" data-icon="settings_suggest">settings_suggest</span>
+</div>
+<h3 class="font-section-title text-section-title mb-sm">Modify Fine Rules</h3>
+<p class="font-body text-small text-outline-variant mb-lg">Adjust penalty amounts for late submissions, consecutive absences, and behavioral violations.</p>
+<button class="w-full bg-primary text-white py-sm rounded-lg font-body text-small hover:bg-primary/90 transition-colors">Configure Policies</button>
+</div>
+<div class="absolute -right-8 -bottom-8 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-[160px]" data-icon="gavel">gavel</span>
+</div>
+</div>
+<div class="bg-surface-container border border-outline-variant p-lg rounded-xl flex flex-col gap-md">
+<h3 class="font-section-title text-section-title">Automated Alerts</h3>
+<div class="flex items-center justify-between p-sm rounded-lg bg-surface-container-lowest border border-outline-variant/30">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-tertiary" data-icon="mail">mail</span>
+<span class="font-body text-small">Email notifications</span>
+</div>
+<div class="w-10 h-5 bg-primary rounded-full relative cursor-pointer">
+<div class="w-4 h-4 bg-white rounded-full absolute top-0.5 right-0.5"></div>
+</div>
+</div>
+<div class="flex items-center justify-between p-sm rounded-lg bg-surface-container-lowest border border-outline-variant/30">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-primary" data-icon="sms">sms</span>
+<span class="font-body text-small">SMS alert (Parent)</span>
+</div>
+<div class="w-10 h-5 bg-outline rounded-full relative cursor-pointer">
+<div class="w-4 h-4 bg-white rounded-full absolute top-0.5 left-0.5"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Fine Records List -->
+<div class="lg:col-span-8 bg-surface-container-lowest border border-outline-variant rounded-xl shadow-sm overflow-hidden">
+<div class="p-lg border-b border-outline-variant flex flex-col md:flex-row md:items-center justify-between gap-md">
+<h3 class="font-section-title text-section-title">Recent Fine Records</h3>
+<div class="flex flex-wrap items-center gap-sm">
+<div class="relative">
+<input class="pl-10 pr-md py-sm border border-outline-variant rounded-xl font-body text-small focus:ring-2 focus:ring-primary focus:border-primary outline-none bg-surface-container-low w-full md:w-64" placeholder="Search Student ID..." type="text"/>
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]" data-icon="search">search</span>
+</div>
+<select class="bg-surface-container-low border border-outline-variant rounded-xl px-md py-sm font-body text-small focus:ring-2 focus:ring-primary outline-none">
+<option>All Departments</option>
+<option>CS &amp; IT</option>
+<option>Mechanical</option>
+<option>Electronics</option>
+</select>
+<select class="bg-surface-container-low border border-outline-variant rounded-xl px-md py-sm font-body text-small focus:ring-2 focus:ring-primary outline-none">
+<option>All Status</option>
+<option>Paid</option>
+<option>Unpaid</option>
+</select>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead>
+<tr class="bg-surface-container-low border-b border-outline-variant">
+<th class="px-lg py-md font-label text-label text-on-surface-variant">STUDENT</th>
+<th class="px-lg py-md font-label text-label text-on-surface-variant">REASON</th>
+<th class="px-lg py-md font-label text-label text-on-surface-variant">AMOUNT</th>
+<th class="px-lg py-md font-label text-label text-on-surface-variant text-center">STATUS</th>
+<th class="px-lg py-md font-label text-label text-on-surface-variant">ACTION</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-lg py-md">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-primary-fixed text-primary font-bold flex items-center justify-center">AR</div>
+<div>
+<p class="font-body text-small font-bold">Aditi Rao</p>
+<p class="font-body text-label text-on-surface-variant">CS-2024-041</p>
+</div>
+</div>
+</td>
+<td class="px-lg py-md">
+<span class="font-body text-small">Consecutive Absence</span>
+</td>
+<td class="px-lg py-md font-body text-small font-bold text-on-surface">
+                                    ₹500
+                                </td>
+<td class="px-lg py-md text-center">
+<span class="px-md py-1 bg-error/10 text-error rounded-full font-label text-label">Unpaid</span>
+</td>
+<td class="px-lg py-md">
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors" data-icon="more_vert">more_vert</button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-lg py-md">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-secondary-container text-on-secondary-container font-bold flex items-center justify-center">KM</div>
+<div>
+<p class="font-body text-small font-bold">Karan Mehra</p>
+<p class="font-body text-label text-on-surface-variant">IT-2023-112</p>
+</div>
+</div>
+</td>
+<td class="px-lg py-md">
+<span class="font-body text-small">Late Submission</span>
+</td>
+<td class="px-lg py-md font-body text-small font-bold text-on-surface">
+                                    ₹200
+                                </td>
+<td class="px-lg py-md text-center">
+<span class="px-md py-1 bg-secondary/10 text-secondary rounded-full font-label text-label">Paid</span>
+</td>
+<td class="px-lg py-md">
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors" data-icon="more_vert">more_vert</button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-lg py-md">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest text-on-surface font-bold flex items-center justify-center">SN</div>
+<div>
+<p class="font-body text-small font-bold">Sanya Nair</p>
+<p class="font-body text-label text-on-surface-variant">EC-2024-009</p>
+</div>
+</div>
+</td>
+<td class="px-lg py-md">
+<span class="font-body text-small">Lab Protocol Breach</span>
+</td>
+<td class="px-lg py-md font-body text-small font-bold text-on-surface">
+                                    ₹1,000
+                                </td>
+<td class="px-lg py-md text-center">
+<span class="px-md py-1 bg-error/10 text-error rounded-full font-label text-label">Unpaid</span>
+</td>
+<td class="px-lg py-md">
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors" data-icon="more_vert">more_vert</button>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-lg py-md">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-primary-fixed text-primary font-bold flex items-center justify-center">VJ</div>
+<div>
+<p class="font-body text-small font-bold">Vikram Joshi</p>
+<p class="font-body text-label text-on-surface-variant">ME-2022-156</p>
+</div>
+</div>
+</td>
+<td class="px-lg py-md">
+<span class="font-body text-small">Consecutive Absence</span>
+</td>
+<td class="px-lg py-md font-body text-small font-bold text-on-surface">
+                                    ₹500
+                                </td>
+<td class="px-lg py-md text-center">
+<span class="px-md py-1 bg-secondary/10 text-secondary rounded-full font-label text-label">Paid</span>
+</td>
+<td class="px-lg py-md">
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors" data-icon="more_vert">more_vert</button>
+</td>
+</tr>
+<!-- Row 5 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-lg py-md">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-secondary-container text-on-secondary-container font-bold flex items-center justify-center">PL</div>
+<div>
+<p class="font-body text-small font-bold">Priya Lal</p>
+<p class="font-body text-label text-on-surface-variant">CS-2024-055</p>
+</div>
+</div>
+</td>
+<td class="px-lg py-md">
+<span class="font-body text-small">Resource Damage</span>
+</td>
+<td class="px-lg py-md font-body text-small font-bold text-on-surface">
+                                    ₹2,500
+                                </td>
+<td class="px-lg py-md text-center">
+<span class="px-md py-1 bg-error/10 text-error rounded-full font-label text-label">Unpaid</span>
+</td>
+<td class="px-lg py-md">
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors" data-icon="more_vert">more_vert</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination -->
+<div class="p-lg border-t border-outline-variant flex items-center justify-between">
+<p class="font-body text-small text-on-surface-variant">Showing 5 of 1,248 entries</p>
+<div class="flex items-center gap-sm">
+<button class="p-sm rounded-lg border border-outline-variant hover:bg-surface-container-low transition-colors disabled:opacity-50">
+<span class="material-symbols-outlined" data-icon="chevron_left">chevron_left</span>
+</button>
+<span class="font-body text-small font-bold px-md">1</span>
+<button class="p-sm rounded-lg border border-outline-variant hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 w-full z-50 rounded-t-xl bg-surface border-t border-outline-variant shadow-lg flex justify-around items-center px-4 py-2">
+<div class="flex flex-col items-center justify-center text-on-surface-variant group">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-label text-label">Home</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant group">
+<span class="material-symbols-outlined" data-icon="list_alt">list_alt</span>
+<span class="font-label text-label">Requests</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-2xl px-4 py-1">
+<span class="material-symbols-outlined" data-icon="bar_chart">bar_chart</span>
+<span class="font-label text-label">Reports</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant group">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+<span class="font-label text-label">Profile</span>
+</div>
+</nav>
+<script>
+        // Micro-interactions
+        document.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('mousedown', () => {
+                btn.style.transform = 'scale(0.95)';
+                btn.style.transition = 'transform 0.15s ease';
+            });
+            btn.addEventListener('mouseup', () => {
+                btn.style.transform = 'scale(1)';
+            });
+            btn.addEventListener('mouseleave', () => {
+                btn.style.transform = 'scale(1)';
+            });
+        });
+
+        // Hover animation logic for table rows
+        const rows = document.querySelectorAll('tbody tr');
+        rows.forEach(row => {
+            row.addEventListener('mouseenter', () => {
+                row.classList.add('translate-x-1');
+            });
+            row.addEventListener('mouseleave', () => {
+                row.classList.remove('translate-x-1');
+            });
+        });
+    </script>
+</body></html>

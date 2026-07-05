@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Notification Center - Attendance Hub</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-high": "#e7e7f3",
+                    "on-background": "#191b23",
+                    "primary-fixed": "#dbe1ff",
+                    "secondary-fixed-dim": "#62df7d",
+                    "surface-container-lowest": "#ffffff",
+                    "on-tertiary-container": "#ffede6",
+                    "on-tertiary-fixed-variant": "#7d2d00",
+                    "on-error-container": "#93000a",
+                    "surface-container": "#ededf9",
+                    "secondary-fixed": "#7ffc97",
+                    "inverse-surface": "#2e3039",
+                    "surface-dim": "#d9d9e5",
+                    "on-tertiary-fixed": "#360f00",
+                    "on-secondary": "#ffffff",
+                    "on-error": "#ffffff",
+                    "tertiary-fixed-dim": "#ffb596",
+                    "outline": "#737686",
+                    "on-secondary-container": "#007230",
+                    "tertiary-fixed": "#ffdbcd",
+                    "error-container": "#ffdad6",
+                    "inverse-primary": "#b4c5ff",
+                    "on-secondary-fixed-variant": "#005320",
+                    "surface-container-low": "#f3f3fe",
+                    "on-surface": "#191b23",
+                    "primary-fixed-dim": "#b4c5ff",
+                    "surface-container-highest": "#e1e2ed",
+                    "on-surface-variant": "#434655",
+                    "secondary-container": "#7cf994",
+                    "on-secondary-fixed": "#002109",
+                    "primary-container": "#2563eb",
+                    "secondary": "#006e2d",
+                    "primary": "#004ac6",
+                    "on-primary-fixed-variant": "#003ea8",
+                    "inverse-on-surface": "#f0f0fb",
+                    "tertiary": "#943700",
+                    "on-tertiary": "#ffffff",
+                    "on-primary-fixed": "#00174b",
+                    "tertiary-container": "#bc4800",
+                    "surface": "#faf8ff",
+                    "on-primary": "#ffffff",
+                    "surface-variant": "#e1e2ed",
+                    "surface-tint": "#0053db",
+                    "outline-variant": "#c3c6d7",
+                    "on-primary-container": "#eeefff",
+                    "background": "#faf8ff",
+                    "error": "#ba1a1a",
+                    "surface-bright": "#faf8ff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "margin-mobile": "16px",
+                    "md": "16px",
+                    "xxl": "48px",
+                    "lg": "24px",
+                    "margin-desktop": "32px",
+                    "gutter": "24px",
+                    "sm": "8px",
+                    "xs": "4px",
+                    "xl": "32px"
+            },
+            "fontFamily": {
+                    "label": ["Inter"],
+                    "h1-mobile": ["Inter"],
+                    "h1": ["Inter"],
+                    "body": ["Inter"],
+                    "h2": ["Inter"],
+                    "small": ["Inter"],
+                    "h3": ["Inter"],
+                    "section-title": ["Inter"]
+            },
+            "fontSize": {
+                    "label": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "h1-mobile": ["28px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "h1": ["36px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "h2": ["28px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                    "small": ["14px", {"lineHeight": "1.5", "fontWeight": "500"}],
+                    "h3": ["22px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                    "section-title": ["18px", {"lineHeight": "1.5", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .notification-card:active { transform: scale(0.98); }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface min-h-screen pb-24">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface dark:bg-surface-dim border-b border-outline-variant dark:border-outline flex items-center justify-between px-margin-mobile md:px-margin-desktop h-14 w-full">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary dark:text-primary-fixed cursor-pointer active:scale-95" data-icon="menu">menu</span>
+<h1 class="font-h2 text-h2-mobile md:text-h2 text-primary dark:text-primary-fixed">Notification Center</h1>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 rounded-full hover:bg-surface-container-low transition-colors cursor-pointer active:scale-95">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="search">search</span>
+</button>
+<span class="material-symbols-outlined text-primary dark:text-primary-fixed cursor-pointer active:scale-95 text-[32px]" data-icon="account_circle">account_circle</span>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="pt-20 px-margin-mobile md:px-margin-desktop max-w-4xl mx-auto">
+<!-- Filter Chips (Micro-interaction) -->
+<div class="flex gap-2 mb-6 overflow-x-auto scrollbar-hide py-2">
+<button class="px-4 py-2 rounded-full bg-primary text-on-primary font-label text-label whitespace-nowrap shadow-sm">All</button>
+<button class="px-4 py-2 rounded-full bg-surface-container-high text-on-surface-variant font-label text-label whitespace-nowrap hover:bg-surface-container-highest transition-colors">Critical</button>
+<button class="px-4 py-2 rounded-full bg-surface-container-high text-on-surface-variant font-label text-label whitespace-nowrap hover:bg-surface-container-highest transition-colors">Approvals</button>
+<button class="px-4 py-2 rounded-full bg-surface-container-high text-on-surface-variant font-label text-label whitespace-nowrap hover:bg-surface-container-highest transition-colors">Updates</button>
+</div>
+<!-- Notification List -->
+<div class="space-y-1">
+<!-- Attendance Shortage Alert (Critical) -->
+<div class="notification-card flex gap-4 p-lg bg-surface-container-lowest border border-outline-variant rounded-xl cursor-pointer hover:bg-surface-container-low transition-all duration-200 relative group">
+<div class="flex-shrink-0 w-12 h-12 rounded-full bg-error/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-error" data-icon="warning" style="font-variation-settings: 'FILL' 1;">warning</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-1">
+<h3 class="font-section-title text-section-title text-on-surface">Attendance Shortage Alert</h3>
+<span class="font-small text-small text-on-surface-variant opacity-70">2 mins ago</span>
+</div>
+<p class="font-body text-body text-on-surface-variant mb-2">Your current attendance for 'Advanced Algorithms' has fallen below the 75% threshold. Immediate action required.</p>
+<div class="flex gap-2">
+<span class="px-2 py-0.5 rounded bg-error/10 text-error font-label text-[10px] uppercase tracking-wider">Critical</span>
+<span class="px-2 py-0.5 rounded bg-surface-container-high text-on-surface-variant font-label text-[10px] uppercase tracking-wider">Academics</span>
+</div>
+</div>
+<!-- Unread Indicator -->
+<div class="absolute right-4 top-1/2 -translate-y-1/2 w-2.5 h-2.5 bg-primary rounded-full shadow-[0_0_8px_rgba(37,99,235,0.5)]"></div>
+</div>
+<!-- Leave Request Approved (Success) -->
+<div class="notification-card flex gap-4 p-lg bg-surface-container-lowest border border-transparent rounded-xl cursor-pointer hover:bg-surface-container-low transition-all duration-200 group">
+<div class="flex-shrink-0 w-12 h-12 rounded-full bg-secondary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-1">
+<h3 class="font-section-title text-section-title text-on-surface">Leave Request Approved</h3>
+<span class="font-small text-small text-on-surface-variant opacity-70">45 mins ago</span>
+</div>
+<p class="font-body text-body text-on-surface-variant mb-2">Your medical leave request for the dates 24th Oct - 26th Oct has been approved by the Department Head.</p>
+<div class="flex gap-2">
+<span class="px-2 py-0.5 rounded bg-secondary/10 text-secondary font-label text-[10px] uppercase tracking-wider">Success</span>
+</div>
+</div>
+<!-- Unread Indicator -->
+<div class="absolute right-4 top-1/2 -translate-y-1/2 w-2.5 h-2.5 bg-primary rounded-full shadow-[0_0_8px_rgba(37,99,235,0.5)]"></div>
+</div>
+<div class="h-px bg-outline-variant/30 my-2 mx-4"></div>
+<!-- New Policy Update (Info) -->
+<div class="notification-card flex gap-4 p-lg bg-surface hover:bg-surface-container-low rounded-xl cursor-pointer transition-all duration-200 opacity-80">
+<div class="flex-shrink-0 w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" data-icon="info" style="font-variation-settings: 'FILL' 1;">info</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-1">
+<h3 class="font-section-title text-section-title text-on-surface">New Policy Update</h3>
+<span class="font-small text-small text-on-surface-variant opacity-70">3 hours ago</span>
+</div>
+<p class="font-body text-body text-on-surface-variant">Revised weekend attendance policy has been uploaded to the student portal. Please review the changes.</p>
+</div>
+</div>
+<!-- Fine Generated (Warning) -->
+<div class="notification-card flex gap-4 p-lg bg-surface hover:bg-surface-container-low rounded-xl cursor-pointer transition-all duration-200 opacity-80">
+<div class="flex-shrink-0 w-12 h-12 rounded-full bg-tertiary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-tertiary" data-icon="payments" style="font-variation-settings: 'FILL' 1;">payments</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-1">
+<h3 class="font-section-title text-section-title text-on-surface">Fine Generated</h3>
+<span class="font-small text-small text-on-surface-variant opacity-70">Yesterday</span>
+</div>
+<p class="font-body text-body text-on-surface-variant mb-2">A fine of $25.00 has been generated for excessive unexcused absenteeism in 'Physics II'.</p>
+<div class="flex gap-2">
+<span class="px-2 py-0.5 rounded bg-tertiary/10 text-tertiary font-label text-[10px] uppercase tracking-wider">Warning</span>
+</div>
+</div>
+</div>
+<!-- Promotion / Action Card (Bento Style) -->
+<div class="mt-8 p-lg rounded-2xl bg-primary-fixed text-on-primary-fixed overflow-hidden relative">
+<div class="relative z-10 flex flex-col md:flex-row items-center gap-6">
+<div class="flex-1">
+<h2 class="font-h3 text-h3 mb-2">Keep your record clean!</h2>
+<p class="font-body text-body opacity-80 mb-4">You have maintained 90%+ attendance in 4 out of 5 subjects. Keep it up to qualify for the 'Excellence' badge.</p>
+<button class="bg-primary text-on-primary px-6 py-2 rounded-full font-label text-label shadow-sm active:scale-95 transition-transform">View Achievement Progress</button>
+</div>
+<div class="w-32 h-32 flex-shrink-0">
+<img class="w-full h-full object-contain" data-alt="A 3D stylized gold trophy badge with futuristic glowing neon blue circuits against a minimalist white background, soft ambient lighting, high contrast modern tech aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDnBbfNpRj__WxVl-G5f9dg3gZ8LXHX9WZDbiG7CNjx8m6fpCKhx_4xLOGmZYM5kEUieR7LQ1jshkKwE0R5EYmO9Qf6Dm7jsvPq6mJKGjcATAoiMJYGbQ9-1yAn50nS3-0gW43yiUyFFKyXtjO9BbRyJNHPArnvTb2d-saHYkD8BQwrgDem0n9qu7fFMqXmFVd2PhpdSibsY8inmhBB8bJLtpccC3B9ZGYaEqXCFu-3R21M4P7VB83T6xvSF1WMYIYuSZsm_sxmlng"/>
+</div>
+</div>
+<!-- Abstract Background Pattern -->
+<div class="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-3xl -mr-20 -mt-20"></div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full z-50 bg-surface-container dark:bg-surface-container-highest border-t border-outline-variant shadow-md flex justify-around items-center h-16 w-full px-sm">
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-colors active:scale-90 p-2 rounded-xl" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-label text-label mt-1">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-colors active:scale-90 p-2 rounded-xl" href="#">
+<span class="material-symbols-outlined" data-icon="mail_lock">mail_lock</span>
+<span class="font-label text-label mt-1">Templates</span>
+</a>
+<!-- Active Tab: Alerts (Notifications) -->
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-xl px-4 py-1 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="notifications_active" style="font-variation-settings: 'FILL' 1;">notifications_active</span>
+<span class="font-label text-label mt-1">Alerts</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-colors active:scale-90 p-2 rounded-xl" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-label text-label mt-1">Profile</span>
+</a>
+</nav>
+<script>
+        // Simple Interaction logic for unread indicators
+        document.querySelectorAll('.notification-card').forEach(card => {
+            card.addEventListener('click', function() {
+                const indicator = this.querySelector('.absolute.bg-primary');
+                if (indicator) {
+                    indicator.classList.add('scale-0', 'opacity-0');
+                    setTimeout(() => indicator.remove(), 300);
+                    this.classList.remove('bg-surface-container-lowest', 'border-outline-variant');
+                    this.classList.add('opacity-80');
+                }
+            });
+        });
+    </script>
+</body></html>

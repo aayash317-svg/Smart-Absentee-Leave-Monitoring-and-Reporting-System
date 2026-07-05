@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Faculty Attendance Marking | Precision Monitor</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Use the provided Tailwind Config -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "background": "#faf8ff",
+                    "surface-variant": "#e1e2ed",
+                    "primary": "#004ac6",
+                    "on-tertiary-container": "#ffede6",
+                    "on-tertiary-fixed-variant": "#7d2d00",
+                    "on-surface-variant": "#434655",
+                    "on-primary": "#ffffff",
+                    "surface-bright": "#faf8ff",
+                    "primary-fixed-dim": "#b4c5ff",
+                    "tertiary": "#943700",
+                    "primary-fixed": "#dbe1ff",
+                    "surface-container-low": "#f3f3fe",
+                    "error-container": "#ffdad6",
+                    "surface-container-high": "#e7e7f3",
+                    "surface-container": "#ededf9",
+                    "primary-container": "#2563eb",
+                    "inverse-primary": "#b4c5ff",
+                    "on-error": "#ffffff",
+                    "surface-container-highest": "#e1e2ed",
+                    "surface-container-lowest": "#ffffff",
+                    "secondary-container": "#7cf994",
+                    "surface": "#faf8ff",
+                    "outline-variant": "#c3c6d7",
+                    "on-primary-fixed-variant": "#003ea8",
+                    "tertiary-container": "#bc4800",
+                    "secondary": "#006e2d",
+                    "outline": "#737686",
+                    "inverse-surface": "#2e3039",
+                    "tertiary-fixed-dim": "#ffb596",
+                    "on-secondary-fixed-variant": "#005320",
+                    "secondary-fixed-dim": "#62df7d",
+                    "on-primary-fixed": "#00174b",
+                    "on-background": "#191b23",
+                    "error": "#ba1a1a",
+                    "secondary-fixed": "#7ffc97",
+                    "on-secondary": "#ffffff",
+                    "on-tertiary-fixed": "#360f00",
+                    "on-secondary-fixed": "#002109",
+                    "on-tertiary": "#ffffff",
+                    "surface-dim": "#d9d9e5",
+                    "on-surface": "#191b23",
+                    "tertiary-fixed": "#ffdbcd",
+                    "on-secondary-container": "#007230",
+                    "inverse-on-surface": "#f0f0fb",
+                    "on-error-container": "#93000a",
+                    "surface-tint": "#0053db",
+                    "on-primary-container": "#eeefff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "xs": "4px",
+                    "margin-mobile": "16px",
+                    "margin-desktop": "32px",
+                    "md": "16px",
+                    "xxl": "48px",
+                    "gutter": "24px",
+                    "xl": "32px",
+                    "sm": "8px",
+                    "lg": "24px"
+            },
+            "fontFamily": {
+                    "h3": ["Inter"],
+                    "h2": ["Inter"],
+                    "body": ["Inter"],
+                    "h1-mobile": ["Inter"],
+                    "small": ["Inter"],
+                    "section-title": ["Inter"],
+                    "label": ["Inter"],
+                    "h1": ["Inter"]
+            },
+            "fontSize": {
+                    "h3": ["22px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                    "h2": ["28px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                    "body": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "h1-mobile": ["28px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "small": ["14px", {"lineHeight": "1.5", "fontWeight": "500"}],
+                    "section-title": ["18px", {"lineHeight": "1.5", "fontWeight": "600"}],
+                    "label": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "h1": ["36px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .attendance-toggle-input:checked + label {
+            background-color: var(--tw-bg-primary-container);
+            color: white;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+        .active-state {
+            @apply ring-2 ring-primary ring-offset-2;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body min-h-screen flex flex-col md:flex-row overflow-hidden">
+<!-- Navigation Drawer (Desktop) -->
+<aside class="hidden md:flex flex-col h-full py-lg fixed left-0 top-0 w-[280px] bg-inverse-surface dark:bg-surface-container-lowest shadow-lg z-50">
+<div class="px-6 mb-8">
+<h2 class="font-h2 text-h2 font-bold text-on-primary">Precision</h2>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center text-on-surface-variant dark:text-surface-variant px-4 py-3 opacity-80 hover:bg-surface-container-highest transition-all group" href="#">
+<span class="material-symbols-outlined mr-3">dashboard</span>
+<span class="font-body text-body">Dashboard</span>
+</a>
+<a class="flex items-center text-primary bg-primary-container/10 border-l-4 border-primary font-bold px-4 py-3 group" href="#">
+<span class="material-symbols-outlined mr-3">school</span>
+<span class="font-body text-body">My Classes</span>
+</a>
+<a class="flex items-center text-on-surface-variant dark:text-surface-variant px-4 py-3 opacity-80 hover:bg-surface-container-highest transition-all group" href="#">
+<span class="material-symbols-outlined mr-3">assignment_turned_in</span>
+<span class="font-body text-body">Attendance Reports</span>
+</a>
+<a class="flex items-center text-on-surface-variant dark:text-surface-variant px-4 py-3 opacity-80 hover:bg-surface-container-highest transition-all group" href="#">
+<span class="material-symbols-outlined mr-3">group</span>
+<span class="font-body text-body">Student Records</span>
+</a>
+</nav>
+<div class="mt-auto px-4 py-6 border-t border-white/10">
+<div class="flex items-center space-x-3">
+<div class="w-10 h-10 rounded-full overflow-hidden bg-primary-fixed">
+<img class="w-full h-full object-cover" data-alt="A professional studio portrait of a senior professor in his late 50s, wearing a crisp navy blazer and glasses. He has a warm, intellectual expression, set against a clean, soft-lit academic library background. The image is captured with shallow depth of field, highlighting the subject with sophisticated, high-end photography styling." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBP_LzyZ1fjBYX40Wm-V8Mmcr5DJbnlRGAa-rNnDiI5yTHWWhHYn9LQt7_FgovKZt1Co59rh2T6c7zwe8hNPToL1PX5-NpM7W_lGcIyh7yzyeHEWKYok2zk-uIqIy3Wa7HJ_5-_3SkvpmhEnCBNqdHx-CuSjIa_FKHGo4jJbq1pNK3USr7lzMZ_HXJVhJxmTq2uwCCn0p10ae1VHjVvhpvfKiMR4RA8RQRHhQIlfNfN6xUcATeYyQa52W2gjEYG9pWnq2F2oKVn-Vc"/>
+</div>
+<div class="flex flex-col">
+<span class="text-white font-semibold text-small">Dr. Sarah Wilson</span>
+<span class="text-white/60 text-[10px] uppercase tracking-wider">Faculty ID: CS-2024</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col md:ml-[280px] h-screen overflow-hidden relative">
+<!-- TopAppBar -->
+<header class="flex items-center justify-between px-margin-mobile md:px-margin-desktop h-16 w-full z-40 bg-surface dark:bg-surface-dim border-b border-outline-variant dark:border-outline flex-shrink-0">
+<div class="flex items-center gap-4">
+<button class="md:hidden p-2 active:scale-95 duration-150 rounded-full hover:bg-surface-container-high">
+<span class="material-symbols-outlined text-primary">menu</span>
+</button>
+<div class="flex flex-col">
+<h1 class="font-h3 text-h3 text-primary font-semibold leading-tight">Data Structures &amp; Algorithms</h1>
+<div class="flex items-center gap-2 text-on-surface-variant text-label font-label">
+<span>Section A</span>
+<span class="w-1 h-1 rounded-full bg-outline"></span>
+<span>Oct 26, 2023</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 rounded-full hover:bg-surface-container-high transition-colors text-primary active:scale-95 duration-150">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</header>
+<!-- Search and Action Controls -->
+<div class="bg-surface-container-low px-margin-mobile md:px-margin-desktop py-4 flex flex-col sm:flex-row gap-4 items-center justify-between border-b border-outline-variant">
+<div class="relative w-full sm:max-w-md">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="w-full pl-10 pr-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-xl focus:ring-2 focus:ring-primary focus:border-primary text-body outline-none transition-all" placeholder="Search by student name or ID..." type="text"/>
+</div>
+<button class="flex items-center gap-2 px-6 py-2 bg-secondary text-on-secondary rounded-xl font-semibold text-small hover:bg-secondary/90 transition-all active:scale-95" id="markAllBtn">
+<span class="material-symbols-outlined">done_all</span>
+                Mark All Present
+            </button>
+</div>
+<!-- Student List Container -->
+<div class="flex-1 overflow-y-auto custom-scrollbar bg-background pb-32">
+<div class="max-w-5xl mx-auto py-8 px-margin-mobile">
+<div class="grid grid-cols-1 gap-3">
+<!-- Student Row Template -->
+<script>
+                        const students = [
+                            { id: "2023-CS-001", name: "Alexander Thorne", image: "placeholder" },
+                            { id: "2023-CS-005", name: "Beatrice Vance", image: "placeholder" },
+                            { id: "2023-CS-012", name: "Caleb Rivers", image: "placeholder" },
+                            { id: "2023-CS-018", name: "Diana Prince", image: "placeholder" },
+                            { id: "2023-CS-022", name: "Elias Sterling", image: "placeholder" },
+                            { id: "2023-CS-031", name: "Fiona Gallagher", image: "placeholder" },
+                            { id: "2023-CS-044", name: "Gideon Cross", image: "placeholder" },
+                            { id: "2023-CS-056", name: "Harper Lee", image: "placeholder" },
+                            { id: "2023-CS-067", name: "Isaac Newton", image: "placeholder" },
+                            { id: "2023-CS-082", name: "Julianne Moore", image: "placeholder" }
+                        ];
+
+                        const studentImages = [
+                            "A headshot of a diverse young university student with a confident smile, wearing a modern green hoodie. The lighting is soft and cinematic, highlighting facial features against a blurred campus courtyard background in bright morning light.",
+                            "A portrait of a female student with curly hair and stylish glasses, wearing a cream sweater. She is looking directly at the camera with a gentle expression. The background is a clean, minimalist architectural space with soft shadows.",
+                            "A sharp close-up of a young male student in a denim jacket, standing in a brightly lit library. The background is filled with rows of out-of-focus books, creating a sophisticated academic vibe with natural sunlight filtering through.",
+                            "An elegant portrait of a female student of East Asian descent, wearing a professional black blazer. She has a composed look, set against a modern glass-walled office environment with high-end corporate lighting.",
+                            "A friendly student in a colorful flannel shirt, laughing slightly. He has a warm, approachable personality. The background is a vibrant university student union area with blurred colorful banners and warm wood tones.",
+                            "A high-key portrait of a focused student in a laboratory coat, conveying intelligence and diligence. The lighting is bright and sterile, characteristic of a science lab, with clean whites and technical equipment blurred in the distance.",
+                            "A cool, minimalist headshot of a male student with short hair, wearing a grey turtleneck. He has a thoughtful expression. The background is a solid, slightly textured cool-grey wall with subtle directional lighting.",
+                            "A creative student with brightly colored hair and a leather jacket, looking towards the side. The lighting is edgy and artistic, with purple and blue neon accents reflecting off her face in a modern gallery setting.",
+                            "A student wearing a traditional cultural scarf and a warm smile. The background is a sun-drenched outdoor park with golden-hour lighting creating a beautiful halo effect and deep, rich colors.",
+                            "A sophisticated close-up of a student in a red sweater, with a blurred coffee shop background. The atmosphere is cozy and studious, with soft indoor incandescent lighting and bokeh from hanging pendant lamps."
+                        ];
+                    </script>
+<div id="student-list-content">
+<!-- Content will be injected via JS for demonstration -->
+</div>
+</div>
+</div>
+</div>
+<!-- Sticky Footer -->
+<div class="absolute bottom-0 left-0 w-full bg-white/80 backdrop-blur-md border-t border-outline-variant p-4 md:px-margin-desktop z-40">
+<div class="max-w-5xl mx-auto flex items-center justify-between">
+<div class="hidden sm:flex flex-col">
+<span class="text-label font-label text-on-surface-variant uppercase">Summary</span>
+<p class="text-body font-semibold"><span id="presentCount">0</span> Present · <span id="absentCount">0</span> Absent · <span id="lateCount">0</span> Late</p>
+</div>
+<button class="w-full sm:w-auto px-10 py-3 bg-primary-container text-white rounded-xl font-bold shadow-lg hover:bg-primary-container/90 transition-all active:scale-95 flex items-center justify-center gap-2">
+<span class="material-symbols-outlined">send</span>
+                    Submit Attendance
+                </button>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-16 px-4 bg-surface dark:bg-surface-dim border-t border-outline-variant shadow-lg">
+<button class="flex flex-col items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label text-[10px]">Home</span>
+</button>
+<button class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-xl px-3 py-1">
+<span class="material-symbols-outlined">menu_book</span>
+<span class="font-label text-[10px]">Classes</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined">notifications</span>
+<span class="font-label text-[10px]">Alerts</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label text-[10px]">Profile</span>
+</button>
+</nav>
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const container = document.getElementById('student-list-content');
+            
+            students.forEach((student, index) => {
+                const row = document.createElement('div');
+                row.className = "bg-surface-container-lowest border border-outline-variant rounded-2xl p-4 flex flex-col md:flex-row items-center gap-4 transition-all hover:shadow-md hover:border-primary/30";
+                
+                row.innerHTML = `
+                    <div class="flex items-center flex-1 w-full gap-4">
+                        <div class="w-14 h-14 rounded-full overflow-hidden bg-surface-container-high shrink-0 ring-2 ring-background shadow-sm">
+                            <img src="placeholder" data-alt="${studentImages[index]}" class="w-full h-full object-cover">
+                        </div>
+                        <div class="flex flex-col min-w-0">
+                            <h3 class="font-section-title text-on-surface truncate">${student.name}</h3>
+                            <span class="text-label font-label text-outline uppercase tracking-tight">${student.id}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="w-full md:w-auto">
+                        <div class="flex items-center bg-surface-container-high p-1 rounded-xl w-full md:w-80">
+                            <label class="flex-1 text-center cursor-pointer">
+                                <input type="radio" name="attendance-${index}" value="present" class="hidden peer" checked>
+                                <div class="py-2 rounded-lg text-small font-semibold transition-all peer-checked:bg-secondary peer-checked:text-white text-on-surface-variant hover:bg-surface-container-highest">Present</div>
+                            </label>
+                            <label class="flex-1 text-center cursor-pointer">
+                                <input type="radio" name="attendance-${index}" value="absent" class="hidden peer">
+                                <div class="py-2 rounded-lg text-small font-semibold transition-all peer-checked:bg-error peer-checked:text-white text-on-surface-variant hover:bg-surface-container-highest">Absent</div>
+                            </label>
+                            <label class="flex-1 text-center cursor-pointer">
+                                <input type="radio" name="attendance-${index}" value="late" class="hidden peer">
+                                <div class="py-2 rounded-lg text-small font-semibold transition-all peer-checked:bg-tertiary-container peer-checked:text-white text-on-surface-variant hover:bg-surface-container-highest">Late</div>
+                            </label>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(row);
+            });
+
+            // Summary calculation logic
+            const updateSummary = () => {
+                const radios = document.querySelectorAll('input[type="radio"]:checked');
+                let p = 0, a = 0, l = 0;
+                radios.forEach(r => {
+                    if(r.value === 'present') p++;
+                    else if(r.value === 'absent') a++;
+                    else if(r.value === 'late') l++;
+                });
+                document.getElementById('presentCount').innerText = p;
+                document.getElementById('absentCount').innerText = a;
+                document.getElementById('lateCount').innerText = l;
+            };
+
+            container.addEventListener('change', updateSummary);
+            updateSummary();
+
+            document.getElementById('markAllBtn').addEventListener('click', () => {
+                document.querySelectorAll('input[value="present"]').forEach(r => r.checked = true);
+                updateSummary();
+            });
+        });
+    </script>
+</body></html>

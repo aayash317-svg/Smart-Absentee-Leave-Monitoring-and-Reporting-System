@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Alert Settings | Attendance Portal</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "error-container": "#ffdad6",
+                    "tertiary-fixed": "#ffdbcd",
+                    "inverse-primary": "#b4c5ff",
+                    "on-secondary-fixed-variant": "#005320",
+                    "surface-dim": "#d9d9e5",
+                    "on-tertiary-fixed": "#360f00",
+                    "on-secondary": "#ffffff",
+                    "on-error": "#ffffff",
+                    "tertiary-fixed-dim": "#ffb596",
+                    "outline": "#737686",
+                    "on-secondary-container": "#007230",
+                    "on-tertiary-fixed-variant": "#7d2d00",
+                    "on-error-container": "#93000a",
+                    "on-tertiary-container": "#ffede6",
+                    "surface-container": "#ededf9",
+                    "inverse-surface": "#2e3039",
+                    "secondary-fixed": "#7ffc97",
+                    "on-background": "#191b23",
+                    "surface-container-high": "#e7e7f3",
+                    "primary-fixed": "#dbe1ff",
+                    "secondary-fixed-dim": "#62df7d",
+                    "surface-container-lowest": "#ffffff",
+                    "on-primary-container": "#eeefff",
+                    "outline-variant": "#c3c6d7",
+                    "background": "#faf8ff",
+                    "surface-bright": "#faf8ff",
+                    "error": "#ba1a1a",
+                    "inverse-on-surface": "#f0f0fb",
+                    "on-primary-fixed-variant": "#003ea8",
+                    "tertiary": "#943700",
+                    "on-tertiary": "#ffffff",
+                    "tertiary-container": "#bc4800",
+                    "surface": "#faf8ff",
+                    "on-primary-fixed": "#00174b",
+                    "surface-variant": "#e1e2ed",
+                    "surface-tint": "#0053db",
+                    "on-primary": "#ffffff",
+                    "primary-fixed-dim": "#b4c5ff",
+                    "surface-container-highest": "#e1e2ed",
+                    "on-surface-variant": "#434655",
+                    "secondary-container": "#7cf994",
+                    "on-secondary-fixed": "#002109",
+                    "secondary": "#006e2d",
+                    "primary": "#004ac6",
+                    "primary-container": "#2563eb",
+                    "surface-container-low": "#f3f3fe",
+                    "on-surface": "#191b23"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "margin-desktop": "32px",
+                    "md": "16px",
+                    "xxl": "48px",
+                    "lg": "24px",
+                    "margin-mobile": "16px",
+                    "xl": "32px",
+                    "xs": "4px",
+                    "gutter": "24px",
+                    "sm": "8px"
+            },
+            "fontFamily": {
+                    "h2": ["Inter"],
+                    "body": ["Inter"],
+                    "h1": ["Inter"],
+                    "label": ["Inter"],
+                    "h1-mobile": ["Inter"],
+                    "section-title": ["Inter"],
+                    "small": ["Inter"],
+                    "h3": ["Inter"]
+            },
+            "fontSize": {
+                    "h2": ["28px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                    "body": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "h1": ["36px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "label": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "h1-mobile": ["28px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "section-title": ["18px", {"lineHeight": "1.5", "fontWeight": "600"}],
+                    "small": ["14px", {"lineHeight": "1.5", "fontWeight": "500"}],
+                    "h3": ["22px", {"lineHeight": "1.4", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: #faf8ff; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .toggle-checkbox:checked { right: 0; border-color: #2563eb; }
+        .toggle-checkbox:checked + .toggle-label { background-color: #2563eb; }
+        
+        /* Custom scrollbar for clean UI */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #e1e2ed; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #c3c6d7; }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(8px);
+            border: 1px solid #e1e2ed;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="text-on-surface">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-margin-mobile md:px-margin-desktop h-14 bg-surface border-b border-outline-variant">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary" style="font-size: 28px;">school</span>
+<h1 class="font-h3 text-h3 font-bold text-primary">Attendance Portal</h1>
+</div>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-on-surface-variant hover:bg-surface-container-low p-2 rounded-full transition-colors">search</button>
+<div class="w-8 h-8 rounded-full bg-primary-fixed flex items-center justify-center text-primary font-bold text-xs overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a young university student, wearing business casual attire, smiling confidently against a soft-focus campus background. The lighting is bright and natural, reflecting a clean, high-end academic atmosphere with a blue and white color palette." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB6T3sfmYiUUrjwWCiKn_RVgiPCxb1VAOpW68VBSGJYQqXSAuPUCF8ZZBE_xmr_SmH2rK02v1sTj3PBID7MlxNbVNv8cqjb8CXt-8upnsNLsmtqY7NpML1ExobW4TaxkWG76MzYj-vSLwlp2sCqcPTXPm_mi9l2PixuPy6II57POkqXzQEY0Kw-3pPjPWkESMBRDU0ll9FELEDf3vZb8w9Z0tDCfx5ZKZpfhTyY4_bSfk5r0_EUJmMLbxF_LvxdFiZcbGTiexs5Iaw"/>
+</div>
+</div>
+</header>
+<!-- NavigationDrawer (Desktop) -->
+<aside class="hidden lg:flex flex-col fixed left-0 top-0 h-full w-[280px] bg-inverse-surface text-surface-variant pt-20 z-40">
+<div class="px-6 mb-8">
+<div class="flex items-center gap-4 mb-2">
+<div class="w-10 h-10 rounded-lg bg-primary-container flex items-center justify-center text-white">
+<span class="material-symbols-outlined">person</span>
+</div>
+<div>
+<p class="font-bold text-white text-sm">Alex Rivera</p>
+<p class="text-xs opacity-70">Student ID: #88291</p>
+</div>
+</div>
+</div>
+<nav class="flex-1 px-2 space-y-1">
+<a class="flex items-center gap-4 px-4 py-3 text-surface-variant hover:bg-primary/10 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-body text-body">Dashboard</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 text-surface-variant hover:bg-primary/10 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">notifications_active</span>
+<span class="font-body text-body">Alerts</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 text-primary-fixed-dim border-l-4 border-primary-container bg-primary-container/10" href="#">
+<span class="material-symbols-outlined">settings_suggest</span>
+<span class="font-body text-body">Configuration</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 text-surface-variant hover:bg-primary/10 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">assessment</span>
+<span class="font-body text-body">Reports</span>
+</a>
+</nav>
+<div class="p-6 text-xs opacity-50">
+            Institutional Portal v4.2.0
+        </div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="pt-20 pb-24 lg:pl-[280px] min-h-screen">
+<div class="max-w-5xl mx-auto px-margin-mobile md:px-margin-desktop">
+<!-- Page Header -->
+<div class="mb-xl flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div>
+<p class="font-label text-label text-primary uppercase mb-1">Configuration</p>
+<h2 class="font-h1 text-h1-mobile md:text-h1 text-on-surface">Alert Settings</h2>
+<p class="font-body text-body text-on-surface-variant mt-2 max-w-2xl">
+                        Customize how and when you receive attendance updates. Stay informed about your academic standing with real-time notifications.
+                    </p>
+</div>
+<button class="bg-primary text-white px-lg py-sm rounded-xl font-bold shadow-sm hover:shadow-md transition-all flex items-center gap-2">
+<span class="material-symbols-outlined text-[20px]">save</span>
+                    Save Preferences
+                </button>
+</div>
+<!-- Bento Grid Layout for Settings -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter">
+<!-- Main Alerts Table (Wide Card) -->
+<div class="md:col-span-12 lg:col-span-8 bg-white rounded-xl border border-outline-variant overflow-hidden">
+<div class="p-lg border-b border-outline-variant flex items-center justify-between bg-surface-container-low">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">notifications</span>
+<h3 class="font-section-title text-section-title">Notification Channels</h3>
+</div>
+<span class="text-xs text-on-surface-variant bg-white px-2 py-1 rounded border border-outline-variant">Global Sync: Active</span>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead class="bg-surface-container-lowest border-b border-outline-variant">
+<tr>
+<th class="px-lg py-4 font-label text-label text-on-surface-variant">ALERT TYPE</th>
+<th class="px-lg py-4 font-label text-label text-on-surface-variant text-center">PUSH</th>
+<th class="px-lg py-4 font-label text-label text-on-surface-variant text-center">SMS</th>
+<th class="px-lg py-4 font-label text-label text-on-surface-variant text-center">EMAIL</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<!-- Critical Alert Row -->
+<tr class="hover:bg-error-container/5 transition-colors">
+<td class="px-lg py-6">
+<div class="flex flex-col">
+<span class="font-bold text-on-surface">Critical Alert</span>
+<span class="text-small text-error">Attendance below 75%</span>
+</div>
+</td>
+<td class="px-lg py-6 text-center">
+<input checked="" class="w-5 h-5 rounded border-outline-variant text-primary focus:ring-primary" type="checkbox"/>
+</td>
+<td class="px-lg py-6 text-center">
+<input checked="" class="w-5 h-5 rounded border-outline-variant text-primary focus:ring-primary" type="checkbox"/>
+</td>
+<td class="px-lg py-6 text-center">
+<input checked="" class="w-5 h-5 rounded border-outline-variant text-primary focus:ring-primary" type="checkbox"/>
+</td>
+</tr>
+<!-- Warning Alert Row -->
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-lg py-6">
+<div class="flex flex-col">
+<span class="font-bold text-on-surface">Warning Alert</span>
+<span class="text-small text-tertiary">Attendance below 85%</span>
+</div>
+</td>
+<td class="px-lg py-6 text-center">
+<input checked="" class="w-5 h-5 rounded border-outline-variant text-primary focus:ring-primary" type="checkbox"/>
+</td>
+<td class="px-lg py-6 text-center">
+<input class="w-5 h-5 rounded border-outline-variant text-primary focus:ring-primary" type="checkbox"/>
+</td>
+<td class="px-lg py-6 text-center">
+<input checked="" class="w-5 h-5 rounded border-outline-variant text-primary focus:ring-primary" type="checkbox"/>
+</td>
+</tr>
+<!-- Daily Summary Row -->
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-lg py-6">
+<div class="flex flex-col">
+<span class="font-bold text-on-surface">Daily Summaries</span>
+<span class="text-small text-on-surface-variant">Daily log of presence/absence</span>
+</div>
+</td>
+<td class="px-lg py-6 text-center">
+<input class="w-5 h-5 rounded border-outline-variant text-primary focus:ring-primary" type="checkbox"/>
+</td>
+<td class="px-lg py-6 text-center">
+<input class="w-5 h-5 rounded border-outline-variant text-primary focus:ring-primary" type="checkbox"/>
+</td>
+<td class="px-lg py-6 text-center">
+<input checked="" class="w-5 h-5 rounded border-outline-variant text-primary focus:ring-primary" type="checkbox"/>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Right Column Widgets -->
+<div class="md:col-span-12 lg:col-span-4 space-y-gutter">
+<!-- Guardian Notifications Card -->
+<div class="bg-white rounded-xl border border-outline-variant p-lg flex flex-col gap-4 relative overflow-hidden group">
+<div class="absolute top-0 right-0 w-32 h-32 bg-primary-fixed/20 rounded-full -mr-16 -mt-16 transition-transform group-hover:scale-110"></div>
+<div class="flex items-start justify-between z-10">
+<div class="w-12 h-12 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container">
+<span class="material-symbols-outlined">family_restroom</span>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-surface-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-outline-variant after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<div class="z-10">
+<h3 class="font-section-title text-section-title text-on-surface">Guardian Notifications</h3>
+<p class="text-small text-on-surface-variant mt-2 leading-relaxed">
+                                Automatically CC your registered guardians on attendance critical alerts. Recommended for university policy compliance.
+                            </p>
+</div>
+<div class="pt-4 border-t border-outline-variant z-10">
+<p class="text-xs font-bold text-on-surface-variant mb-2">CONNECTED RECIPIENTS:</p>
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-surface-dim"></div>
+<span class="text-small font-medium">m.rivera@email.com</span>
+</div>
+</div>
+</div>
+<!-- Visual Asset / Status Card -->
+<div class="rounded-xl border border-outline-variant overflow-hidden bg-primary h-48 relative flex flex-col justify-end p-lg">
+
+<div class="relative z-10 text-white">
+<p class="text-xs font-black tracking-widest uppercase opacity-70 mb-1">Current Standing</p>
+<p class="text-h2 font-h2">89.4% Average</p>
+<div class="flex items-center gap-2 mt-1">
+<span class="w-2 h-2 rounded-full bg-secondary-fixed"></span>
+<span class="text-xs">Safe Zone (Upper Tier)</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Support & FAQ (Bento Bottom) -->
+<div class="md:col-span-12 bg-white rounded-xl border border-outline-variant p-lg flex flex-col md:flex-row items-center gap-6">
+<div class="flex-shrink-0 w-16 h-16 rounded-2xl bg-surface-container-high flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-[32px]">contact_support</span>
+</div>
+<div class="flex-grow text-center md:text-left">
+<h4 class="font-section-title text-section-title mb-1">Need help with your notification setup?</h4>
+<p class="text-small text-on-surface-variant">Our support desk can help you configure SMS carriers or secondary email redirects for official records.</p>
+</div>
+<div class="flex items-center gap-3 w-full md:w-auto">
+<button class="flex-1 md:flex-none border border-outline-variant text-on-surface px-lg py-2 rounded-lg font-bold hover:bg-surface-container-low transition-colors">Documentation</button>
+<button class="flex-1 md:flex-none bg-inverse-surface text-white px-lg py-2 rounded-lg font-bold hover:bg-on-surface transition-colors">Contact Support</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Mobile) -->
+<nav class="lg:hidden fixed bottom-0 w-full z-50 flex justify-around items-center px-4 py-2 bg-surface border-t border-outline-variant rounded-t-xl shadow-md">
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-2" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label text-label mt-1">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-2" href="#">
+<span class="material-symbols-outlined">warning</span>
+<span class="font-label text-label mt-1">Alerts</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-xl p-2 px-4" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">settings</span>
+<span class="font-label text-label mt-1">Config</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-2" href="#">
+<span class="material-symbols-outlined">history</span>
+<span class="font-label text-label mt-1">History</span>
+</a>
+</nav>
+<script>
+        // Simple micro-interaction for toggle states
+        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const row = this.closest('tr');
+                if (row) {
+                    if (this.checked) {
+                        row.style.opacity = '1';
+                    } else {
+                        // Subtle feedback when a major alert is turned off
+                        if (row.innerText.includes('Critical')) {
+                            console.warn('Security Risk: Critical alerts disabled');
+                        }
+                    }
+                }
+            });
+        });
+
+        // Save preference button feedback
+        const saveBtn = document.querySelector('button.bg-primary');
+        saveBtn.addEventListener('click', () => {
+            const originalContent = saveBtn.innerHTML;
+            saveBtn.innerHTML = `<span class="material-symbols-outlined animate-spin">sync</span> Saving...`;
+            saveBtn.classList.add('opacity-80');
+            
+            setTimeout(() => {
+                saveBtn.innerHTML = `<span class="material-symbols-outlined">check_circle</span> Preferences Saved`;
+                saveBtn.classList.remove('bg-primary');
+                saveBtn.classList.add('bg-secondary');
+                
+                setTimeout(() => {
+                    saveBtn.innerHTML = originalContent;
+                    saveBtn.classList.remove('bg-secondary');
+                    saveBtn.classList.add('bg-primary');
+                    saveBtn.classList.remove('opacity-80');
+                }, 2000);
+            }, 800);
+        });
+    </script>
+</body></html>

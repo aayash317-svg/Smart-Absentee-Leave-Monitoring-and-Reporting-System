@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Email Report Preview - University Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            vertical-align: middle;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #faf8ff;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(8px);
+            border: 1px solid #e2e8f0;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "background": "#faf8ff",
+                        "error": "#ba1a1a",
+                        "on-primary": "#ffffff",
+                        "on-background": "#191b23",
+                        "primary-container": "#2563eb",
+                        "primary": "#004ac6",
+                        "secondary": "#006e2d",
+                        "surface-container-low": "#f3f3fe",
+                        "outline-variant": "#c3c6d7",
+                        "on-surface-variant": "#434655",
+                        "on-surface": "#191b23"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "1rem", /* 16px as requested */
+                        "full": "9999px"
+                    },
+                    spacing: {
+                        "margin-mobile": "16px",
+                        "md": "16px",
+                        "lg": "24px",
+                        "sm": "8px"
+                    },
+                    fontSize: {
+                        "h1-mobile": ["28px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                        "h3": ["22px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                        "body": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "label": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "section-title": ["18px", {"lineHeight": "1.5", "fontWeight": "600"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface antialiased overflow-x-hidden">
+<!-- Top App Bar -->
+<header class="fixed top-0 left-0 right-0 z-50 bg-white border-b border-outline-variant h-16 flex items-center px-4 justify-between">
+<div class="flex items-center gap-3">
+<button class="p-2 hover:bg-surface-container-low rounded-full transition-transform active:scale-90">
+<span class="material-symbols-outlined text-primary">arrow_back</span>
+</button>
+<h1 class="font-h3 text-h3 text-on-surface">Email Report Preview</h1>
+</div>
+<button class="p-2 hover:bg-surface-container-low rounded-full">
+<span class="material-symbols-outlined text-on-surface-variant">more_vert</span>
+</button>
+</header>
+<main class="pt-20 pb-28 px-4 max-w-md mx-auto space-y-6">
+<!-- Configuration Section -->
+<section class="space-y-4">
+<h2 class="font-section-title text-section-title text-on-surface-variant px-1">Configuration</h2>
+<div class="bg-white border border-outline-variant rounded-xl p-lg space-y-5">
+<div class="space-y-2">
+<label class="font-label text-label text-on-surface-variant uppercase">Date Range</label>
+<div class="relative">
+<select class="w-full bg-surface-container-low border border-outline-variant rounded-lg px-4 py-3 appearance-none focus:ring-2 focus:ring-primary focus:border-primary outline-none text-body">
+<option>Last 30 Days</option>
+<option>Last 7 Days</option>
+<option>Current Semester</option>
+<option>Custom Range</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant">expand_more</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="space-y-2">
+<label class="font-label text-label text-on-surface-variant uppercase">Department</label>
+<div class="relative">
+<select class="w-full bg-surface-container-low border border-outline-variant rounded-lg px-4 py-3 appearance-none focus:ring-2 focus:ring-primary focus:border-primary outline-none text-body">
+<option>All Depts</option>
+<option>Computer Sci</option>
+<option>Mechanical</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant">corporate_fare</span>
+</div>
+</div>
+<div class="space-y-2">
+<label class="font-label text-label text-on-surface-variant uppercase">Class/Batch</label>
+<div class="relative">
+<select class="w-full bg-surface-container-low border border-outline-variant rounded-lg px-4 py-3 appearance-none focus:ring-2 focus:ring-primary focus:border-primary outline-none text-body">
+<option>All Batches</option>
+<option>2024 - A</option>
+<option>2024 - B</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant">groups</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Recipients Section -->
+<section class="space-y-4">
+<h2 class="font-section-title text-section-title text-on-surface-variant px-1">Recipients</h2>
+<div class="bg-white border border-outline-variant rounded-xl p-lg space-y-4">
+<div class="flex flex-wrap gap-2">
+<button class="flex items-center gap-2 px-3 py-1.5 bg-primary-container/10 text-primary border border-primary/20 rounded-full font-label text-[11px]">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                        HODs
+                    </button>
+<button class="flex items-center gap-2 px-3 py-1.5 bg-primary-container/10 text-primary border border-primary/20 rounded-full font-label text-[11px]">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                        Principal
+                    </button>
+<button class="flex items-center gap-2 px-3 py-1.5 bg-surface-container-low text-on-surface-variant border border-outline-variant rounded-full font-label text-[11px]">
+<span class="material-symbols-outlined text-[18px]">add</span>
+                        Add Others
+                    </button>
+</div>
+<div class="relative">
+<input class="w-full bg-surface-container-low border border-outline-variant rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary focus:border-primary outline-none text-body" placeholder="Enter additional email addresses..." type="email"/>
+</div>
+</div>
+</section>
+<!-- Report Preview Card -->
+<section class="space-y-4">
+<div class="flex justify-between items-end px-1">
+<h2 class="font-section-title text-section-title text-on-surface-variant">Report Preview</h2>
+<span class="text-primary font-label text-[11px] uppercase cursor-pointer hover:underline">Full View</span>
+</div>
+<div class="bg-white border border-outline-variant rounded-xl overflow-hidden shadow-sm">
+<div class="bg-primary p-4 text-white">
+<div class="flex justify-between items-start">
+<div>
+<p class="font-label text-[10px] opacity-80 uppercase tracking-widest">Confidential Report</p>
+<h3 class="font-h3 text-lg">Dean's Weekly Summary</h3>
+</div>
+<span class="material-symbols-outlined opacity-50 text-3xl">mail</span>
+</div>
+</div>
+<div class="p-lg space-y-6">
+<!-- Metrics Grid -->
+<div class="grid grid-cols-2 gap-4">
+<div class="p-3 bg-surface-container-low rounded-lg border border-outline-variant/30">
+<p class="text-[10px] font-label text-on-surface-variant uppercase mb-1">Avg Attendance</p>
+<p class="text-2xl font-bold text-primary">84.2%</p>
+<p class="text-[11px] text-secondary flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined text-[14px]">trending_up</span> +2.1%
+                            </p>
+</div>
+<div class="p-3 bg-surface-container-low rounded-lg border border-outline-variant/30">
+<p class="text-[10px] font-label text-on-surface-variant uppercase mb-1">Leave Requests</p>
+<p class="text-2xl font-bold text-on-surface">142</p>
+<p class="text-[11px] text-error flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined text-[14px]">pending_actions</span> 12 Pending
+                            </p>
+</div>
+</div>
+<!-- Top Issues -->
+<div class="space-y-3">
+<p class="font-label text-[11px] text-on-surface-variant uppercase flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-error">priority_high</span>
+                            Critical Attention Required
+                        </p>
+<div class="space-y-2">
+<div class="flex justify-between items-center text-small px-2 py-1 bg-error/5 rounded border-l-4 border-error">
+<span>Mechanical Eng. (Year 3)</span>
+<span class="font-bold">62% Att.</span>
+</div>
+<div class="flex justify-between items-center text-small px-2 py-1 bg-error/5 rounded border-l-4 border-error">
+<span>Civil Eng. (Year 1)</span>
+<span class="font-bold">68% Att.</span>
+</div>
+<div class="flex justify-between items-center text-small px-2 py-1 bg-error/5 rounded border-l-4 border-error">
+<span>Architecture (Year 4)</span>
+<span class="font-bold">71% Att.</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Automation Toggle -->
+<div class="bg-white border border-outline-variant rounded-xl p-4 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-primary-container/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">schedule_send</span>
+</div>
+<div>
+<p class="font-bold text-on-surface text-sm">Automated Weekly Reporting</p>
+<p class="text-xs text-on-surface-variant">Sends every Monday at 8:00 AM</p>
+</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-outline-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+</main>
+<!-- Bottom Actions -->
+<div class="fixed bottom-0 left-0 right-0 bg-white border-t border-outline-variant p-4 flex flex-col gap-3 max-w-md mx-auto z-50 shadow-[0_-4px_12px_rgba(15,23,42,0.05)]">
+<button class="w-full bg-primary text-on-primary font-bold py-4 rounded-xl flex items-center justify-center gap-2 active:scale-95 transition-transform">
+<span class="material-symbols-outlined">send</span>
+            Send Email Now
+        </button>
+<button class="w-full bg-white text-primary border border-outline-variant font-bold py-4 rounded-xl flex items-center justify-center gap-2 active:scale-95 transition-transform">
+<span class="material-symbols-outlined">picture_as_pdf</span>
+            Download PDF
+        </button>
+</div>
+<script>
+        // Micro-interactions
+        document.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                // Visual ripple or simple feedback could go here
+            });
+        });
+
+        // Toggle handling
+        const toggle = document.querySelector('input[type="checkbox"]');
+        toggle.addEventListener('change', function() {
+            const container = this.closest('div');
+            if (this.checked) {
+                console.log('Automated reporting enabled');
+            } else {
+                console.log('Automated reporting disabled');
+            }
+        });
+    </script>
+</body></html>

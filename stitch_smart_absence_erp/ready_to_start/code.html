@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Onboarding Complete - Precision Monitor</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "error-container": "#ffdad6",
+                    "outline": "#737686",
+                    "on-secondary": "#ffffff",
+                    "surface-tint": "#0053db",
+                    "surface-container-highest": "#e1e2ed",
+                    "primary-fixed": "#dbe1ff",
+                    "on-secondary-container": "#007230",
+                    "tertiary": "#943700",
+                    "primary-fixed-dim": "#b4c5ff",
+                    "secondary": "#006e2d",
+                    "on-primary-fixed": "#00174b",
+                    "background": "#faf8ff",
+                    "on-secondary-fixed": "#002109",
+                    "surface-container-lowest": "#ffffff",
+                    "inverse-on-surface": "#f0f0fb",
+                    "surface-container-low": "#f3f3fe",
+                    "surface": "#faf8ff",
+                    "on-tertiary-fixed-variant": "#7d2d00",
+                    "on-primary-fixed-variant": "#003ea8",
+                    "on-secondary-fixed-variant": "#005320",
+                    "on-tertiary": "#ffffff",
+                    "surface-bright": "#faf8ff",
+                    "on-tertiary-fixed": "#360f00",
+                    "tertiary-fixed": "#ffdbcd",
+                    "tertiary-container": "#bc4800",
+                    "surface-variant": "#e1e2ed",
+                    "primary-container": "#2563eb",
+                    "primary": "#004ac6",
+                    "on-surface-variant": "#434655",
+                    "outline-variant": "#c3c6d7",
+                    "on-error-container": "#93000a",
+                    "tertiary-fixed-dim": "#ffb596",
+                    "surface-container": "#ededf9",
+                    "on-primary": "#ffffff",
+                    "on-error": "#ffffff",
+                    "surface-container-high": "#e7e7f3",
+                    "inverse-surface": "#2e3039",
+                    "on-background": "#191b23",
+                    "surface-container-low": "#f3f3fe",
+                    "surface-dim": "#d9d9e5",
+                    "error": "#ba1a1a",
+                    "on-tertiary-container": "#ffede6",
+                    "inverse-primary": "#b4c5ff",
+                    "secondary-fixed-dim": "#62df7d",
+                    "secondary-container": "#7cf994",
+                    "on-primary-container": "#eeefff",
+                    "secondary-fixed": "#7ffc97",
+                    "on-surface": "#191b23"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "md": "16px",
+                    "gutter": "24px",
+                    "xs": "4px",
+                    "lg": "24px",
+                    "margin-desktop": "32px",
+                    "margin-mobile": "16px",
+                    "xl": "32px",
+                    "xxl": "48px",
+                    "sm": "8px"
+            },
+            "fontFamily": {
+                    "small": ["Inter"],
+                    "section-title": ["Inter"],
+                    "h1": ["Inter"],
+                    "body": ["Inter"],
+                    "h1-mobile": ["Inter"],
+                    "label": ["Inter"],
+                    "h3": ["Inter"],
+                    "h2": ["Inter"]
+            },
+            "fontSize": {
+                    "small": ["14px", {"lineHeight": "1.5", "fontWeight": "500"}],
+                    "section-title": ["18px", {"lineHeight": "1.5", "fontWeight": "600"}],
+                    "h1": ["36px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "h1-mobile": ["28px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "label": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "h3": ["22px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                    "h2": ["28px", {"lineHeight": "1.3", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #faf8ff;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .confetti-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="flex flex-col min-h-screen items-center justify-center overflow-hidden">
+<!-- Confetti layer -->
+<canvas class="confetti-canvas" id="confetti"></canvas>
+<!-- Top App Bar (Simplified for Onboarding) -->
+<header class="fixed top-0 w-full bg-background flex items-center justify-center h-14 px-margin-mobile z-50">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="school">school</span>
+<span class="font-h3 text-h3-mobile font-bold text-primary tracking-tight">Precision Monitor</span>
+</div>
+</header>
+<main class="relative w-full max-w-lg px-margin-mobile flex flex-col items-center text-center animate-in fade-in slide-in-from-bottom-4 duration-1000">
+<!-- Success Illustration Section -->
+<div class="relative w-full aspect-square max-w-[320px] mb-lg flex items-center justify-center">
+<!-- Background Halo -->
+<div class="absolute inset-0 bg-primary/5 rounded-full scale-110 animate-pulse"></div>
+<div class="absolute inset-4 bg-primary/10 rounded-full scale-100"></div>
+<!-- Main Success Visual -->
+<div class="relative z-20 flex flex-col items-center">
+<div class="w-32 h-32 bg-primary rounded-full flex items-center justify-center shadow-lg shadow-primary/20 mb-md transform hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-white text-6xl" style="font-variation-settings: 'wght' 600;">check_circle</span>
+</div>
+<!-- Stylized data-alt image for the background atmosphere -->
+<div class="absolute -z-10 opacity-40 blur-2xl">
+<div class="w-64 h-64 rounded-full bg-cover" data-alt="A clean and professional digital workspace abstract illustration. A sleek 3D render of a glass-morphic dashboard with vibrant blue and white glowing data points floating in a bright, airy office environment. The style is minimalist SaaS with soft ambient shadows and high-key lighting, emphasizing organizational success and clarity." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuC9iwnDEOon_PnhB-JCzjz-KABIy4N8H5qtYoecYGOZByePAj_t7c7Tx6Vcz239df-2gWVGaJyshzgDDlQCS6kPxrMKZ4p_skE_i_Rbeq1qKkL3vls0MfAvlpM30sUaHYnG66i9CXCrvNQ1OuB262q8DJNKv66FUdksa2ip_lMx2A-CbO_IO9ygUCq_jWYDmxVfYN4SbYm49Fmfl1IaxnRG1xu3pTSlEtMGgPezshaG-Sa6J66NLbYyxi2ablMHA66yOwu4WaTkaug')"></div>
+</div>
+</div>
+</div>
+<!-- Content -->
+<h1 class="font-h1-mobile text-h1-mobile md:font-h1 md:text-h1 text-on-background mb-sm">
+            You're all set!
+        </h1>
+<p class="font-body text-body text-on-surface-variant max-w-sm mb-xxl">
+            Welcome to the Attendance Hub. Your dashboard is ready for you. Start managing your team's availability with precision.
+        </p>
+<!-- Action Button -->
+<div class="w-full space-y-md">
+<a class="inline-flex w-full items-center justify-center gap-2 bg-primary-container text-on-primary-container font-body text-body py-4 px-xl rounded-xl hover:opacity-90 active:scale-[0.98] transition-all shadow-sm" href="#">
+<span>Go to Dashboard</span>
+<span class="material-symbols-outlined" data-icon="arrow_forward">arrow_forward</span>
+</a>
+<a class="inline-flex w-full items-center justify-center gap-2 bg-surface text-primary border border-outline-variant font-body text-body py-4 px-xl rounded-xl hover:bg-surface-container-low transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+<span>Need help?</span>
+</a>
+</div>
+<!-- Decorative Progress Indicator (Static) -->
+<div class="flex gap-2 mt-xxl">
+<div class="w-2 h-2 rounded-full bg-outline-variant"></div>
+<div class="w-2 h-2 rounded-full bg-outline-variant"></div>
+<div class="w-8 h-2 rounded-full bg-primary"></div>
+</div>
+</main>
+<!-- Footer Help Link -->
+<footer class="fixed bottom-8 w-full text-center px-margin-mobile">
+<p class="font-label text-label text-outline uppercase tracking-widest">
+            Ready to monitor with precision
+        </p>
+</footer>
+<script>
+        // Simple confetti effect
+        const canvas = document.getElementById('confetti');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height - canvas.height;
+                this.size = Math.random() * 8 + 4;
+                this.speedX = Math.random() * 3 - 1.5;
+                this.speedY = Math.random() * 3 + 2;
+                this.color = ['#2563eb', '#004ac6', '#b4c5ff', '#006e2d'][Math.floor(Math.random() * 4)];
+                this.rotation = Math.random() * 360;
+                this.rotationSpeed = Math.random() * 10 - 5;
+            }
+            update() {
+                this.y += this.speedY;
+                this.x += this.speedX;
+                this.rotation += this.rotationSpeed;
+                if (this.y > canvas.height) {
+                    this.y = -20;
+                    this.x = Math.random() * canvas.width;
+                }
+            }
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.rotation * Math.PI / 180);
+                ctx.fillStyle = this.color;
+                ctx.fillRect(-this.size / 2, -this.size / 2, this.size, this.size);
+                ctx.restore();
+            }
+        }
+
+        function init() {
+            for (let i = 0; i < 40; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animate);
+        }
+
+        init();
+        animate();
+
+        // Interaction for the button
+        document.querySelector('a').addEventListener('click', (e) => {
+            // In a real app, this would navigate
+            console.log('Navigating to dashboard...');
+        });
+    </script>
+</body></html>

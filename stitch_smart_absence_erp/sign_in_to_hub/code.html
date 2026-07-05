@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Sign In | Precision Monitor</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "error-container": "#ffdad6",
+                    "outline": "#737686",
+                    "on-secondary": "#ffffff",
+                    "surface-tint": "#0053db",
+                    "surface-container-highest": "#e1e2ed",
+                    "primary-fixed": "#dbe1ff",
+                    "on-secondary-container": "#007230",
+                    "tertiary": "#943700",
+                    "primary-fixed-dim": "#b4c5ff",
+                    "secondary": "#006e2d",
+                    "on-primary-fixed": "#00174b",
+                    "background": "#faf8ff",
+                    "on-secondary-fixed": "#002109",
+                    "surface-container-lowest": "#ffffff",
+                    "inverse-on-surface": "#f0f0fb",
+                    "surface-container-low": "#f3f3fe",
+                    "surface": "#faf8ff",
+                    "on-tertiary-fixed-variant": "#7d2d00",
+                    "on-primary-fixed-variant": "#003ea8",
+                    "on-secondary-fixed-variant": "#005320",
+                    "on-tertiary": "#ffffff",
+                    "surface-bright": "#faf8ff",
+                    "on-tertiary-fixed": "#360f00",
+                    "tertiary-fixed": "#ffdbcd",
+                    "tertiary-container": "#bc4800",
+                    "surface-variant": "#e1e2ed",
+                    "primary-container": "#2563eb",
+                    "primary": "#004ac6",
+                    "on-surface-variant": "#434655",
+                    "outline-variant": "#c3c6d7",
+                    "on-error-container": "#93000a",
+                    "tertiary-fixed-dim": "#ffb596",
+                    "surface-container": "#ededf9",
+                    "on-primary": "#ffffff",
+                    "on-error": "#ffffff",
+                    "surface-container-high": "#e7e7f3",
+                    "inverse-surface": "#2e3039",
+                    "on-background": "#191b23",
+                    "surface-container-low": "#f3f3fe",
+                    "surface-dim": "#d9d9e5",
+                    "error": "#ba1a1a",
+                    "on-tertiary-container": "#ffede6",
+                    "inverse-primary": "#b4c5ff",
+                    "secondary-fixed-dim": "#62df7d",
+                    "secondary-container": "#7cf994",
+                    "on-primary-container": "#eeefff",
+                    "secondary-fixed": "#7ffc97",
+                    "on-surface": "#191b23"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "12px",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "md": "16px",
+                    "gutter": "24px",
+                    "xs": "4px",
+                    "lg": "24px",
+                    "margin-desktop": "32px",
+                    "margin-mobile": "16px",
+                    "xl": "32px",
+                    "xxl": "48px",
+                    "sm": "8px"
+            },
+            "fontFamily": {
+                    "small": ["Inter"],
+                    "section-title": ["Inter"],
+                    "h1": ["Inter"],
+                    "body": ["Inter"],
+                    "h1-mobile": ["Inter"],
+                    "label": ["Inter"],
+                    "h3": ["Inter"],
+                    "h2": ["Inter"]
+            },
+            "fontSize": {
+                    "small": ["14px", {"lineHeight": "1.5", "fontWeight": "500"}],
+                    "section-title": ["18px", {"lineHeight": "1.5", "fontWeight": "600"}],
+                    "h1": ["36px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "h1-mobile": ["28px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "label": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "h3": ["22px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                    "h2": ["28px", {"lineHeight": "1.3", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8FAFC;
+        }
+        .login-card {
+            background-color: #FFFFFF;
+            border: 1px solid #E2E8F0;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .focused-input:focus {
+            outline: none;
+            border-color: #2563EB;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="flex min-h-screen items-center justify-center p-margin-mobile md:p-margin-desktop overflow-hidden">
+<!-- Background Decoration (Atmospheric) -->
+<div class="fixed inset-0 -z-10 bg-[#F8FAFC]">
+<div class="absolute top-0 right-0 w-1/2 h-1/2 bg-gradient-to-bl from-primary/5 to-transparent blur-3xl opacity-50"></div>
+<div class="absolute bottom-0 left-0 w-1/2 h-1/2 bg-gradient-to-tr from-secondary/5 to-transparent blur-3xl opacity-50"></div>
+</div>
+<main class="w-full max-w-[440px] z-10">
+<!-- Logo & Brand Header -->
+<header class="flex flex-col items-center mb-xl">
+<div class="flex items-center gap-sm mb-xs">
+<span class="material-symbols-outlined text-primary text-4xl" data-icon="school">school</span>
+<h1 class="font-h2 text-h2-mobile md:text-h2 text-on-background font-extrabold tracking-tight">Precision Monitor</h1>
+</div>
+<p class="font-body text-on-surface-variant text-center opacity-80">Attendance Hub Management</p>
+</header>
+<!-- Main Login Surface -->
+<div class="login-card rounded-xl p-lg md:p-xl shadow-sm">
+<div class="mb-xl text-center">
+<h2 class="font-h3 text-h3 text-on-surface mb-xs">Sign In</h2>
+<p class="font-small text-on-surface-variant">Enter your credentials to access the hub</p>
+</div>
+<!-- SSO Option -->
+<div class="space-y-md">
+<button class="group w-full flex items-center justify-center gap-md py-3 px-4 bg-primary text-on-primary font-section-title text-section-title rounded-xl transition-all duration-200 hover:opacity-90 active:scale-[0.98] shadow-sm">
+<span class="material-symbols-outlined" data-icon="account_balance">account_balance</span>
+<span>Sign in with University ID</span>
+</button>
+<!-- Divider -->
+<div class="relative py-md">
+<div class="absolute inset-0 flex items-center">
+<span class="w-full border-t border-outline-variant"></span>
+</div>
+<div class="relative flex justify-center text-label">
+<span class="px-md bg-white text-outline font-label">OR USE TRADITIONAL LOGIN</span>
+</div>
+</div>
+<!-- Manual Login Form -->
+<form class="space-y-lg">
+<div>
+<label class="block font-label text-label text-on-surface-variant mb-xs uppercase tracking-wider" for="identity">Email or Username</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline text-xl" data-icon="person">person</span>
+<input class="w-full pl-12 pr-4 py-3 bg-[#F8FAFC] border border-outline-variant rounded-xl font-body text-on-surface focused-input transition-all duration-150" id="identity" placeholder="name@university.edu" type="text"/>
+</div>
+</div>
+<div>
+<div class="flex justify-between items-center mb-xs">
+<label class="block font-label text-label text-on-surface-variant uppercase tracking-wider" for="password">Password</label>
+<a class="font-small text-primary hover:underline transition-all" href="#">Forgot Password?</a>
+</div>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline text-xl" data-icon="lock">lock</span>
+<input class="w-full pl-12 pr-4 py-3 bg-[#F8FAFC] border border-outline-variant rounded-xl font-body text-on-surface focused-input transition-all duration-150" id="password" placeholder="••••••••" type="password"/>
+<button class="absolute right-4 top-1/2 -translate-y-1/2 text-outline hover:text-on-surface-variant transition-colors" type="button">
+<span class="material-symbols-outlined" data-icon="visibility">visibility</span>
+</button>
+</div>
+</div>
+<div class="flex items-center gap-sm">
+<input class="w-4 h-4 text-primary rounded border-outline-variant focus:ring-primary" id="remember" type="checkbox"/>
+<label class="font-small text-on-surface-variant cursor-pointer" for="remember">Keep me signed in for 30 days</label>
+</div>
+<button class="w-full py-3 bg-white border border-outline-variant text-on-surface font-section-title text-section-title rounded-xl hover:bg-surface-container transition-all active:scale-[0.99] flex items-center justify-center gap-sm" type="submit">
+<span>Continue to Hub</span>
+<span class="material-symbols-outlined text-xl" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</form>
+</div>
+</div>
+<!-- Footer / Support Info -->
+<footer class="mt-xl text-center">
+<p class="font-small text-on-surface-variant">
+                Difficulty signing in? <a class="text-primary font-semibold hover:underline" href="#">Contact System Admin</a>
+</p>
+<div class="flex justify-center gap-xl mt-md">
+<a class="font-label text-label text-outline hover:text-on-surface transition-colors" href="#">Privacy Policy</a>
+<a class="font-label text-label text-outline hover:text-on-surface transition-colors" href="#">Terms of Service</a>
+</div>
+</footer>
+</main>
+<!-- Visual Polish: Subtle Particle Layer -->
+<canvas class="fixed inset-0 -z-5 pointer-events-none opacity-30" id="particles"></canvas>
+<script>
+        // Simple micro-interaction for the particle background to enhance "Modern SaaS Minimalist" feel
+        const canvas = document.getElementById('particles');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 1;
+                this.speedX = Math.random() * 0.3 - 0.15;
+                this.speedY = Math.random() * 0.3 - 0.15;
+                this.opacity = Math.random() * 0.5;
+            }
+
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+
+                if (this.x > canvas.width) this.x = 0;
+                if (this.x < 0) this.x = canvas.width;
+                if (this.y > canvas.height) this.y = 0;
+                if (this.y < 0) this.y = canvas.height;
+            }
+
+            draw() {
+                ctx.fillStyle = `rgba(37, 99, 235, ${this.opacity})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function init() {
+            particles = [];
+            for (let i = 0; i < 40; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animate);
+        }
+
+        window.addEventListener('resize', resize);
+        resize();
+        init();
+        animate();
+
+        // Input Focus Effects
+        const inputs = document.querySelectorAll('input');
+        inputs.forEach(input => {
+            input.addEventListener('focus', () => {
+                input.parentElement.querySelector('.material-symbols-outlined')?.classList.add('text-primary');
+            });
+            input.addEventListener('blur', () => {
+                input.parentElement.querySelector('.material-symbols-outlined')?.classList.remove('text-primary');
+            });
+        });
+    </script>
+</body></html>

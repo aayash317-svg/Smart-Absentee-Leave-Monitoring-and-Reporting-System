@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SMS Log History - Attendance Hub</title>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts: Inter -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Design System Configuration -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "error": "#ba1a1a",
+                    "on-tertiary-fixed": "#360f00",
+                    "on-secondary": "#ffffff",
+                    "outline": "#737686",
+                    "on-tertiary-fixed-variant": "#7d2d00",
+                    "on-primary-fixed-variant": "#003ea8",
+                    "inverse-surface": "#2e3039",
+                    "on-background": "#191b23",
+                    "on-primary": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "on-tertiary-container": "#ffede6",
+                    "secondary-container": "#7cf994",
+                    "primary-fixed-dim": "#b4c5ff",
+                    "background": "#faf8ff",
+                    "surface-container": "#ededf9",
+                    "on-secondary-container": "#007230",
+                    "tertiary": "#943700",
+                    "on-surface-variant": "#434655",
+                    "surface": "#faf8ff",
+                    "secondary": "#006e2d",
+                    "on-secondary-fixed-variant": "#005320",
+                    "inverse-primary": "#b4c5ff",
+                    "surface-bright": "#faf8ff",
+                    "inverse-on-surface": "#f0f0fb",
+                    "surface-tint": "#0053db",
+                    "surface-variant": "#e1e2ed",
+                    "primary-container": "#2563eb",
+                    "on-tertiary": "#ffffff",
+                    "tertiary-container": "#bc4800",
+                    "primary-fixed": "#dbe1ff",
+                    "on-primary-fixed": "#00174b",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-container-high": "#e7e7f3",
+                    "surface-dim": "#d9d9e5",
+                    "on-primary-container": "#eeefff",
+                    "surface-container-low": "#f3f3fe",
+                    "secondary-fixed": "#7ffc97",
+                    "on-surface": "#191b23",
+                    "on-secondary-fixed": "#002109",
+                    "on-error": "#ffffff",
+                    "outline-variant": "#c3c6d7",
+                    "primary": "#004ac6",
+                    "tertiary-fixed-dim": "#ffb596",
+                    "surface-container-highest": "#e1e2ed",
+                    "secondary-fixed-dim": "#62df7d",
+                    "on-error-container": "#93000a",
+                    "tertiary-fixed": "#ffdbcd"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "gutter": "24px",
+                    "xl": "32px",
+                    "margin-mobile": "16px",
+                    "lg": "24px",
+                    "xs": "4px",
+                    "margin-desktop": "32px",
+                    "md": "16px",
+                    "xxl": "48px",
+                    "sm": "8px"
+            },
+            "fontFamily": {
+                    "h3": ["Inter"],
+                    "label": ["Inter"],
+                    "small": ["Inter"],
+                    "section-title": ["Inter"],
+                    "h2": ["Inter"],
+                    "h1-mobile": ["Inter"],
+                    "h1": ["Inter"],
+                    "body": ["Inter"]
+            },
+            "fontSize": {
+                    "h3": ["22px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                    "label": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "small": ["14px", {"lineHeight": "1.5", "fontWeight": "500"}],
+                    "section-title": ["18px", {"lineHeight": "1.5", "fontWeight": "600"}],
+                    "h2": ["28px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                    "h1-mobile": ["28px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "h1": ["36px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .status-chip-delivered { background-color: rgba(22, 163, 74, 0.1); color: #16a34a; }
+        .status-chip-failed { background-color: rgba(186, 26, 26, 0.1); color: #ba1a1a; }
+        .status-chip-pending { background-color: rgba(234, 179, 8, 0.1); color: #ca8a04; }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #cbd5e1; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface min-h-screen">
+<!-- Navigation Drawer (Sidebar for Desktop) -->
+<aside class="hidden md:flex fixed left-0 top-0 h-full w-[280px] flex-col bg-on-background py-xl shadow-md z-50">
+<div class="px-lg mb-xxl">
+<h1 class="font-h3 text-h3 text-surface">Attendance Hub</h1>
+<div class="mt-md flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center text-white font-bold">AC</div>
+<div>
+<p class="text-surface font-body text-body font-semibold">Academic Coordinator</p>
+<p class="text-outline-variant text-small">Department of CS</p>
+</div>
+</div>
+</div>
+<nav class="flex-1 space-y-sm px-md">
+<a class="flex items-center gap-md px-md py-md rounded-lg text-outline-variant hover:text-surface-bright hover:bg-white/5 transition-all" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-body">Dashboard</span>
+</a>
+<a class="flex items-center gap-md px-md py-md rounded-lg text-outline-variant hover:text-surface-bright hover:bg-white/5 transition-all" href="#">
+<span class="material-symbols-outlined">person_off</span>
+<span class="font-body">Absentees</span>
+</a>
+<a class="flex items-center gap-md px-md py-md rounded-lg text-outline-variant hover:text-surface-bright hover:bg-white/5 transition-all" href="#">
+<span class="material-symbols-outlined">event_busy</span>
+<span class="font-body">Leave Requests</span>
+</a>
+<!-- Active State -->
+<a class="flex items-center gap-md px-md py-md rounded-lg border-l-4 border-primary text-primary-fixed bg-surface-container-highest/10 transition-all translate-x-1" href="#">
+<span class="material-symbols-outlined">payments</span>
+<span class="font-body">SMS History</span>
+</a>
+<a class="flex items-center gap-md px-md py-md rounded-lg text-outline-variant hover:text-surface-bright hover:bg-white/5 transition-all" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-body">Analytics</span>
+</a>
+</nav>
+</aside>
+<!-- Main Content Canvas -->
+<main class="md:ml-[280px] min-h-screen flex flex-col pb-24 md:pb-0">
+<!-- TopAppBar -->
+<header class="w-full top-0 sticky z-40 flex justify-between items-center px-lg py-md bg-surface border-b border-outline-variant dark:border-outline">
+<div class="flex items-center gap-md">
+<button class="md:hidden p-sm hover:bg-surface-container-high rounded-full transition-colors active:scale-95">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h2 class="font-h3 text-h3 text-primary">SMS History</h2>
+</div>
+<div class="flex items-center gap-md">
+<button class="p-sm hover:bg-surface-container-high rounded-full transition-colors active:scale-95">
+<span class="material-symbols-outlined">filter_list</span>
+</button>
+<div class="w-10 h-10 rounded-full overflow-hidden border border-outline-variant">
+<img class="w-full h-full object-cover" data-alt="A professional studio portrait of a middle-aged academic professional with a friendly smile, wearing a dark navy suit and glasses. The lighting is soft and corporate, set against a neutral, high-key office background that fits a modern enterprise SaaS application aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD_c_6vh1Zi9LWS2Yk61G5XujAdROagIcEIr5OvFsqhymQ997u2yL0deik9hsodSgZBqP4lU7E0ip1ZGNNPFHLKjBAUQ2oGPaeGCkg6dbRPFHU0n7YWCfnIu7rwYkIvwJYMqYwYZsSvQPLZHYXFxIQ1Y8kJ_T1oiq14Sp4J5ceG0xNpIfMKthDERm3UBQkn_HglviQf6lC47w6V4fjCaPIe2AIxjtoVP-gbeMfz3dcdKERQssd4dsBNWXJtCbgKPYNdklWisw7Vw1w"/>
+</div>
+</div>
+</header>
+<div class="p-lg max-w-7xl mx-auto w-full space-y-lg">
+<!-- Summary Stats Section -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-lg">
+<div class="bg-surface-container-lowest p-lg rounded-xl border border-outline-variant flex flex-col justify-between">
+<div class="flex justify-between items-start">
+<p class="text-on-surface-variant font-label text-label uppercase tracking-wider">Total Sent Today</p>
+<span class="material-symbols-outlined text-primary">send</span>
+</div>
+<div class="mt-md">
+<h3 class="font-h2 text-h2 text-on-surface">1,248</h3>
+<p class="text-secondary font-small flex items-center gap-xs mt-1">
+<span class="material-symbols-outlined text-[16px]">trending_up</span>
+                            +12% vs yesterday
+                        </p>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-lg rounded-xl border border-outline-variant flex flex-col justify-between">
+<div class="flex justify-between items-start">
+<p class="text-on-surface-variant font-label text-label uppercase tracking-wider">Delivery Rate</p>
+<span class="material-symbols-outlined text-secondary">check_circle</span>
+</div>
+<div class="mt-md">
+<h3 class="font-h2 text-h2 text-on-surface">98.2%</h3>
+<div class="w-full bg-surface-container rounded-full h-1.5 mt-2">
+<div class="bg-secondary h-1.5 rounded-full" style="width: 98.2%"></div>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-lg rounded-xl border border-outline-variant flex flex-col justify-between">
+<div class="flex justify-between items-start">
+<p class="text-on-surface-variant font-label text-label uppercase tracking-wider">Failed Messages</p>
+<span class="material-symbols-outlined text-error">error</span>
+</div>
+<div class="mt-md">
+<h3 class="font-h2 text-h2 text-on-surface">23</h3>
+<p class="text-error font-small flex items-center gap-xs mt-1">
+<span class="material-symbols-outlined text-[16px]">warning</span>
+                            Needs attention
+                        </p>
+</div>
+</div>
+</section>
+<!-- Search and Filter Bar -->
+<section class="space-y-md">
+<div class="flex flex-col md:flex-row gap-md items-center">
+<div class="relative w-full">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="w-full pl-12 pr-4 py-3 bg-surface-container-low border border-outline-variant rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition-all font-body" placeholder="Search by recipient name or phone..." type="text"/>
+</div>
+<div class="flex gap-sm overflow-x-auto pb-2 md:pb-0 w-full md:w-auto">
+<button class="whitespace-nowrap px-lg py-2 rounded-full bg-primary text-white font-label text-label shadow-sm">All</button>
+<button class="whitespace-nowrap px-lg py-2 rounded-full bg-surface-container-high text-on-surface-variant font-label text-label hover:bg-outline-variant transition-colors">Delivered</button>
+<button class="whitespace-nowrap px-lg py-2 rounded-full bg-surface-container-high text-on-surface-variant font-label text-label hover:bg-outline-variant transition-colors">Failed</button>
+<button class="whitespace-nowrap px-lg py-2 rounded-full bg-surface-container-high text-on-surface-variant font-label text-label hover:bg-outline-variant transition-colors">Pending</button>
+</div>
+</div>
+</section>
+<!-- SMS Logs List -->
+<section class="space-y-md">
+<div class="flex justify-between items-center px-sm">
+<h4 class="font-section-title text-section-title text-on-surface">Recent Logs</h4>
+<p class="text-small text-outline font-body">Showing last 50 messages</p>
+</div>
+<div class="space-y-sm">
+<!-- Log Item 1 -->
+<div class="bg-surface-container-lowest p-lg rounded-xl border border-outline-variant hover:border-primary/50 transition-all cursor-pointer flex flex-col md:flex-row md:items-center gap-lg group">
+<div class="flex-1 space-y-md">
+<div class="flex justify-between items-start">
+<div>
+<h5 class="font-body font-bold text-on-surface">John Doe — <span class="font-normal text-on-surface-variant">Parent</span></h5>
+<p class="text-small text-outline font-body tracking-tight">+1 (555) 012-3456</p>
+</div>
+<span class="status-chip-delivered px-3 py-1 rounded-full font-label text-label flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px]">check_circle</span>
+                                    Delivered
+                                </span>
+</div>
+<p class="text-body text-on-surface-variant line-clamp-1 italic">
+                                "Dear Parent, your ward Alex Johnson was marked ABSENT for the first period session at 08:30 AM. Please contact the office."
+                            </p>
+<div class="flex items-center gap-md text-small text-outline font-body">
+<span class="flex items-center gap-xs"><span class="material-symbols-outlined text-[18px]">calendar_today</span> Oct 24, 2023</span>
+<span class="flex items-center gap-xs"><span class="material-symbols-outlined text-[18px]">schedule</span> 10:45 AM</span>
+</div>
+</div>
+<div class="flex items-center justify-end">
+<button class="flex items-center gap-xs text-primary font-label text-label px-md py-sm rounded-lg group-hover:bg-primary-container/10 transition-colors">
+                                View
+                                <span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+<!-- Log Item 2 -->
+<div class="bg-surface-container-lowest p-lg rounded-xl border border-outline-variant hover:border-primary/50 transition-all cursor-pointer flex flex-col md:flex-row md:items-center gap-lg group">
+<div class="flex-1 space-y-md">
+<div class="flex justify-between items-start">
+<div>
+<h5 class="font-body font-bold text-on-surface">Sarah Miller — <span class="font-normal text-on-surface-variant">Staff</span></h5>
+<p class="text-small text-outline font-body tracking-tight">+1 (555) 098-7654</p>
+</div>
+<span class="status-chip-failed px-3 py-1 rounded-full font-label text-label flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px]">error</span>
+                                    Failed
+                                </span>
+</div>
+<p class="text-body text-on-surface-variant line-clamp-1 italic">
+                                "Attendance Update: Meeting for all faculty members at 4:00 PM in Conference Hall A today regarding the new reporting system."
+                            </p>
+<div class="flex items-center gap-md text-small text-outline font-body">
+<span class="flex items-center gap-xs"><span class="material-symbols-outlined text-[18px]">calendar_today</span> Oct 24, 2023</span>
+<span class="flex items-center gap-xs"><span class="material-symbols-outlined text-[18px]">schedule</span> 09:12 AM</span>
+</div>
+</div>
+<div class="flex items-center justify-end">
+<button class="flex items-center gap-xs text-primary font-label text-label px-md py-sm rounded-lg group-hover:bg-primary-container/10 transition-colors">
+                                View
+                                <span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+<!-- Log Item 3 -->
+<div class="bg-surface-container-lowest p-lg rounded-xl border border-outline-variant hover:border-primary/50 transition-all cursor-pointer flex flex-col md:flex-row md:items-center gap-lg group">
+<div class="flex-1 space-y-md">
+<div class="flex justify-between items-start">
+<div>
+<h5 class="font-body font-bold text-on-surface">Robert Chen — <span class="font-normal text-on-surface-variant">Parent</span></h5>
+<p class="text-small text-outline font-body tracking-tight">+1 (555) 024-6810</p>
+</div>
+<span class="status-chip-pending px-3 py-1 rounded-full font-label text-label flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px]">schedule</span>
+                                    Pending
+                                </span>
+</div>
+<p class="text-body text-on-surface-variant line-clamp-1 italic">
+                                "Leave Approved: Your request for Leo Chen for Oct 26-27 has been processed and approved by the HOD."
+                            </p>
+<div class="flex items-center gap-md text-small text-outline font-body">
+<span class="flex items-center gap-xs"><span class="material-symbols-outlined text-[18px]">calendar_today</span> Oct 24, 2023</span>
+<span class="flex items-center gap-xs"><span class="material-symbols-outlined text-[18px]">schedule</span> 08:55 AM</span>
+</div>
+</div>
+<div class="flex items-center justify-end">
+<button class="flex items-center gap-xs text-primary font-label text-label px-md py-sm rounded-lg group-hover:bg-primary-container/10 transition-colors">
+                                View
+                                <span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+<!-- Log Item 4 -->
+<div class="bg-surface-container-lowest p-lg rounded-xl border border-outline-variant hover:border-primary/50 transition-all cursor-pointer flex flex-col md:flex-row md:items-center gap-lg group">
+<div class="flex-1 space-y-md">
+<div class="flex justify-between items-start">
+<div>
+<h5 class="font-body font-bold text-on-surface">Elena Garcia — <span class="font-normal text-on-surface-variant">Parent</span></h5>
+<p class="text-small text-outline font-body tracking-tight">+1 (555) 077-2233</p>
+</div>
+<span class="status-chip-delivered px-3 py-1 rounded-full font-label text-label flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px]">check_circle</span>
+                                    Delivered
+                                </span>
+</div>
+<p class="text-body text-on-surface-variant line-clamp-1 italic">
+                                "URGENT: Reminder for Parent-Teacher meeting scheduled for tomorrow at 10:00 AM. Please acknowledge receipt."
+                            </p>
+<div class="flex items-center gap-md text-small text-outline font-body">
+<span class="flex items-center gap-xs"><span class="material-symbols-outlined text-[18px]">calendar_today</span> Oct 23, 2023</span>
+<span class="flex items-center gap-xs"><span class="material-symbols-outlined text-[18px]">schedule</span> 04:20 PM</span>
+</div>
+</div>
+<div class="flex items-center justify-end">
+<button class="flex items-center gap-xs text-primary font-label text-label px-md py-sm rounded-lg group-hover:bg-primary-container/10 transition-colors">
+                                View
+                                <span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- Bottom Navigation Bar (Mobile only) -->
+<nav class="md:hidden fixed bottom-0 w-full z-50 rounded-t-xl bg-surface border-t border-outline-variant shadow-lg flex justify-around items-center px-4 py-2">
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-high rounded-xl p-2 transition-colors active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label text-label">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-high rounded-xl p-2 transition-colors active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined">list_alt</span>
+<span class="font-label text-label">Requests</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-2xl px-4 py-1 active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined">bar_chart</span>
+<span class="font-label text-label">Reports</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-high rounded-xl p-2 transition-colors active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined">account_circle</span>
+<span class="font-label text-label">Profile</span>
+</a>
+</nav>
+<!-- Micro-interactions Script -->
+<script>
+        // Log Item Click Animation
+        document.querySelectorAll('.cursor-pointer').forEach(item => {
+            item.addEventListener('mousedown', () => {
+                item.style.transform = 'scale(0.99)';
+            });
+            item.addEventListener('mouseup', () => {
+                item.style.transform = 'scale(1)';
+            });
+            item.addEventListener('mouseleave', () => {
+                item.style.transform = 'scale(1)';
+            });
+        });
+
+        // Simple Filter Switching
+        const filterBtns = document.querySelectorAll('.whitespace-nowrap');
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterBtns.forEach(b => {
+                    b.classList.remove('bg-primary', 'text-white');
+                    b.classList.add('bg-surface-container-high', 'text-on-surface-variant');
+                });
+                btn.classList.remove('bg-surface-container-high', 'text-on-surface-variant');
+                btn.classList.add('bg-primary', 'text-white');
+            });
+        });
+    </script>
+</body></html>

@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Student Profile | Smart Absentee Leave Monitoring</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            vertical-align: middle;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+        .sidebar-active-line {
+            position: absolute;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background-color: #2563eb;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-container": "#bc4800",
+                        "surface-container-low": "#f3f3fe",
+                        "surface-dim": "#d9d9e5",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "primary-fixed": "#dbe1ff",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "error": "#ba1a1a",
+                        "secondary-fixed": "#7ffc97",
+                        "primary": "#004ac6",
+                        "tertiary-fixed": "#ffdbcd",
+                        "surface-container": "#ededf9",
+                        "on-surface": "#191b23",
+                        "on-secondary": "#ffffff",
+                        "surface": "#faf8ff",
+                        "on-tertiary-fixed-variant": "#7d2d00",
+                        "tertiary-fixed-dim": "#ffb596",
+                        "surface-variant": "#e1e2ed",
+                        "secondary-fixed-dim": "#62df7d",
+                        "inverse-on-surface": "#f0f0fb",
+                        "on-primary-fixed": "#00174b",
+                        "on-background": "#191b23",
+                        "on-secondary-fixed-variant": "#005320",
+                        "surface-container-high": "#e7e7f3",
+                        "surface-bright": "#faf8ff",
+                        "on-error-container": "#93000a",
+                        "primary-container": "#2563eb",
+                        "on-secondary-container": "#007230",
+                        "secondary": "#006e2d",
+                        "inverse-primary": "#b4c5ff",
+                        "on-primary-container": "#eeefff",
+                        "surface-tint": "#0053db",
+                        "secondary-container": "#7cf994",
+                        "on-primary": "#ffffff",
+                        "on-tertiary-fixed": "#360f00",
+                        "on-tertiary-container": "#ffede6",
+                        "outline": "#737686",
+                        "on-surface-variant": "#434655",
+                        "on-error": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-highest": "#e1e2ed",
+                        "inverse-surface": "#2e3039",
+                        "on-tertiary": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "outline-variant": "#c3c6d7",
+                        "on-secondary-fixed": "#002109",
+                        "background": "#faf8ff",
+                        "tertiary": "#943700"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-desktop": "32px",
+                        "md": "16px",
+                        "lg": "24px",
+                        "sm": "8px",
+                        "xs": "4px",
+                        "gutter": "24px",
+                        "xl": "32px",
+                        "margin-mobile": "16px",
+                        "xxl": "48px"
+                    },
+                    "fontFamily": {
+                        "body": ["Inter"],
+                        "section-title": ["Inter"],
+                        "h3": ["Inter"],
+                        "h1-mobile": ["Inter"],
+                        "h2": ["Inter"],
+                        "label": ["Inter"],
+                        "h1": ["Inter"],
+                        "small": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "section-title": ["18px", {"lineHeight": "1.5", "fontWeight": "600"}],
+                        "h3": ["22px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                        "h1-mobile": ["28px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                        "h2": ["28px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                        "label": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "h1": ["36px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "small": ["14px", {"lineHeight": "1.5", "fontWeight": "500"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-background font-body text-on-surface antialiased min-h-screen">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface dark:bg-surface-container-high border-b border-outline-variant dark:border-outline flex items-center justify-between px-margin-mobile md:px-margin-desktop h-16 w-full">
+<div class="flex items-center gap-sm cursor-pointer active:opacity-80 transition-opacity">
+<span class="material-symbols-outlined text-primary dark:text-primary-fixed-dim" data-icon="school">school</span>
+<h1 class="font-h2 text-h2 md:font-h1-mobile md:text-h1-mobile font-bold text-primary dark:text-primary-fixed-dim">Student Portal</h1>
+</div>
+<div class="flex items-center gap-md">
+<button class="material-symbols-outlined p-2 hover:bg-surface-container-low transition-colors rounded-full" data-icon="notifications">notifications</button>
+<div class="h-10 w-10 rounded-full bg-cover bg-center border-2 border-primary-container cursor-pointer" data-alt="A professional studio portrait of Alex Rivers, a college student with a friendly smile, clean-cut appearance, wearing a modern navy polo shirt. The background is a soft, out-of-focus academic campus setting with natural morning light creating a bright and trustworthy atmosphere." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDt9IvxlFjZ5gXg2IbYaCYUUS52kMBM-YvlsKWojidXc46LjMD_0yWZ5YZ9tB9c8eCLa3_jxY0XVt-l2dRglveTJrHB3FR5KF9JnV6sYIPLrowLtqcoCaRo41xekHscE2eaOIAlRQRUMeyvFa6LJU6JuwqiHeKF5621bSeiKjq7m5SY0X9mfWqfi3UG8QsYqZ0Y6QodRLVHH6cT35Loxe6KPd_-a9uJ6DAgJ0uqjVpyr948JsyuxCuwwLQG34YHy8rc421xl8qFS-s')"></div>
+</div>
+</header>
+<!-- NavigationDrawer (Desktop Only) -->
+<aside class="fixed left-0 top-0 h-full w-[280px] hidden lg:block bg-inverse-surface dark:bg-surface-container-lowest shadow-sm z-40">
+<div class="flex flex-col gap-sm py-lg h-full">
+<!-- Sidebar Header -->
+<div class="px-lg pb-xl border-b border-on-surface-variant/10">
+<div class="flex items-center gap-md">
+<div class="h-12 w-12 rounded-xl bg-cover bg-center" data-alt="A professional studio portrait of Alex Rivers, a college student with a friendly smile, clean-cut appearance, wearing a modern navy polo shirt. The background is a soft, out-of-focus academic campus setting with natural morning light creating a bright and trustworthy atmosphere." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDkurwr_ilDMzb3c1R03BcK5zMgzmydo7AP92-_YAGg_vOxzAyODy_YVMcJynnVo3S9p-uHDak5bLvNVJzp_umLLyiV6nQ6lrdrjPHQWdR-7Ieg1e48MW26du3-Qt8KNkTUQW1dabNhKfeFwVhHvmb9H9Q7DO4eZQuS-YHaPOBfdogAi1XGCyXi05dCAIGW8ouwGk7ZsqX0I7n9H9m3WmBxcRLYpdIg09OKMqyEVidfb4CGe8-rBJqiK6GNOomZ7eTVHICsYcjTAHs')"></div>
+<div>
+<p class="font-h3 text-h3 text-primary-fixed">Alex Rivers</p>
+<p class="font-label text-label text-surface-variant">ID: 2024-8842</p>
+<p class="font-small text-small text-surface-variant/80">Computer Science Dept</p>
+</div>
+</div>
+</div>
+<nav class="mt-md flex flex-col">
+<a class="relative flex items-center py-3 duration-200 ease-in-out hover:bg-on-surface-variant/10 transition-all text-surface-variant pl-5 group" href="#">
+<span class="material-symbols-outlined mr-md" data-icon="dashboard">dashboard</span>
+<span class="font-label text-label">Overview</span>
+</a>
+<a class="relative flex items-center py-3 duration-200 ease-in-out hover:bg-on-surface-variant/10 transition-all text-primary-fixed-dim font-bold border-l-4 border-primary-container pl-4" href="#">
+<span class="material-symbols-outlined mr-md" data-icon="person">person</span>
+<span class="font-label text-label">Personal Info</span>
+</a>
+<a class="relative flex items-center py-3 duration-200 ease-in-out hover:bg-on-surface-variant/10 transition-all text-surface-variant pl-5 group" href="#">
+<span class="material-symbols-outlined mr-md" data-icon="menu_book">menu_book</span>
+<span class="font-label text-label">Academics</span>
+</a>
+<a class="relative flex items-center py-3 duration-200 ease-in-out hover:bg-on-surface-variant/10 transition-all text-surface-variant pl-5 group" href="#">
+<span class="material-symbols-outlined mr-md" data-icon="calendar_today">calendar_today</span>
+<span class="font-label text-label">Attendance</span>
+</a>
+<a class="relative flex items-center py-3 duration-200 ease-in-out hover:bg-on-surface-variant/10 transition-all text-surface-variant pl-5 group" href="#">
+<span class="material-symbols-outlined mr-md" data-icon="settings">settings</span>
+<span class="font-label text-label">Settings</span>
+</a>
+</nav>
+<div class="mt-auto px-lg pt-xl">
+<button class="w-full flex items-center justify-center gap-sm bg-error/10 text-error hover:bg-error/20 py-3 rounded-lg font-bold transition-colors">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+                    Logout
+                </button>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="lg:ml-[280px] pt-16 pb-24 lg:pb-8">
+<div class="px-margin-mobile md:px-margin-desktop py-lg max-w-7xl mx-auto">
+<!-- Bento-style Profile Header -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-lg mb-xl">
+<div class="lg:col-span-2 bg-white border border-outline-variant rounded-xl p-lg flex flex-col md:flex-row items-center gap-xl shadow-sm hover:shadow-md transition-shadow">
+<div class="relative">
+<div class="h-32 w-32 md:h-40 md:w-40 rounded-full border-4 border-primary-container/20 p-1">
+<div class="h-full w-full rounded-full bg-cover bg-center" data-alt="A professional studio portrait of Alex Rivers, a college student with a friendly smile, clean-cut appearance, wearing a modern navy polo shirt. The background is a soft, out-of-focus academic campus setting with natural morning light creating a bright and trustworthy atmosphere." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBSDcUHteSt3lEguMRCdly4vs_uFdvdwfsCQXz7jvD6WCGuTciLUSFmactu7R6qSAcQpdnPgaxqSX8CRJlwIkpvgffRGfmLslInJDMtg9INB-bzKnn41J320m7ZYKaJHP7-o-PGtmy-UL5w9OR-HiG9zJCiEHvDwJ2fLrIom2iPBBH0ZJCs2OptvXQC7dqjz7TV7-Wi2h8Mm4bRdYuUYU5fQU44LikpiP4KjpcqSY5EHDRlvgN_WdDcDJfLzMTRS0fYHnN-IUs6f3k')"></div>
+</div>
+<div class="absolute bottom-2 right-2 bg-secondary text-white p-1 rounded-full border-2 border-white">
+<span class="material-symbols-outlined text-[18px]" data-icon="verified" data-weight="fill" style="font-variation-settings: 'FILL' 1;">verified</span>
+</div>
+</div>
+<div class="text-center md:text-left space-y-xs">
+<div class="flex flex-col md:flex-row md:items-baseline gap-sm">
+<h2 class="font-h1 text-h1 text-on-surface">Alex Rivers</h2>
+<span class="inline-flex items-center px-3 py-1 bg-primary-container/10 text-primary font-label text-label rounded-full">Active Student</span>
+</div>
+<p class="font-h3 text-h3 text-on-surface-variant font-medium">Computer Science Dept</p>
+<div class="flex flex-wrap justify-center md:justify-start gap-md pt-sm">
+<div class="flex items-center gap-xs text-on-surface-variant">
+<span class="material-symbols-outlined text-outline" data-icon="badge">badge</span>
+<span class="font-body text-body">2024-8842</span>
+</div>
+<div class="flex items-center gap-xs text-on-surface-variant">
+<span class="material-symbols-outlined text-outline" data-icon="location_on">location_on</span>
+<span class="font-body text-body">Building A, Floor 3</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Quick Action Stats -->
+<div class="bg-primary text-white rounded-xl p-lg shadow-sm flex flex-col justify-between relative overflow-hidden">
+
+<div class="relative z-10">
+<p class="font-label text-label uppercase tracking-wider opacity-80 mb-xs">Current Attendance</p>
+<div class="flex items-baseline gap-xs">
+<span class="font-h1 text-h1">94.2%</span>
+<span class="font-label text-label text-secondary-fixed">↑ 2.1%</span>
+</div>
+</div>
+<div class="relative z-10 mt-md">
+<button class="w-full bg-white/10 hover:bg-white/20 transition-colors py-2 rounded-lg font-bold border border-white/20">
+                            Download Report
+                        </button>
+</div>
+</div>
+</div>
+<!-- Profile Sections - Interactive Cards -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-lg">
+<!-- Personal Information -->
+<div class="bg-white border border-outline-variant rounded-xl p-lg shadow-sm hover:border-primary transition-all group">
+<div class="flex items-center justify-between mb-lg">
+<div class="flex items-center gap-md">
+<div class="p-2 bg-primary-container/10 text-primary rounded-lg">
+<span class="material-symbols-outlined" data-icon="contact_page">contact_page</span>
+</div>
+<h3 class="font-section-title text-section-title text-on-surface">Personal Information</h3>
+</div>
+<button class="text-primary opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined" data-icon="edit">edit</span>
+</button>
+</div>
+<div class="space-y-md">
+<div class="flex justify-between items-center py-2 border-b border-surface-container">
+<span class="text-on-surface-variant font-small text-small">Email Address</span>
+<span class="text-on-surface font-body text-body">alex.rivers@university.edu</span>
+</div>
+<div class="flex justify-between items-center py-2 border-b border-surface-container">
+<span class="text-on-surface-variant font-small text-small">Phone Number</span>
+<span class="text-on-surface font-body text-body">+1 (555) 012-3456</span>
+</div>
+<div class="flex justify-between items-center py-2 border-b border-surface-container">
+<span class="text-on-surface-variant font-small text-small">Date of Birth</span>
+<span class="text-on-surface font-body text-body">May 14, 2002</span>
+</div>
+<div class="flex justify-between items-center py-2">
+<span class="text-on-surface-variant font-small text-small">Blood Group</span>
+<span class="text-on-surface font-body text-body">O Positive</span>
+</div>
+</div>
+</div>
+<!-- Academic Details -->
+<div class="bg-white border border-outline-variant rounded-xl p-lg shadow-sm hover:border-primary transition-all group">
+<div class="flex items-center justify-between mb-lg">
+<div class="flex items-center gap-md">
+<div class="p-2 bg-primary-container/10 text-primary rounded-lg">
+<span class="material-symbols-outlined" data-icon="history_edu">history_edu</span>
+</div>
+<h3 class="font-section-title text-section-title text-on-surface">Academic Details</h3>
+</div>
+<button class="text-primary opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined" data-icon="visibility">visibility</span>
+</button>
+</div>
+<div class="space-y-md">
+<div class="flex justify-between items-center py-2 border-b border-surface-container">
+<span class="text-on-surface-variant font-small text-small">Program</span>
+<span class="text-on-surface font-body text-body">B.Sc. Computer Science</span>
+</div>
+<div class="flex justify-between items-center py-2 border-b border-surface-container">
+<span class="text-on-surface-variant font-small text-small">Current Semester</span>
+<span class="text-on-surface font-body text-body">6th (Junior Year)</span>
+</div>
+<div class="flex justify-between items-center py-2 border-b border-surface-container">
+<span class="text-on-surface-variant font-small text-small">Academic Standing</span>
+<span class="text-secondary font-bold text-body">Excellent</span>
+</div>
+<div class="flex justify-between items-center py-2">
+<span class="text-on-surface-variant font-small text-small">CGPA</span>
+<span class="text-on-surface font-body text-body">3.88 / 4.00</span>
+</div>
+</div>
+</div>
+<!-- Attendance Summary -->
+<div class="bg-white border border-outline-variant rounded-xl p-lg shadow-sm hover:border-primary transition-all">
+<div class="flex items-center justify-between mb-lg">
+<div class="flex items-center gap-md">
+<div class="p-2 bg-primary-container/10 text-primary rounded-lg">
+<span class="material-symbols-outlined" data-icon="event_available">event_available</span>
+</div>
+<h3 class="font-section-title text-section-title text-on-surface">Attendance Summary</h3>
+</div>
+</div>
+<div class="grid grid-cols-3 gap-md mb-lg">
+<div class="text-center p-md bg-surface-container rounded-lg">
+<p class="font-label text-label text-on-surface-variant mb-xs">Present</p>
+<p class="font-h3 text-h3 text-on-surface">142</p>
+</div>
+<div class="text-center p-md bg-surface-container rounded-lg">
+<p class="font-label text-label text-on-surface-variant mb-xs">Absent</p>
+<p class="font-h3 text-h3 text-error">8</p>
+</div>
+<div class="text-center p-md bg-surface-container rounded-lg">
+<p class="font-label text-label text-on-surface-variant mb-xs">Leave</p>
+<p class="font-h3 text-h3 text-tertiary">4</p>
+</div>
+</div>
+<div class="space-y-sm">
+<div class="flex justify-between text-small font-small">
+<span class="text-on-surface-variant">Attendance Health</span>
+<span class="text-primary">Very Good</span>
+</div>
+<div class="w-full bg-surface-container h-2 rounded-full overflow-hidden">
+<div class="bg-primary h-full rounded-full transition-all duration-1000" style="width: 94%"></div>
+</div>
+</div>
+</div>
+<!-- Emergency Contacts -->
+<div class="bg-white border border-outline-variant rounded-xl p-lg shadow-sm hover:border-primary transition-all">
+<div class="flex items-center justify-between mb-lg">
+<div class="flex items-center gap-md">
+<div class="p-2 bg-primary-container/10 text-primary rounded-lg">
+<span class="material-symbols-outlined" data-icon="medical_services">medical_services</span>
+</div>
+<h3 class="font-section-title text-section-title text-on-surface">Emergency Contacts</h3>
+</div>
+</div>
+<div class="space-y-lg">
+<div class="flex items-start gap-md">
+<div class="h-10 w-10 bg-surface-container-high flex items-center justify-center rounded-full text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="family_history">family_history</span>
+</div>
+<div>
+<p class="font-body text-body font-semibold">Sarah Rivers (Mother)</p>
+<p class="font-small text-small text-on-surface-variant">+1 (555) 098-7654</p>
+<a class="text-primary font-label text-label hover:underline" href="#">Call Mobile</a>
+</div>
+</div>
+<div class="flex items-start gap-md">
+<div class="h-10 w-10 bg-surface-container-high flex items-center justify-center rounded-full text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="local_hospital">local_hospital</span>
+</div>
+<div>
+<p class="font-body text-body font-semibold">St. Mary's General Hospital</p>
+<p class="font-small text-small text-on-surface-variant">+1 (555) 123-4567</p>
+<a class="text-primary font-label text-label hover:underline" href="#">Directions</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="fixed bottom-0 w-full z-50 lg:hidden bg-surface dark:bg-surface-container-highest border-t border-outline-variant dark:border-outline shadow-md flex justify-around items-center h-16 px-margin-mobile">
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 active:bg-surface-container scale-95 duration-100" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-label text-label">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 active:bg-surface-container scale-95 duration-100" href="#">
+<span class="material-symbols-outlined" data-icon="school">school</span>
+<span class="font-label text-label">Academic</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 active:bg-surface-container scale-95 duration-100" href="#">
+<span class="material-symbols-outlined" data-icon="event_available">event_available</span>
+<span class="font-label text-label">Attendance</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-xl px-4 py-1 active:bg-surface-container scale-95 duration-100" href="#">
+<span class="material-symbols-outlined" data-icon="account_circle" data-weight="fill" style="font-variation-settings: 'FILL' 1;">account_circle</span>
+<span class="font-label text-label">Profile</span>
+</a>
+</nav>
+<script>
+        // Micro-interaction for attendance bar
+        document.addEventListener('DOMContentLoaded', () => {
+            const bars = document.querySelectorAll('.bg-primary.h-full');
+            bars.forEach(bar => {
+                const width = bar.style.width;
+                bar.style.width = '0%';
+                setTimeout(() => {
+                    bar.style.width = width;
+                }, 300);
+            });
+        });
+    </script>
+</body></html>

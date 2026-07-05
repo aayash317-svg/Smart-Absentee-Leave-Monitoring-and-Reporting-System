@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Role Selection - Precision Monitor</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "error-container": "#ffdad6",
+                        "outline": "#737686",
+                        "on-secondary": "#ffffff",
+                        "surface-tint": "#0053db",
+                        "surface-container-highest": "#e1e2ed",
+                        "primary-fixed": "#dbe1ff",
+                        "on-secondary-container": "#007230",
+                        "tertiary": "#943700",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "secondary": "#006e2d",
+                        "on-primary-fixed": "#00174b",
+                        "background": "#faf8ff",
+                        "on-secondary-fixed": "#002109",
+                        "surface-container-lowest": "#ffffff",
+                        "inverse-on-surface": "#f0f0fb",
+                        "surface-container-low": "#f3f3fe",
+                        "surface": "#faf8ff",
+                        "on-tertiary-fixed-variant": "#7d2d00",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "on-secondary-fixed-variant": "#005320",
+                        "on-tertiary": "#ffffff",
+                        "surface-bright": "#faf8ff",
+                        "on-tertiary-fixed": "#360f00",
+                        "tertiary-fixed": "#ffdbcd",
+                        "tertiary-container": "#bc4800",
+                        "surface-variant": "#e1e2ed",
+                        "primary-container": "#2563eb",
+                        "primary": "#004ac6",
+                        "on-surface-variant": "#434655",
+                        "outline-variant": "#c3c6d7",
+                        "on-error-container": "#93000a",
+                        "tertiary-fixed-dim": "#ffb596",
+                        "surface-container": "#ededf9",
+                        "on-primary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "surface-container-high": "#e7e7f3",
+                        "inverse-surface": "#2e3039",
+                        "on-background": "#191b23",
+                        "surface-dim": "#d9d9e5",
+                        "error": "#ba1a1a",
+                        "on-tertiary-container": "#ffede6",
+                        "inverse-primary": "#b4c5ff",
+                        "secondary-fixed-dim": "#62df7d",
+                        "secondary-container": "#7cf994",
+                        "on-primary-container": "#eeefff",
+                        "secondary-fixed": "#7ffc97",
+                        "on-surface": "#191b23"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "md": "16px",
+                        "gutter": "24px",
+                        "xs": "4px",
+                        "lg": "24px",
+                        "margin-desktop": "32px",
+                        "margin-mobile": "16px",
+                        "xl": "32px",
+                        "xxl": "48px",
+                        "sm": "8px"
+                    },
+                    "fontFamily": {
+                        "small": ["Inter"],
+                        "section-title": ["Inter"],
+                        "h1": ["Inter"],
+                        "body": ["Inter"],
+                        "h1-mobile": ["Inter"],
+                        "label": ["Inter"],
+                        "h3": ["Inter"],
+                        "h2": ["Inter"]
+                    },
+                    "fontSize": {
+                        "small": ["14px", {"lineHeight": "1.5", "fontWeight": "500"}],
+                        "section-title": ["18px", {"lineHeight": "1.5", "fontWeight": "600"}],
+                        "h1": ["36px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "h1-mobile": ["28px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                        "label": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "h3": ["22px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                        "h2": ["28px", {"lineHeight": "1.3", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .role-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .role-card.selected {
+            border-color: #2563eb;
+            background-color: #eeefff;
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.1), 0 8px 10px -6px rgba(37, 99, 235, 0.1);
+        }
+        .role-card.selected .check-badge {
+            opacity: 1;
+            transform: scale(1);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .bg-mesh {
+            background-color: #faf8ff;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(37, 99, 235, 0.05) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(0, 110, 45, 0.03) 0px, transparent 50%);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-mesh min-h-screen flex flex-col font-body text-on-surface">
+<!-- TopAppBar -->
+<header class="bg-background w-full top-0 z-40 transition-opacity duration-200 flex items-center justify-between px-margin-mobile md:px-margin-desktop w-full h-14">
+<div class="flex items-center gap-4">
+<button class="hover:bg-surface-container-high p-2 rounded-full transition-colors">
+<span class="material-symbols-outlined text-primary">arrow_back</span>
+</button>
+<h1 class="font-h3 text-h3-mobile font-bold text-primary">Precision Monitor</h1>
+</div>
+<div class="hidden md:flex items-center gap-6">
+<span class="text-outline font-small text-small">Step 1 of 3</span>
+</div>
+</header>
+<main class="flex-grow flex items-center justify-center px-margin-mobile py-xl">
+<div class="max-w-4xl w-full">
+<div class="text-center mb-xl">
+<h2 class="font-h1-mobile md:font-h1 text-h1-mobile md:text-h1 mb-md">Tell us who you are</h2>
+<p class="text-on-surface-variant font-body text-body max-w-xl mx-auto">
+                    Select your primary role to customize your Attendance Hub experience and access relevant dashboards.
+                </p>
+</div>
+<!-- Bento Role Grid -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+<!-- Student Role -->
+<button class="role-card group relative bg-white border border-outline-variant p-lg rounded-xl text-left flex flex-col h-full hover:border-primary-container cursor-pointer" onclick="selectRole(this)">
+<div class="mb-xl bg-primary-container/10 w-12 h-12 rounded-lg flex items-center justify-center text-primary-container transition-colors group-hover:bg-primary-container group-hover:text-white">
+<span class="material-symbols-outlined text-3xl">school</span>
+</div>
+<h3 class="font-h3 text-h3-mobile mb-sm">Student</h3>
+<p class="text-on-surface-variant font-body text-small flex-grow">
+                        Track your attendance history, submit leave requests, and view academic schedules in real-time.
+                    </p>
+<div class="check-badge absolute top-4 right-4 opacity-0 scale-50 transition-all duration-300">
+<span class="material-symbols-outlined text-primary font-bold">check_circle</span>
+</div>
+</button>
+<!-- Faculty/Staff Role -->
+<button class="role-card group relative bg-white border border-outline-variant p-lg rounded-xl text-left flex flex-col h-full hover:border-primary-container cursor-pointer" onclick="selectRole(this)">
+<div class="mb-xl bg-secondary-container/20 w-12 h-12 rounded-lg flex items-center justify-center text-secondary transition-colors group-hover:bg-secondary group-hover:text-white">
+<span class="material-symbols-outlined text-3xl">badge</span>
+</div>
+<h3 class="font-h3 text-h3-mobile mb-sm">Faculty/Staff</h3>
+<p class="text-on-surface-variant font-body text-small flex-grow">
+                        Manage classroom attendance, review student leave applications, and organize departmental records.
+                    </p>
+<div class="check-badge absolute top-4 right-4 opacity-0 scale-50 transition-all duration-300">
+<span class="material-symbols-outlined text-primary font-bold">check_circle</span>
+</div>
+</button>
+<!-- Administrator Role -->
+<button class="role-card group relative bg-white border border-outline-variant p-lg rounded-xl text-left flex flex-col h-full hover:border-primary-container cursor-pointer" onclick="selectRole(this)">
+<div class="mb-xl bg-tertiary-fixed/30 w-12 h-12 rounded-lg flex items-center justify-center text-tertiary-container transition-colors group-hover:bg-tertiary-container group-hover:text-white">
+<span class="material-symbols-outlined text-3xl">admin_panel_settings</span>
+</div>
+<h3 class="font-h3 text-h3-mobile mb-sm">Administrator</h3>
+<p class="text-on-surface-variant font-body text-small flex-grow">
+                        Access high-level workforce analytics, configure system settings, and manage institutional compliance.
+                    </p>
+<div class="check-badge absolute top-4 right-4 opacity-0 scale-50 transition-all duration-300">
+<span class="material-symbols-outlined text-primary font-bold">check_circle</span>
+</div>
+</button>
+</div>
+<!-- Action Area -->
+<div class="mt-xxl flex flex-col items-center gap-md">
+<button class="w-full md:w-64 py-4 px-xl rounded-full font-label text-label uppercase tracking-widest transition-all duration-300 bg-outline text-white/50 cursor-not-allowed" disabled="" id="continueBtn">
+                    Continue
+                </button>
+<p class="text-outline font-small text-small">
+                    Can't find your role? <a class="text-primary hover:underline" href="#">Contact Support</a>
+</p>
+</div>
+</div>
+</main>
+<!-- Footer Decoration -->
+<div class="fixed bottom-0 left-0 w-full h-1 overflow-hidden">
+<div class="w-full h-full bg-gradient-to-r from-primary via-secondary to-tertiary opacity-30"></div>
+</div>
+<script>
+        function selectRole(element) {
+            // Remove selection from all other cards
+            document.querySelectorAll('.role-card').forEach(card => {
+                card.classList.remove('selected');
+                // Reset icon styles
+                const iconContainer = card.querySelector('div');
+                iconContainer.classList.add('transition-colors');
+            });
+
+            // Add selection to clicked card
+            element.classList.add('selected');
+
+            // Enable the continue button
+            const btn = document.getElementById('continueBtn');
+            btn.disabled = false;
+            btn.classList.remove('bg-outline', 'text-white/50', 'cursor-not-allowed');
+            btn.classList.add('bg-primary-container', 'text-white', 'hover:shadow-lg', 'active:scale-95');
+            
+            // Interaction Feedback
+            createRipple(element);
+        }
+
+        function createRipple(element) {
+            const circle = document.createElement("span");
+            const diameter = Math.max(element.clientWidth, element.clientHeight);
+            const radius = diameter / 2;
+
+            circle.style.width = circle.style.height = `${diameter}px`;
+            circle.style.left = `0px`;
+            circle.style.top = `0px`;
+            circle.classList.add("ripple");
+
+            const ripple = element.getElementsByClassName("ripple")[0];
+            if (ripple) {
+                ripple.remove();
+            }
+            element.appendChild(circle);
+        }
+    </script>
+<style>
+        /* Lightweight micro-interaction style */
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            transform: scale(0);
+            animation: ripple 600ms linear;
+            background-color: rgba(37, 99, 235, 0.1);
+            pointer-events: none;
+        }
+
+        @keyframes ripple {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+
+        /* Responsive spacing adjustments */
+        @media (max-width: 768px) {
+            .role-card {
+                padding: 16px;
+            }
+            .role-card .mb-xl {
+                margin-bottom: 16px;
+            }
+        }
+    </style>
+</body></html>
