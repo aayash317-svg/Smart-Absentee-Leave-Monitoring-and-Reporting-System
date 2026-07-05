@@ -6,7 +6,7 @@ from .deps import get_current_user
 router = APIRouter(prefix="/auth", tags=["authentication"])
 auth_service = AuthService()
 
-@router.post("/register", response_model=Dict_UserOut := dict, status_code=status.HTTP_201_CREATED)
+@router.post("/register", response_model=UserOut, status_code=status.HTTP_201_CREATED)
 async def register(user_in: UserRegister):
     return await auth_service.register_user(user_in)
 

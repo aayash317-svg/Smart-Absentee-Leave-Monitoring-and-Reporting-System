@@ -1,115 +1,77 @@
-import datetime
-from io import BytesIO
-from reportlab.lib.pagesizes import letter
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
-from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from reportlab.lib import colors
-from typing import List, Dict, Any
+"""
+PDF report generation service.
+Uses reportlab (if available) or standard file operations to compile attendance reports.
+"""
+import io
+import logging
 
-class PDFService:
-    @staticmethod
-    def generate_attendance_report(
-        student_name: str, 
-        register_no: str, 
-        department: str, 
-        attendance_pct: float, 
-        absences: List[Dict[str, Any]]
-    ) -> bytes:
-        """Generate a professional styled PDF report of student attendance and return as bytes."""
-        buffer = BytesIO()
-        doc = SimpleDocTemplate(
-            buffer, 
-            pagesize=letter, 
-            rightMargin=36, 
-            leftMargin=36, 
-            topMargin=36, 
-            bottomMargin=36
-        )
+logger = logging.getLogger("app")
+
+def generate_attendance_pdf(report_data: dict) -> io.BytesIO:
+    """
+    Generate a PDF for student attendance summary.
+    Returns a BytesIO binary stream of the PDF file.
+    """
+    buffer = io.BytesIO()
+    
+    try:
+        from reportlab.lib.pagesizes import letter
+        from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
+        from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+        from reportlab.lib import colors
+        
+        doc = SimpleDocTemplate(buffer, pagesize=letter, rightMargin=36, leftMargin=36, topMargin=36, bottomMargin=36)
         story = []
         
         styles = getSampleStyleSheet()
         title_style = ParagraphStyle(
-            'TitleStyle',
+            'ReportTitle',
             parent=styles['Heading1'],
-            fontSize=22,
+            fontSize=18,
+            leading=22,
             textColor=colors.HexColor("#1A365D"),
-            spaceAfter=15
-        )
-        subtitle_style = ParagraphStyle(
-            'SubtitleStyle',
-            parent=styles['Normal'],
-            fontSize=10,
-            textColor=colors.HexColor("#4A5568"),
-            spaceAfter=25
+            spaceAfter=12
         )
         body_style = styles['Normal']
-        bold_body_style = ParagraphStyle('BoldBody', parent=styles['Normal'], fontName='Helvetica-Bold')
         
-        # Document Headers
-        story.append(Paragraph("Smart Absentee Leave Monitoring System", title_style))
-        story.append(Paragraph(f"Attendance Report — Generated on {datetime.datetime.now().strftime('%Y-%m-%d %H:%M')}", subtitle_style))
-        story.append(Spacer(1, 10))
+        # Header Info
+        story.append(Paragraph(f"<b>Smart ERP - Student Attendance Report</b>", title_style))
+        story.append(Paragraph(f"Generated on: {report_data.get('generatedAt', '')}", body_style))
+        story.append(Paragraph(f"Department: {report_data.get('departmentName', 'All')}", body_style))
+        story.append(Spacer(1, 15))
         
-        # Student Info Metadata Table
-        info_data = [
-            [
-                Paragraph("Student Name:", bold_body_style), Paragraph(student_name, body_style),
-                Paragraph("Register No:", bold_body_style), Paragraph(register_no, body_style)
-            ],
-            [
-                Paragraph("Department:", bold_body_style), Paragraph(department, body_style),
-                Paragraph("Current Attendance:", bold_body_style), Paragraph(f"{attendance_pct:.2f}%", body_style)
-            ]
-        ]
-        info_table = Table(info_data, colWidths=[110, 160, 110, 160])
-        info_table.setStyle(TableStyle([
-            ('BACKGROUND', (0,0), (-1,-1), colors.HexColor("#F7FAFC")),
-            ('PADDING', (0,0), (-1,-1), 8),
-            ('ALIGN', (0,0), (-1,-1), 'LEFT'),
-            ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
-            ('LINEBELOW', (0,0), (-1,-1), 0.5, colors.HexColor("#E2E8F0")),
-        ]))
-        story.append(info_table)
-        story.append(Spacer(1, 25))
-        
-        # Absence History section
-        story.append(Paragraph("Absence Record Details", styles['Heading2']))
-        story.append(Spacer(1, 8))
-        
-        headers = ["#", "Date", "Status", "Reason / Reference ID"]
-        table_data = [headers]
-        
-        for idx, abs_rec in enumerate(absences):
-            date_val = abs_rec.get("date")
-            if isinstance(date_val, datetime.datetime):
-                date_str = date_val.strftime("%Y-%m-%d")
-            else:
-                date_str = str(date_val)[:10]
-                
-            status = abs_rec.get("status", "Unexcused")
-            reason = abs_rec.get("reason") or "N/A"
-            if abs_rec.get("leaveApplicationId"):
-                reason += f" (Leave App: {str(abs_rec['leaveApplicationId'])})"
-                
+        # Table of Students
+        table_data = [["Name", "Reg No", "Year", "Sem", "Attendance %"]]
+        for s in report_data.get("students", []):
             table_data.append([
-                str(idx + 1),
-                date_str,
-                status,
-                reason
+                s.get("fullName", ""),
+                s.get("registerNo", ""),
+                str(s.get("year", "")),
+                str(s.get("semester", "")),
+                f"{s.get('attendancePercentage', 100.0)}%"
             ])
             
-        history_table = Table(table_data, colWidths=[40, 100, 100, 300])
-        history_table.setStyle(TableStyle([
+        t = Table(table_data, colWidths=[150, 100, 50, 50, 100])
+        t.setStyle(TableStyle([
             ('BACKGROUND', (0,0), (-1,0), colors.HexColor("#2B6CB0")),
-            ('TEXTCOLOR', (0,0), (-1,0), colors.white),
-            ('ALIGN', (0,0), (-1,-1), 'LEFT'),
-            ('PADDING', (0,0), (-1,-1), 8),
-            ('GRID', (0,0), (-1,-1), 0.5, colors.HexColor("#CBD5E0")),
-            ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.white, colors.HexColor("#F7FAFC")]),
+            ('TEXTCOLOR', (0,0), (-1,0), colors.whitesmoke),
+            ('ALIGN', (0,0), (-1,-1), 'CENTER'),
+            ('FONTNAME', (0,0), (-1,0), 'Helvetica-Bold'),
+            ('BOTTOMPADDING', (0,0), (-1,0), 8),
+            ('BACKGROUND', (0,1), (-1,-1), colors.HexColor("#F7FAFC")),
+            ('GRID', (0,0), (-1,-1), 1, colors.HexColor("#E2E8F0")),
+            ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
         ]))
-        story.append(history_table)
+        story.append(t)
         
         doc.build(story)
-        pdf_bytes = buffer.getvalue()
-        buffer.close()
-        return pdf_bytes
+    except ImportError:
+        # Fallback if reportlab is not installed (e.g. mock run during dependency install delay)
+        logger.warning("reportlab library not installed, generating mock PDF content")
+        buffer.write(b"%PDF-1.4 Mock PDF Attendance Report File\n")
+        buffer.write(f"Report: {report_data.get('departmentName', 'All')}\n".encode())
+        for s in report_data.get("students", []):
+            buffer.write(f"{s.get('fullName')} - {s.get('attendancePercentage')}%\n".encode())
+            
+    buffer.seek(0)
+    return buffer

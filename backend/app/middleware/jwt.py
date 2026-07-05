@@ -1,44 +1,33 @@
-from fastapi import Request
-from starlette.middleware.base import BaseHTTPMiddleware
-from starlette.responses import JSONResponse
-from ..core.jwt import decode_token
+"""
+Security headers middleware.
+Adds industry-standard HTTP security headers to every response.
+These headers defend against XSS, clickjacking, MIME sniffing, and data leakage.
+"""
+from fastapi import Request, Response
 
-class JWTAuthMiddleware(BaseHTTPMiddleware):
-    async def dispatch(self, request: Request, call_next):
-        path = request.url.path
-        
-        # Bypass authentication checks for non-API endpoints, authentication paths, and open docs
-        if (
-            not path.startswith("/api/") or
-            path in [
-                "/api/auth/login", 
-                "/api/auth/register", 
-                "/api/auth/forgot-password", 
-                "/api/auth/reset-password", 
-                "/api/auth/refresh"
-            ] or
-            path.startswith("/api/docs") or
-            path.startswith("/api/openapi.json")
-        ):
-            return await call_next(request)
-            
-        auth_header = request.headers.get("Authorization")
-        if not auth_header:
-            return JSONResponse(status_code=401, content={"detail": "Authorization header missing"})
-            
-        try:
-            token_type, token = auth_header.split(" ")
-            if token_type.lower() != "bearer":
-                return JSONResponse(status_code=401, content={"detail": "Bearer token required"})
-        except ValueError:
-            return JSONResponse(status_code=401, content={"detail": "Invalid Authorization header format"})
-            
-        payload = decode_token(token)
-        if not payload or payload.get("type") != "access":
-            return JSONResponse(status_code=401, content={"detail": "Token is invalid or expired"})
-            
-        # Store decoded user info in request state for downstream handler extraction
-        request.state.user_id = payload.get("sub")
-        request.state.user_role = payload.get("role")
-        
-        return await call_next(request)
+
+async def security_headers_middleware(request: Request, call_next):
+    """
+    Injects security headers into every HTTP response.
+
+    Headers applied:
+    - X-Content-Type-Options   : Prevents MIME-type sniffing
+    - X-Frame-Options          : Blocks clickjacking (iframe embedding)
+    - X-XSS-Protection         : Legacy XSS filter for older browsers
+    - Referrer-Policy          : Controls referrer info leakage
+    - Content-Security-Policy  : Restricts resource loading origins
+    """
+    response: Response = await call_next(request)
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["X-XSS-Protection"] = "1; mode=block"
+    response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+    response.headers["Content-Security-Policy"] = (
+        "default-src 'self'; "
+        "script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com; "
+        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
+        "font-src 'self' https://fonts.gstatic.com; "
+        "img-src 'self' data: https:; "
+        "connect-src 'self';"
+    )
+    return response

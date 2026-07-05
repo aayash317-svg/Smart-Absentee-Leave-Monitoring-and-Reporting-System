@@ -1,18 +1,17 @@
-from pydantic import BaseModel, EmailStr, Field
+"""
+User Document Model.
+"""
+from pydantic import BaseModel, Field, EmailStr
 from typing import Optional
 from datetime import datetime
 
-class UserModel(BaseModel):
+class UserDB(BaseModel):
     id: Optional[str] = Field(None, alias="_id")
-    fullName: str
     email: EmailStr
+    fullName: str
     phone: str
-    password: str  # Hashed bcrypt password
-    role: str      # Student, Coordinator, HOD, Dean, Admin
+    password: str  # Hashed
+    role: str      # Dean, HOD, Coordinator, Faculty, Student
+    status: str    # Active, Deactivated
     departmentId: Optional[str] = None
-    status: str = "Active"  # Active, Deactivated
-    failedLoginAttempts: int = 0
-    lockoutUntil: Optional[datetime] = None
-    isDeleted: bool = False
     createdAt: datetime = Field(default_factory=datetime.utcnow)
-    updatedAt: datetime = Field(default_factory=datetime.utcnow)

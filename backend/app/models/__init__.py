@@ -1,1 +1,4 @@
-# Database Models Package Initializer
+"""
+Database Models Module.
+Defines Pydantic representations of MongoDB documents.
+"""

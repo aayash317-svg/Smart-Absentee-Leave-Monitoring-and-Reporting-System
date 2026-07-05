@@ -1,60 +1,56 @@
+"""
+Unified notification service.
+Orchestrates creating in-app notifications and sending corresponding emails/SMS.
+"""
 import datetime
-import logging
-from bson.objectid import ObjectId
+from bson import ObjectId
 from ..database.connection import get_db
-from .email_service import EmailService
-from .sms_service import SMSService
+from .email_service import send_email
+from .sms_service import send_sms
 
-logger = logging.getLogger("app.services.notifications")
+def create_notification(
+    recipient_user_id: str,
+    title: str,
+    message: str,
+    notification_type: str = "Info",
+    send_email_alert: bool = False,
+    send_sms_alert: bool = False
+) -> str:
+    """
+    Create an in-app notification in MongoDB and trigger optional email/SMS.
+    """
+    db = get_db()
+    
+    # Insert in-app notification
+    notif_doc = {
+        "recipientId": ObjectId(recipient_user_id) if isinstance(recipient_user_id, str) else recipient_user_id,
+        "title": title,
+        "message": message,
+        "type": notification_type,
+        "isRead": False,
+        "createdAt": datetime.datetime.utcnow()
+    }
+    result = db.notifications.insert_one(notif_doc)
+    
+    # Get user details for sending external alerts
+    user = db.users.find_one({"_id": notif_doc["recipientId"]})
+    if user:
+        if send_email_alert and user.get("email"):
+            email_subject = f"Smart ERP Alert: {title}"
+            send_email(user["email"], email_subject, message)
+            
+        if send_sms_alert and user.get("phone"):
+            send_sms(user["phone"], f"{title}: {message}")
+            
+    return str(result.inserted_id)
 
-class NotificationService:
-    @staticmethod
-    async def create_notification(
-        recipient_id: str,
-        title: str,
-        message: str,
-        notify_email: bool = False,
-        notify_sms: bool = False,
-        email_addr: str = None,
-        phone_no: str = None
-    ) -> str:
-        """Create an in-app notification document and optionally send SMTP email / SMS warning."""
-        db = get_db()
-        
-        # Convert recipient ID string to ObjectId safely
-        rec_id = recipient_id
-        if isinstance(recipient_id, str) and ObjectId.is_valid(recipient_id):
-            rec_id = ObjectId(recipient_id)
-            
-        notification_doc = {
-            "recipientId": rec_id,
-            "title": title,
-            "message": message,
-            "isRead": False,
-            "createdAt": datetime.datetime.utcnow(),
-            "isDeleted": False
-        }
-        
-        try:
-            res = await db.notifications.insert_one(notification_doc)
-            notif_id = str(res.inserted_id)
-        except Exception as e:
-            logger.error(f"Failed to insert notification record in MongoDB: {str(e)}")
-            notif_id = ""
-            
-        # Dispatch email if requested and recipient email address is valid
-        if notify_email and email_addr:
-            EmailService.send_email(
-                to_email=email_addr,
-                subject=title,
-                body=f"Hello,\n\n{message}\n\nBest regards,\nSmart Absentee Leave Monitoring System"
-            )
-            
-        # Dispatch SMS if requested and recipient phone number is valid
-        if notify_sms and phone_no:
-            SMSService.send_sms(
-                to_phone=phone_no,
-                message=f"[{title}] {message}"
-            )
-            
-        return notif_id
+def mark_notification_as_read(notification_id: str, user_id: str) -> bool:
+    """Mark a notification as read, validating ownership."""
+    db = get_db()
+    from ..core.jwt import safe_object_id
+    
+    res = db.notifications.update_one(
+        {"_id": safe_object_id(notification_id), "recipientId": safe_object_id(user_id)},
+        {"$set": {"isRead": True}}
+    )
+    return res.modified_count > 0

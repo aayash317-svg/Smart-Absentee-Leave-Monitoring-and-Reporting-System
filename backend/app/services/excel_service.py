@@ -1,84 +1,76 @@
-from io import BytesIO
-import openpyxl
-from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
-from typing import List, Dict, Any
+"""
+Excel report generation service.
+Uses openpyxl (if available) or standard CSV format simulation to write Excel sheets.
+"""
+import io
+import logging
 
-class ExcelService:
-    @staticmethod
-    def generate_students_sheet(students: List[Dict[str, Any]]) -> bytes:
-        """Export a list of students and their attendance metrics to a formatted Excel file."""
+logger = logging.getLogger("app")
+
+def generate_attendance_excel(report_data: dict) -> io.BytesIO:
+    """
+    Generate an Excel sheet of student attendance.
+    Returns a BytesIO stream of the Excel workbook.
+    """
+    buffer = io.BytesIO()
+    
+    try:
+        import openpyxl
+        from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
+        
         wb = openpyxl.Workbook()
         ws = wb.active
-        ws.title = "Student Directory"
+        ws.title = "Attendance Summary"
         
-        # Design system styles (matching the ERP color themes)
-        header_fill = PatternFill(start_color="1A365D", end_color="1A365D", fill_type="solid")
-        header_font = Font(name="Segoe UI", size=11, bold=True, color="FFFFFF")
-        data_font = Font(name="Segoe UI", size=10)
-        
+        # Style Definitions
+        title_font = Font(name="Calibri", size=16, bold=True, color="1A365D")
+        header_font = Font(name="Calibri", size=11, bold=True, color="FFFFFF")
+        header_fill = PatternFill(start_color="2B6CB0", end_color="2B6CB0", fill_type="solid")
         center_align = Alignment(horizontal="center", vertical="center")
-        left_align = Alignment(horizontal="left", vertical="center")
         
-        thin_border = Border(
-            left=Side(style='thin', color='E2E8F0'),
-            right=Side(style='thin', color='E2E8F0'),
-            top=Side(style='thin', color='E2E8F0'),
-            bottom=Side(style='thin', color='E2E8F0')
-        )
+        # Title
+        ws.merge_cells("A1:E1")
+        ws["A1"] = f"Attendance Report - {report_data.get('departmentName', 'All Departments')}"
+        ws["A1"].font = title_font
+        ws.row_dimensions[1].height = 40
         
-        headers = [
-            "Register No", 
-            "Enroll No", 
-            "Full Name", 
-            "Program", 
-            "Department", 
-            "Semester", 
-            "Attendance %", 
-            "Total Fine (INR)"
-        ]
+        # Headers
+        headers = ["Student Name", "Register No", "Year", "Semester", "Attendance Percentage"]
+        ws.append([]) # Empty row 2
+        ws.append(headers) # Row 3
+        ws.row_dimensions[3].height = 25
         
-        ws.append(headers)
-        
-        # Format Headers
-        for col_idx in range(1, len(headers) + 1):
-            cell = ws.cell(row=1, column=col_idx)
-            cell.fill = header_fill
+        # Header style
+        for col_idx in range(1, 6):
+            cell = ws.cell(row=3, column=col_idx)
             cell.font = header_font
+            cell.fill = header_fill
             cell.alignment = center_align
-            cell.border = thin_border
             
-        # Append Rows
-        for r_idx, s in enumerate(students, start=2):
-            row = [
-                s.get("registerNo", ""),
-                s.get("enrollNo", ""),
+        # Data
+        for s in report_data.get("students", []):
+            ws.append([
                 s.get("fullName", ""),
-                s.get("program", ""),
-                s.get("departmentName", ""),
+                s.get("registerNo", ""),
+                s.get("year", ""),
                 s.get("semester", ""),
-                s.get("attendancePercentage", 100.0),
-                s.get("totalFine", 0.0)
-            ]
-            ws.append(row)
+                s.get("attendancePercentage", 100.0) / 100.0  # Decimal form for percentage formatting
+            ])
             
-            # Format Data Row
-            for col_idx in range(1, len(headers) + 1):
-                cell = ws.cell(row=r_idx, column=col_idx)
-                cell.font = data_font
-                cell.border = thin_border
-                if col_idx in [1, 2, 6]:
-                    cell.alignment = center_align
-                else:
-                    cell.alignment = left_align
-                    
-        # Apply Column Autowidth
-        for col in ws.columns:
-            max_len = max(len(str(cell.value or '')) for cell in col)
-            col_letter = openpyxl.utils.get_column_letter(col[0].column)
-            ws.column_dimensions[col_letter].width = max(max_len + 4, 12)
+        # Format percentage column (E)
+        for r in range(4, ws.max_row + 1):
+            cell = ws.cell(row=r, column=5)
+            cell.number_format = '0.0%'
+            cell.alignment = center_align
             
-        buffer = BytesIO()
         wb.save(buffer)
-        excel_bytes = buffer.getvalue()
-        buffer.close()
-        return excel_bytes
+    except ImportError:
+        # Fallback to CSV formatted text if openpyxl is not installed
+        logger.warning("openpyxl library not installed, generating CSV fallback")
+        buffer.write(b"Student Name,Register No,Year,Semester,Attendance Percentage\n")
+        for s in report_data.get("students", []):
+            line = f"{s.get('fullName')},{s.get('registerNo')},{s.get('year')},{s.get('semester')},{s.get('attendancePercentage')}%\n"
+            buffer.write(line.encode("utf-8"))
+            
+    buffer.seek(0)
+    return buffer

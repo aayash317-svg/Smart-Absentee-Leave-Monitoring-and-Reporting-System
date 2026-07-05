@@ -1,12 +1,15 @@
+"""
+Attendance (Absentee) Document Model.
+"""
 from pydantic import BaseModel, Field
 from typing import Optional
 from datetime import datetime
 
-class AbsenteeModel(BaseModel):
+class AbsenteeDB(BaseModel):
     id: Optional[str] = Field(None, alias="_id")
-    studentId: str
+    studentId: str  # References Student
     date: datetime
-    markedBy: str  # User ID of coordinator who marked
-    status: str = "Unexcused"  # Unexcused, Excused
-    leaveApplicationId: Optional[str] = None
-    isDeleted: bool = False
+    reason: Optional[str] = None
+    status: str = "Unexcused"  # Unexcused, Excused, Pending Leave
+    markedBy: str  # References User (Faculty/Staff)
+    createdAt: datetime = Field(default_factory=datetime.utcnow)

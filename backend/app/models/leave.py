@@ -1,17 +1,17 @@
+"""
+Leave Application Document Model.
+"""
 from pydantic import BaseModel, Field
 from typing import Optional
 from datetime import datetime
 
-class LeaveApplicationModel(BaseModel):
+class LeaveApplicationDB(BaseModel):
     id: Optional[str] = Field(None, alias="_id")
-    studentId: str
+    studentId: str  # References Student
     startDate: datetime
     endDate: datetime
-    leaveType: str  # Hour Leave, FN Leave, AN Leave, Full Day Leave, Multiple Day Leave
     reason: str
-    certificateUrl: Optional[str] = None
     status: str = "Pending"  # Pending, Approved, Rejected
-    appliedDate: datetime = Field(default_factory=datetime.utcnow)
-    approvedBy: Optional[str] = None  # User ID of HOD/Coordinator who approved/rejected
-    rejectionReason: Optional[str] = None
-    isDeleted: bool = False
+    approvedBy: Optional[str] = None  # References User
+    comments: Optional[str] = None
+    createdAt: datetime = Field(default_factory=datetime.utcnow)

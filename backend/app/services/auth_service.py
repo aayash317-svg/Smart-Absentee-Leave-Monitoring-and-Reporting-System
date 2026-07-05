@@ -6,7 +6,8 @@ from fastapi import HTTPException, status
 from ..repositories.user import UserRepository
 from ..repositories.student import StudentRepository
 from ..schemas.auth import UserRegister, UserLogin, Token, UserOut
-from ..core.security import get_password_hash, verify_password, create_access_token, create_refresh_token, decode_token
+from ..core.password import get_password_hash, verify_password
+from ..core.jwt import create_access_token, create_refresh_token, decode_token
 
 class AuthService:
     def __init__(self):

@@ -1,58 +1,55 @@
+"""
+Report compilation service.
+Fetches attendance statistics from MongoDB and coordinates PDF/Excel generation.
+"""
 import datetime
-from typing import List, Dict, Any, Optional
-from bson.objectid import ObjectId
 from ..database.connection import get_db
-from .pdf_service import PDFService
-from .excel_service import ExcelService
+from .pdf_service import generate_attendance_pdf
+from .excel_service import generate_attendance_excel
 
-class ReportService:
-    @staticmethod
-    async def get_student_report_pdf(student_id: str) -> Optional[bytes]:
-        """Aggregate database records for a student and generate a PDF attendance report."""
-        db = get_db()
+def compile_attendance_data(department_id: str = None) -> dict:
+    """
+    Query database and compile statistical data for reports.
+    """
+    db = get_db()
+    
+    query = {}
+    dept_name = "All Departments"
+    
+    if department_id:
+        from ..core.jwt import safe_object_id
+        query["departmentId"] = safe_object_id(department_id)
+        dept = db.departments.find_one({"_id": query["departmentId"]})
+        if dept:
+            dept_name = dept.get("departmentName", "Unknown Department")
+            
+    students = list(db.students.find(query).sort("fullName", 1))
+    
+    students_list = []
+    for s in students:
+        students_list.append({
+            "id": str(s["_id"]),
+            "fullName": s.get("fullName", ""),
+            "registerNo": s.get("registerNo", ""),
+            "enrollNo": s.get("enrollNo", ""),
+            "year": s.get("year", 1),
+            "semester": s.get("semester", 1),
+            "attendancePercentage": s.get("attendancePercentage", 100.0)
+        })
         
-        # Verify student exists
-        student = await db.students.find_one({"_id": ObjectId(student_id)})
-        if not student:
-            return None
-            
-        # Fetch all absence logs
-        absences = []
-        cursor = db.absentees.find({"studentId": ObjectId(student_id)}).sort("date", -1)
-        async for doc in cursor:
-            absences.append(doc)
-            
-        pdf_bytes = PDFService.generate_attendance_report(
-            student_name=student["fullName"],
-            register_no=student["registerNo"],
-            department=student["departmentName"],
-            attendance_pct=student.get("attendancePercentage", 100.0),
-            absences=absences
-        )
-        return pdf_bytes
+    return {
+        "departmentName": dept_name,
+        "generatedAt": datetime.datetime.utcnow().strftime("%d-%b-%Y %I:%M %p UTC"),
+        "students": students_list
+    }
 
-    @staticmethod
-    async def get_department_excel(department_id: str) -> Optional[bytes]:
-        """Fetch all students in a department and compile them into a formatted Excel sheet."""
-        db = get_db()
-        
-        students = []
-        cursor = db.students.find({"departmentId": ObjectId(department_id)}).sort("fullName", 1)
-        async for doc in cursor:
-            students.append(doc)
-            
-        excel_bytes = ExcelService.generate_students_sheet(students)
-        return excel_bytes
-
-    @staticmethod
-    async def get_institution_excel() -> bytes:
-        """Fetch all students institution-wide and compile them into a unified Excel directory."""
-        db = get_db()
-        
-        students = []
-        cursor = db.students.find({}).sort("departmentName", 1).sort("fullName", 1)
-        async for doc in cursor:
-            students.append(doc)
-            
-        excel_bytes = ExcelService.generate_students_sheet(students)
-        return excel_bytes
+def get_report_file(format_type: str, department_id: str = None):
+    """
+    Fetch raw attendance details and export to PDF or Excel binary streams.
+    """
+    data = compile_attendance_data(department_id)
+    
+    if format_type.lower() == "pdf":
+        return generate_attendance_pdf(data), "application/pdf", f"attendance_report_{datetime.datetime.utcnow().strftime('%Y%m%d')}.pdf"
+    else:
+        return generate_attendance_excel(data), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", f"attendance_report_{datetime.datetime.utcnow().strftime('%Y%m%d')}.xlsx"

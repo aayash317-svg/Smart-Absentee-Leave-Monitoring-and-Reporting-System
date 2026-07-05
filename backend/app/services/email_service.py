@@ -1,50 +1,48 @@
+"""
+Email sending service using SMTP.
+Includes logging fallbacks if SMTP is unconfigured.
+"""
 import smtplib
 import logging
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-from ..core.config import settings
+import os
 
-logger = logging.getLogger("app.services.email")
+logger = logging.getLogger("app")
 
-class EmailService:
-    @staticmethod
-    def send_email(to_email: str, subject: str, body: str, is_html: bool = False) -> bool:
-        """Send an email using configured SMTP settings, or fallback to mock logging if unconfigured."""
-        smtp_host = getattr(settings, "SMTP_HOST", None)
-        smtp_port = getattr(settings, "SMTP_PORT", 587)
-        smtp_user = getattr(settings, "SMTP_USER", None)
-        smtp_pass = getattr(settings, "SMTP_PASSWORD", None)
-        smtp_from = getattr(settings, "SMTP_FROM", "no-reply@attendancehub.edu")
-        
-        if not smtp_host or not smtp_user or not smtp_pass:
-            logger.info(
-                f"[MOCK EMAIL SUCCESS]\n"
-                f"  From: {smtp_from}\n"
-                f"  To: {to_email}\n"
-                f"  Subject: {subject}\n"
-                f"  Body (Preview): {body[:200]}...\n"
-            )
-            return True
-            
-        try:
-            msg = MIMEMultipart()
-            msg["From"] = smtp_from
-            msg["To"] = to_email
-            msg["Subject"] = subject
-            
-            mime_type = "html" if is_html else "plain"
-            msg.attach(MIMEText(body, mime_type, "utf-8"))
-            
-            server = smtplib.SMTP(smtp_host, int(smtp_port))
-            server.ehlo()
+# In production, these should be set in .env
+SMTP_HOST = os.getenv("SMTP_HOST", "smtp.gmail.com")
+SMTP_PORT = int(os.getenv("SMTP_PORT", "587"))
+SMTP_USER = os.getenv("SMTP_USER", "")
+SMTP_PASS = os.getenv("SMTP_PASS", "")
+EMAIL_FROM = os.getenv("EMAIL_FROM", "no-reply@university.edu")
+
+def send_email(recipient_email: str, subject: str, body_text: str, body_html: str = None) -> bool:
+    """Send an email to the recipient."""
+    if not SMTP_USER or not SMTP_PASS:
+        logger.info(
+            f"[EMAIL SIMULATION] To: {recipient_email} | Subject: {subject}\n"
+            f"Body: {body_text}"
+        )
+        return True
+
+    try:
+        msg = MIMEMultipart("alternative")
+        msg["From"] = EMAIL_FROM
+        msg["To"] = recipient_email
+        msg["Subject"] = subject
+
+        msg.attach(MIMEText(body_text, "plain"))
+        if body_html:
+            msg.attach(MIMEText(body_html, "html"))
+
+        with smtplib.SMTP(SMTP_HOST, SMTP_PORT) as server:
             server.starttls()
-            server.ehlo()
-            server.login(smtp_user, smtp_pass)
-            server.sendmail(smtp_from, to_email, msg.as_string())
-            server.close()
-            
-            logger.info(f"Email successfully sent to {to_email}")
-            return True
-        except Exception as e:
-            logger.error(f"Error sending SMTP email to {to_email}: {str(e)}", exc_info=True)
-            return False
+            server.login(SMTP_USER, SMTP_PASS)
+            server.sendmail(EMAIL_FROM, recipient_email, msg.as_string())
+        
+        logger.info(f"Email sent successfully to {recipient_email}")
+        return True
+    except Exception as e:
+        logger.error(f"Failed to send email to {recipient_email}: {e}")
+        return False

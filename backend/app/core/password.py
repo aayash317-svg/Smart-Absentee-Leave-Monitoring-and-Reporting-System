@@ -35,3 +35,22 @@ def get_dummy_hash() -> str:
     when the user does not exist — ensures bcrypt always runs.
     """
     return _DUMMY_HASH
+
+# Aliases and helpers for test compatibility
+get_password_hash = hash_password
+
+def validate_password_strength(password: str) -> bool:
+    """Enforce: 8+ chars, at least 1 uppercase, 1 lowercase, 1 digit, 1 special char."""
+    import re
+    if len(password) < 8:
+        return False
+    if not re.search(r"[A-Z]", password):
+        return False
+    if not re.search(r"[a-z]", password):
+        return False
+    if not re.search(r"[0-9]", password):
+        return False
+    if not re.search(r"[!@#$%^&*(),.?\":{}|<>]", password):
+        return False
+    return True
+
