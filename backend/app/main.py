@@ -1,12 +1,31 @@
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import RedirectResponse
 from contextlib import asynccontextmanager
+import logging
 
 from .core.config import settings
 from .database.connection import connect_to_mongo, close_mongo_connection
 from .api.auth import router as auth_router
 from .api.student import router as student_router
 from .api.coordinator import router as coordinator_router
+from .api.hod import router as hod_router
+from .api.dean import router as dean_router
+from .api.admin import router as admin_router
+
+from .middleware.jwt import JWTAuthMiddleware
+from .middleware.logging import LoggingMiddleware
+from .middleware.rate_limit import RateLimitMiddleware
+from .middleware.cors import setup_cors
+
+# Configure default logging handlers
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+    handlers=[
+        logging.StreamHandler()
+    ]
+)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -22,20 +41,28 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-# CORS configuration
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+# 1. Register logging and rate limiter middlewares (outermost)
+app.add_middleware(LoggingMiddleware)
+app.add_middleware(RateLimitMiddleware)
 
-# Register API Routers under standard prefix
+# 2. Setup CORS origins controls
+setup_cors(app)
+
+# 3. Register JWT authentication check middleware
+app.add_middleware(JWTAuthMiddleware)
+
+# Register API Routers under standard prefix /api
 app.include_router(auth_router, prefix=settings.API_V1_STR)
 app.include_router(student_router, prefix=settings.API_V1_STR)
 app.include_router(coordinator_router, prefix=settings.API_V1_STR)
+app.include_router(hod_router, prefix=settings.API_V1_STR)
+app.include_router(dean_router, prefix=settings.API_V1_STR)
+app.include_router(admin_router, prefix=settings.API_V1_STR)
+
+# Mount the static frontend directory under /erp
+app.mount("/erp", StaticFiles(directory="stitch_smart_absence_erp"), name="erp")
 
 @app.get("/")
-async def root():
-    return {"message": f"Welcome to the backend of the {settings.PROJECT_NAME}"}
+async def root_redirect():
+    """Redirect requests from root to the frontend login landing page."""
+    return RedirectResponse(url="/erp/login_attendance_hub/code.html")
