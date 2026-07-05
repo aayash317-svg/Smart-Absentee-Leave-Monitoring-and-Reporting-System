@@ -314,14 +314,6 @@ tests/test_student.py   ..    [File upload constraints, leave schema validation]
 
 ---
 
-## 👥 Roles and Contributors
-
-| Role | Name |
-|---|---|
-| Developer | Aayash A |
-| Repository | [aayash317-svg](https://github.com/aayash317-svg) |
-
----
 
 ## 📄 License
 
