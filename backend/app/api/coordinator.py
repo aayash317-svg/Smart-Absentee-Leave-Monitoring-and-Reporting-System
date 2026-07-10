@@ -1,6 +1,7 @@
 import datetime
 from fastapi import APIRouter, Depends, HTTPException, status
 from typing import List, Optional
+from bson.objectid import ObjectId
 
 from ..schemas.coordinator import MarkAbsent, LeaveAction
 from ..services.leave_service import LeaveService
@@ -126,4 +127,76 @@ async def get_pending_leaves(current_user: dict = Depends(get_current_user), _=c
             "appliedDate": l["appliedDate"].strftime("%Y-%m-%d %H:%M:%S")
         })
     return results
-from bson.objectid import ObjectId
+
+
+# ── Alias routes used by frontend screens ─────────────────────────────────
+
+@router.get("/students")
+async def list_students(current_user: dict = Depends(get_current_user), _=coordinator_auth):
+    """List students in coordinator's department (frontend faculty marking screen)."""
+    dept_id = current_user.get("departmentId")
+    students = await student_repo.search_students(query=None, department_id=str(dept_id) if dept_id else None)
+    result = []
+    for s in students:
+        result.append({
+            "_id": str(s["_id"]),
+            "registerNo": s.get("registerNo", ""),
+            "fullName": s.get("fullName", ""),
+            "year": s.get("year", 1),
+            "section": s.get("section", ""),
+        })
+    return result
+
+
+class BulkMarkAbsent(MarkAbsent.__class__):
+    from pydantic import BaseModel
+from pydantic import BaseModel as _BaseModel
+class BulkAbsentRequest(_BaseModel):
+    student_ids: List[str]
+    date: str
+    reason: str = "Absent"
+
+
+@router.post("/mark-absent")
+async def mark_bulk_absent(req: BulkAbsentRequest, current_user: dict = Depends(get_current_user), _=coordinator_auth):
+    """Mark a list of student IDs as absent for a given date (bulk operation)."""
+    try:
+        absent_dt = datetime.datetime.strptime(req.date, "%Y-%m-%d")
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid date format, use YYYY-MM-DD")
+
+    marked = []
+    skipped = []
+    for sid in req.student_ids:
+        student = await student_repo.get_by_id(sid)
+        if not student:
+            skipped.append(sid)
+            continue
+        is_dup = await absentee_repo.check_existence(sid, absent_dt)
+        if is_dup:
+            skipped.append(sid)
+            continue
+        await absentee_repo.create({
+            "studentId": student["_id"],
+            "date": absent_dt,
+            "reason": req.reason,
+            "status": "Absent",
+            "markedBy": ObjectId(current_user["id"]),
+            "leaveApplicationId": None,
+            "createdAt": datetime.datetime.utcnow()
+        })
+        current_att = student.get("attendancePercentage", 90.0)
+        new_att = max(0.0, current_att - 2.5)
+        await student_repo.update(str(student["_id"]), {"attendancePercentage": round(new_att, 1)})
+        if new_att < 75.0 and current_att >= 75.0:
+            db = absentee_repo.collection.database
+            await db.notifications.insert_one({
+                "recipientId": student["userId"],
+                "title": "Low Attendance Alert",
+                "message": f"Your attendance has dropped to {round(new_att,1)}%. Please contact your coordinator.",
+                "type": "Student", "isRead": False,
+                "createdAt": datetime.datetime.utcnow()
+            })
+        marked.append(sid)
+
+    return {"message": f"Marked {len(marked)} student(s) absent", "marked": marked, "skipped": skipped}

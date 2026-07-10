@@ -12,6 +12,7 @@ from .api.coordinator import router as coordinator_router
 from .api.hod import router as hod_router
 from .api.dean import router as dean_router
 from .api.admin import router as admin_router
+from .api.dashboard import router as dashboard_router
 
 from .middleware.jwt import JWTAuthMiddleware
 from .middleware.logging import LoggingMiddleware
@@ -58,6 +59,7 @@ app.include_router(coordinator_router, prefix=settings.API_V1_STR)
 app.include_router(hod_router, prefix=settings.API_V1_STR)
 app.include_router(dean_router, prefix=settings.API_V1_STR)
 app.include_router(admin_router, prefix=settings.API_V1_STR)
+app.include_router(dashboard_router, prefix=settings.API_V1_STR)
 
 # Mount the static frontend directory under /erp
 app.mount("/erp", StaticFiles(directory="stitch_smart_absence_erp"), name="erp")

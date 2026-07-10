@@ -87,3 +87,76 @@ async def soft_delete_user(user_id: str, current_user: dict = Depends(get_curren
     })
     
     return {"message": "User soft-deleted successfully"}
+
+
+# ── Settings ────────────────────────────────────────────────────────────
+
+# Default settings (persisted to DB if collection exists)
+_DEFAULT_SETTINGS = {
+    "attendanceThreshold": 75,
+    "finePerDay": 50,
+    "smsSendEnabled": True,
+    "emailSendEnabled": True,
+    "gracePeriodDays": 0,
+    "maxLeavePerSemester": 15,
+}
+
+@router.get("/settings")
+async def get_settings(current_user: dict = Depends(get_current_user), _=Depends(require_admin)):
+    """Fetch current system configuration settings."""
+    db = get_db()
+    row = await db.settings.find_one({"key": "system"})
+    if row:
+        row.pop("_id", None)
+        row.pop("key", None)
+        return row
+    return _DEFAULT_SETTINGS
+
+@router.put("/settings")
+async def update_settings(body: dict, current_user: dict = Depends(get_current_user), _=Depends(require_admin)):
+    """Persist system configuration settings."""
+    db = get_db()
+    await db.settings.update_one(
+        {"key": "system"},
+        {"$set": {"key": "system", **body, "updatedAt": datetime.datetime.utcnow()}},
+        upsert=True
+    )
+    await db.audit_logs.insert_one({
+        "userId": ObjectId(current_user["id"]),
+        "action": "Update Settings",
+        "details": f"Updated system settings: {list(body.keys())}",
+        "createdAt": datetime.datetime.utcnow()
+    })
+    return {"message": "Settings saved successfully"}
+
+
+# ── SMS Log ──────────────────────────────────────────────────────────────
+
+@router.get("/sms-log")
+async def get_sms_log(limit: int = 100, current_user: dict = Depends(get_current_user), _=Depends(require_admin)):
+    """Return sent SMS history records."""
+    db = get_db()
+    logs = await db.sms_logs.find({}).sort("sentAt", -1).limit(limit).to_list(length=limit)
+    for log in logs:
+        log["_id"] = str(log["_id"])
+        if log.get("sentAt"): log["sentAt"] = log["sentAt"].isoformat()
+    return logs
+
+
+# ── Activity Log (alias for audit-logs, called from frontend) ─────────────
+
+@router.get("/activity")
+async def get_activity_log(limit: int = 100, current_user: dict = Depends(get_current_user), _=Depends(require_admin)):
+    """Activity log alias consumed by admin_activity_logs screen."""
+    db = get_db()
+    logs = await db.audit_logs.find({}).sort("createdAt", -1).limit(limit).to_list(length=limit)
+    result = []
+    for log in logs:
+        result.append({
+            "id": str(log["_id"]),
+            "action": log.get("action", ""),
+            "details": log.get("details", ""),
+            "timestamp": log["createdAt"].isoformat() if log.get("createdAt") else None,
+            "userId": str(log["userId"]) if log.get("userId") else None,
+        })
+    return result
