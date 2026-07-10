@@ -137,7 +137,8 @@
       min-height: max(884px, 100dvh);
     }
   </style>
-  </head>
+    <script src="../../api.js"></script>
+</head>
 <body class="min-h-screen flex flex-col items-center justify-center relative hero-gradient">
 <!-- Background Decorative Elements -->
 <div class="absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden z-0">
@@ -220,29 +221,13 @@
 </footer>
 <!-- Interactive Micro-interactions -->
 <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const cards = document.querySelectorAll('.glass-panel');
-            cards.forEach(card => {
-                card.addEventListener('mousemove', (e) => {
-                    const rect = card.getBoundingClientRect();
-                    const x = e.clientX - rect.left;
-                    const y = e.clientY - rect.top;
-                    card.style.setProperty('--mouse-x', `${x}px`);
-                    card.style.setProperty('--mouse-y', `${y}px`);
-                });
-            });
-
-            // Smooth entrance animations
-            const elements = document.querySelectorAll('main > *');
-            elements.forEach((el, i) => {
-                el.style.opacity = '0';
-                el.style.transform = 'translateY(20px)';
-                el.style.transition = 'all 0.6s cubic-bezier(0.22, 1, 0.36, 1)';
-                setTimeout(() => {
-                    el.style.opacity = '1';
-                    el.style.transform = 'translateY(0)';
-                }, i * 150);
-            });
+// No login required — marketing/landing page
+        const goBtn = document.querySelector('a[href], button');
+        // Wire any "Get Started" link to role selector
+        document.querySelectorAll('a').forEach(a => {
+            if (/get.?started|proceed|continue/i.test(a.textContent)) {
+                a.href = '/erp/select_your_role/code.html';
+            }
         });
     </script>
 </body></html>

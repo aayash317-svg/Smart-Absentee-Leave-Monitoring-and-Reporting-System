@@ -67,7 +67,8 @@
                 }
             }
         }
-    }catch(_e){}</script><meta charset="utf-8"></head><body class="bg-background text-on-background min-h-screen flex flex-col md:flex-row">
+    }catch(_e){}</script><meta charset="utf-8">  <script src="../../api.js"></script>
+</head><body class="bg-background text-on-background min-h-screen flex flex-col md:flex-row">
 <!-- Sidebar (Shared Component: NavigationDrawer) -->
 <aside class="hidden md:flex flex-col h-screen w-[280px] bg-on-background fixed left-0 top-0 py-xl shadow-md z-40">
 <div class="px-lg mb-xl">
@@ -312,29 +313,47 @@
 </nav>
 </main>
 <script>
-        // Micro-interactions for activity cards
-        document.querySelectorAll('.group').forEach(card => {
-            card.addEventListener('mouseenter', () => {
-                card.style.transform = 'translateY(-2px)';
-            });
-            card.addEventListener('mouseleave', () => {
-                card.style.transform = 'translateY(0px)';
-            });
-        });
+if (redirectIfNotLoggedIn()) return;
 
-        // Search highlight simulation
-        const searchInput = document.querySelector('input[type="text"]');
-        searchInput.addEventListener('input', (e) => {
-            const query = e.target.value.toLowerCase();
-            document.querySelectorAll('.font-section-title, p.text-body').forEach(text => {
-                const parent = text.closest('.bg-white');
-                if (query && !text.textContent.toLowerCase().includes(query)) {
-                    parent.style.opacity = '0.4';
-                } else {
-                    parent.style.opacity = '1';
+        async function loadActivityLog() {
+            try {
+                const res = await authFetch('/api/admin/activity');
+                if (!res.ok) return; // Static fallback preserved
+                const logs = await res.json();
+                const container = document.querySelector('#activity-list, .activity-container');
+                if (container && logs.length > 0) {
+                    container.innerHTML = logs.map(l => `
+                        <div class="group bg-white rounded-2xl p-4 shadow-sm border border-outline-variant hover:shadow-md transition-all cursor-default">
+                            <div class="flex items-start justify-between">
+                                <div>
+                                    <p class="font-section-title text-on-surface">${l.action || '—'}</p>
+                                    <p class="text-body text-on-surface-variant mt-1">${l.details || ''}</p>
+                                </div>
+                                <span class="font-small text-outline whitespace-nowrap">${formatDateTime(l.timestamp)}</span>
+                            </div>
+                        </div>`).join('');
                 }
-            });
-        });
-    </script>
+            } catch { /* Static fallback */ }
+        }
 
+        // Hover micro-interactions
+        document.querySelectorAll('.group').forEach(card => {
+            card.addEventListener('mouseenter', () => card.style.transform = 'translateY(-2px)');
+            card.addEventListener('mouseleave', () => card.style.transform = 'translateY(0px)');
+        });
+
+        // Search
+        const searchInput = document.querySelector('input[type="text"]');
+        if (searchInput) {
+            searchInput.addEventListener('input', (e) => {
+                const q = e.target.value.toLowerCase();
+                document.querySelectorAll('.font-section-title, p.text-body').forEach(text => {
+                    const parent = text.closest('.bg-white');
+                    if (parent) parent.style.opacity = (q && !text.textContent.toLowerCase().includes(q)) ? '0.4' : '1';
+                });
+            });
+        }
+        loadActivityLog();
+        document.getElementById('logoutBtn')?.addEventListener('click', logout);
+    </script>
 </body></html>

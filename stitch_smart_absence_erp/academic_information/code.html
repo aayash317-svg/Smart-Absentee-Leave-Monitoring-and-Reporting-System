@@ -128,7 +128,8 @@
       min-height: max(884px, 100dvh);
     }
   </style>
-  </head>
+    <script src="../../api.js"></script>
+</head>
 <body class="bg-background font-body text-on-background min-h-screen">
 <!-- TopAppBar -->
 <header class="fixed top-0 w-full z-50 bg-surface border-b border-outline-variant flex items-center justify-between px-margin-mobile md:px-margin-desktop h-16 w-full">
@@ -378,16 +379,24 @@
 </button>
 </nav>
 <script>
-        // Simple interaction for the progress bars
-        document.addEventListener('DOMContentLoaded', () => {
-            const bars = document.querySelectorAll('.h-full');
-            bars.forEach(bar => {
-                const width = bar.style.width;
-                bar.style.width = '0';
-                setTimeout(() => {
-                    bar.style.width = width;
-                }, 300);
-            });
-        });
+if (redirectIfNotLoggedIn()) return;
+
+        async function loadAcademicInfo() {
+            try {
+                const res = await authFetch('/api/student/profile');
+                if (!res.ok) throw new Error('Could not load academic info');
+                const data = await res.json();
+                document.querySelectorAll('[data-field="course"]').forEach(el => el.textContent = data.course || '');
+                document.querySelectorAll('[data-field="semester"]').forEach(el => el.textContent = 'Semester ' + (data.semester || ''));
+                document.querySelectorAll('[data-field="year"]').forEach(el => el.textContent = 'Year ' + (data.year || ''));
+                document.querySelectorAll('[data-field="batch"]').forEach(el => el.textContent = data.batch || '');
+                document.querySelectorAll('[data-field="dept"]').forEach(el => el.textContent = data.department || '');
+                document.querySelectorAll('[data-field="regNo"]').forEach(el => el.textContent = data.registerNo || '');
+            } catch (err) {
+                showToast(err.message, 'error');
+            }
+        }
+        loadAcademicInfo();
+        document.getElementById('logoutBtn')?.addEventListener('click', logout);
     </script>
 </body></html>

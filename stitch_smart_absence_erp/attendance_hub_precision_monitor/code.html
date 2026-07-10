@@ -137,7 +137,8 @@
       min-height: max(884px, 100dvh);
     }
   </style>
-  </head>
+    <script src="../../api.js"></script>
+</head>
 <body class="min-h-screen flex flex-col items-center justify-center relative hero-gradient">
 <!-- Background Decorative Elements -->
 <div class="absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden z-0">
@@ -220,29 +221,37 @@
 </footer>
 <!-- Interactive Micro-interactions -->
 <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const cards = document.querySelectorAll('.glass-panel');
-            cards.forEach(card => {
-                card.addEventListener('mousemove', (e) => {
-                    const rect = card.getBoundingClientRect();
-                    const x = e.clientX - rect.left;
-                    const y = e.clientY - rect.top;
-                    card.style.setProperty('--mouse-x', `${x}px`);
-                    card.style.setProperty('--mouse-y', `${y}px`);
-                });
-            });
+if (redirectIfNotLoggedIn()) return;
 
-            // Smooth entrance animations
-            const elements = document.querySelectorAll('main > *');
-            elements.forEach((el, i) => {
-                el.style.opacity = '0';
-                el.style.transform = 'translateY(20px)';
-                el.style.transition = 'all 0.6s cubic-bezier(0.22, 1, 0.36, 1)';
-                setTimeout(() => {
-                    el.style.opacity = '1';
-                    el.style.transform = 'translateY(0)';
-                }, i * 150);
-            });
-        });
+        async function loadAttendance() {
+            try {
+                const res = await authFetch('/api/student/attendance');
+                if (!res.ok) throw new Error('Could not load attendance records');
+                const records = await res.json();
+                // Update the overall percentage
+                if (records.length > 0) {
+                    const totalHeld = records.reduce((s, r) => s + (r.totalClasses || 0), 0);
+                    const totalPresent = records.reduce((s, r) => s + (r.attendedClasses || 0), 0);
+                    const pct = totalHeld > 0 ? ((totalPresent / totalHeld) * 100).toFixed(1) : '100.0';
+                    document.querySelectorAll('.attendance-pct, [data-field="attendance"]').forEach(el => el.textContent = pct + '%');
+                }
+                // Render subject rows if a table/list container exists
+                const container = document.querySelector('#attendance-list, .attendance-table-body, tbody');
+                if (container && records.length > 0) {
+                    container.innerHTML = records.map(r => `
+                        <tr class="border-b border-outline-variant">
+                            <td class="py-3 px-4 font-body text-body">${r.subject || '—'}</td>
+                            <td class="py-3 px-4 text-center">${r.attendedClasses || 0}/${r.totalClasses || 0}</td>
+                            <td class="py-3 px-4 text-center font-semibold ${(r.percentage||100) < 75 ? 'text-error' : 'text-secondary'}">
+                                ${(r.percentage || 0).toFixed(1)}%
+                            </td>
+                        </tr>`).join('');
+                }
+            } catch (err) {
+                showToast(err.message, 'error');
+            }
+        }
+        loadAttendance();
+        document.getElementById('logoutBtn')?.addEventListener('click', logout);
     </script>
 </body></html>

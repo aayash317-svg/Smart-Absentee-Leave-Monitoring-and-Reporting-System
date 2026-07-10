@@ -127,7 +127,8 @@
       min-height: max(884px, 100dvh);
     }
   </style>
-  </head>
+    <script src="../../api.js"></script>
+</head>
 <body class="bg-surface text-on-surface min-h-screen">
 <!-- Navigation Drawer (Sidebar for Desktop) -->
 <aside class="hidden md:flex fixed left-0 top-0 h-full w-[280px] flex-col bg-on-background py-xl shadow-md z-50">
@@ -385,30 +386,42 @@
 </nav>
 <!-- Micro-interactions Script -->
 <script>
-        // Log Item Click Animation
-        document.querySelectorAll('.cursor-pointer').forEach(item => {
-            item.addEventListener('mousedown', () => {
-                item.style.transform = 'scale(0.99)';
-            });
-            item.addEventListener('mouseup', () => {
-                item.style.transform = 'scale(1)';
-            });
-            item.addEventListener('mouseleave', () => {
-                item.style.transform = 'scale(1)';
-            });
-        });
+if (redirectIfNotLoggedIn()) return;
 
-        // Simple Filter Switching
-        const filterBtns = document.querySelectorAll('.whitespace-nowrap');
-        filterBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                filterBtns.forEach(b => {
-                    b.classList.remove('bg-primary', 'text-white');
-                    b.classList.add('bg-surface-container-high', 'text-on-surface-variant');
+        async function loadSmsLog() {
+            try {
+                const res = await authFetch('/api/admin/sms-log');
+                if (!res.ok) return; // Static fallback
+                const logs = await res.json();
+                const container = document.querySelector('#sms-log-list, tbody, .sms-list');
+                if (container && logs.length > 0) {
+                    container.innerHTML = logs.map(l => `
+                        <tr class="border-b border-outline-variant hover:bg-surface-container transition-colors">
+                            <td class="py-3 px-4 font-body">${formatDateTime(l.sentAt)}</td>
+                            <td class="py-3 px-4">${l.recipient || '—'}</td>
+                            <td class="py-3 px-4">${l.message || '—'}</td>
+                            <td class="py-3 px-4"><span class="px-2 py-1 rounded-full text-xs ${l.status === 'Delivered' ? 'bg-secondary-container text-on-secondary-container' : 'bg-error-container text-on-error-container'}">${l.status || '—'}</span></td>
+                        </tr>`).join('');
+                }
+            } catch { /* Static fallback */ }
+        }
+
+        // Search filter
+        const searchInput = document.querySelector('input[type="text"]');
+        if (searchInput) {
+            searchInput.addEventListener('input', (e) => {
+                const q = e.target.value.toLowerCase();
+                document.querySelectorAll('tr').forEach(row => {
+                    row.style.display = q && !row.textContent.toLowerCase().includes(q) ? 'none' : '';
                 });
-                btn.classList.remove('bg-surface-container-high', 'text-on-surface-variant');
-                btn.classList.add('bg-primary', 'text-white');
             });
+        }
+        // Card hover
+        document.querySelectorAll('.group').forEach(card => {
+            card.addEventListener('mouseenter', () => card.style.transform = 'translateY(-2px)');
+            card.addEventListener('mouseleave', () => card.style.transform = 'translateY(0px)');
         });
+        loadSmsLog();
+        document.getElementById('logoutBtn')?.addEventListener('click', logout);
     </script>
 </body></html>

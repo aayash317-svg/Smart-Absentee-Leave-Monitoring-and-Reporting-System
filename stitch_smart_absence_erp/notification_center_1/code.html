@@ -136,7 +136,8 @@
       min-height: max(884px, 100dvh);
     }
   </style>
-  </head>
+    <script src="../../api.js"></script>
+</head>
 <body class="bg-background text-on-surface font-body min-h-screen">
 <!-- Top Navigation Bar -->
 <header class="fixed top-0 w-full z-50 flex justify-between items-center px-margin-mobile md:px-margin-desktop h-14 bg-surface border-b border-outline-variant">
@@ -313,15 +314,38 @@
 </button>
 </nav>
 <script>
-        // Simple Interaction logic
+if (redirectIfNotLoggedIn()) return;
+
         document.querySelectorAll('.notification-card').forEach(card => {
             card.addEventListener('click', () => {
-                const unreadDot = card.querySelector('.bg-primary.rounded-full');
-                if (unreadDot) {
-                    unreadDot.classList.add('opacity-0');
-                    unreadDot.classList.remove('bg-primary');
-                }
+                const dot = card.querySelector('.bg-primary.rounded-full');
+                if (dot) { dot.classList.add('opacity-0'); dot.classList.remove('bg-primary'); }
             });
         });
+
+        async function loadNotifications() {
+            try {
+                const res = await authFetch('/api/student/notifications');
+                if (!res.ok) return; // graceful degradation — static content stays
+                const items = await res.json();
+                const container = document.querySelector('#notification-list, .notifications-container');
+                if (container && items.length > 0) {
+                    const newItems = items.slice(0, 10).map(n => `
+                        <div class="notification-card p-4 rounded-2xl bg-surface-container border border-outline-variant cursor-pointer hover:shadow-md transition-all">
+                            <div class="flex items-start gap-3">
+                                <span class="material-symbols-outlined text-primary mt-1">notifications</span>
+                                <div class="flex-1">
+                                    <p class="font-section-title text-on-surface">${n.title || 'Notification'}</p>
+                                    <p class="font-body text-on-surface-variant mt-1">${n.message || ''}</p>
+                                    <p class="font-small text-outline mt-2">${formatDateTime(n.createdAt)}</p>
+                                </div>
+                            </div>
+                        </div>`).join('');
+                    container.innerHTML = newItems;
+                }
+            } catch { /* static fallback */ }
+        }
+        loadNotifications();
+        document.getElementById('logoutBtn')?.addEventListener('click', logout);
     </script>
 </body></html>

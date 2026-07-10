@@ -120,7 +120,8 @@
       min-height: max(884px, 100dvh);
     }
   </style>
-  </head>
+    <script src="../../api.js"></script>
+</head>
 <body class="bg-surface text-on-surface min-h-screen pb-20 md:pb-0">
 <!-- Top Navigation Anchor -->
 <header class="fixed top-0 w-full z-50 bg-surface dark:bg-surface-dim border-b border-outline-variant dark:border-outline flex items-center justify-between px-margin-mobile md:px-margin-desktop h-14 w-full">
@@ -332,19 +333,8 @@
 </div>
 </nav>
 <script>
-        // Simple micro-interaction for buttons
-        document.querySelectorAll('button').forEach(button => {
-            button.addEventListener('mousedown', () => {
-                button.classList.add('scale-95');
-            });
-            button.addEventListener('mouseup', () => {
-                button.classList.remove('scale-95');
-            });
-        });
-        
-        // Dark mode simulation (manual toggle)
-        function toggleDarkMode() {
-            document.documentElement.classList.toggle('dark');
-        }
+if (redirectIfNotLoggedIn()) return;
+        // Static template view — no API call needed
+        document.getElementById('logoutBtn')?.addEventListener('click', logout);
     </script>
 </body></html>

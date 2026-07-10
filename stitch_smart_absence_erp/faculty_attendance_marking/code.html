@@ -132,7 +132,8 @@
       min-height: max(884px, 100dvh);
     }
   </style>
-  </head>
+    <script src="../../api.js"></script>
+</head>
 <body class="bg-background text-on-background font-body min-h-screen flex flex-col md:flex-row overflow-hidden">
 <!-- Navigation Drawer (Desktop) -->
 <aside class="hidden md:flex flex-col h-full py-lg fixed left-0 top-0 w-[280px] bg-inverse-surface dark:bg-surface-container-lowest shadow-lg z-50">
@@ -209,131 +210,58 @@
 <div class="grid grid-cols-1 gap-3">
 <!-- Student Row Template -->
 <script>
-                        const students = [
-                            { id: "2023-CS-001", name: "Alexander Thorne", image: "placeholder" },
-                            { id: "2023-CS-005", name: "Beatrice Vance", image: "placeholder" },
-                            { id: "2023-CS-012", name: "Caleb Rivers", image: "placeholder" },
-                            { id: "2023-CS-018", name: "Diana Prince", image: "placeholder" },
-                            { id: "2023-CS-022", name: "Elias Sterling", image: "placeholder" },
-                            { id: "2023-CS-031", name: "Fiona Gallagher", image: "placeholder" },
-                            { id: "2023-CS-044", name: "Gideon Cross", image: "placeholder" },
-                            { id: "2023-CS-056", name: "Harper Lee", image: "placeholder" },
-                            { id: "2023-CS-067", name: "Isaac Newton", image: "placeholder" },
-                            { id: "2023-CS-082", name: "Julianne Moore", image: "placeholder" }
-                        ];
+if (redirectIfNotLoggedIn()) return;
 
-                        const studentImages = [
-                            "A headshot of a diverse young university student with a confident smile, wearing a modern green hoodie. The lighting is soft and cinematic, highlighting facial features against a blurred campus courtyard background in bright morning light.",
-                            "A portrait of a female student with curly hair and stylish glasses, wearing a cream sweater. She is looking directly at the camera with a gentle expression. The background is a clean, minimalist architectural space with soft shadows.",
-                            "A sharp close-up of a young male student in a denim jacket, standing in a brightly lit library. The background is filled with rows of out-of-focus books, creating a sophisticated academic vibe with natural sunlight filtering through.",
-                            "An elegant portrait of a female student of East Asian descent, wearing a professional black blazer. She has a composed look, set against a modern glass-walled office environment with high-end corporate lighting.",
-                            "A friendly student in a colorful flannel shirt, laughing slightly. He has a warm, approachable personality. The background is a vibrant university student union area with blurred colorful banners and warm wood tones.",
-                            "A high-key portrait of a focused student in a laboratory coat, conveying intelligence and diligence. The lighting is bright and sterile, characteristic of a science lab, with clean whites and technical equipment blurred in the distance.",
-                            "A cool, minimalist headshot of a male student with short hair, wearing a grey turtleneck. He has a thoughtful expression. The background is a solid, slightly textured cool-grey wall with subtle directional lighting.",
-                            "A creative student with brightly colored hair and a leather jacket, looking towards the side. The lighting is edgy and artistic, with purple and blue neon accents reflecting off her face in a modern gallery setting.",
-                            "A student wearing a traditional cultural scarf and a warm smile. The background is a sun-drenched outdoor park with golden-hour lighting creating a beautiful halo effect and deep, rich colors.",
-                            "A sophisticated close-up of a student in a red sweater, with a blurred coffee shop background. The atmosphere is cozy and studious, with soft indoor incandescent lighting and bokeh from hanging pendant lamps."
-                        ];
-                    </script>
-<div id="student-list-content">
-<!-- Content will be injected via JS for demonstration -->
-</div>
-</div>
-</div>
-</div>
-<!-- Sticky Footer -->
-<div class="absolute bottom-0 left-0 w-full bg-white/80 backdrop-blur-md border-t border-outline-variant p-4 md:px-margin-desktop z-40">
-<div class="max-w-5xl mx-auto flex items-center justify-between">
-<div class="hidden sm:flex flex-col">
-<span class="text-label font-label text-on-surface-variant uppercase">Summary</span>
-<p class="text-body font-semibold"><span id="presentCount">0</span> Present · <span id="absentCount">0</span> Absent · <span id="lateCount">0</span> Late</p>
-</div>
-<button class="w-full sm:w-auto px-10 py-3 bg-primary-container text-white rounded-xl font-bold shadow-lg hover:bg-primary-container/90 transition-all active:scale-95 flex items-center justify-center gap-2">
-<span class="material-symbols-outlined">send</span>
-                    Submit Attendance
-                </button>
-</div>
-</div>
-</main>
-<!-- Bottom Navigation (Mobile Only) -->
-<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-16 px-4 bg-surface dark:bg-surface-dim border-t border-outline-variant shadow-lg">
-<button class="flex flex-col items-center justify-center text-on-surface-variant">
-<span class="material-symbols-outlined">home</span>
-<span class="font-label text-[10px]">Home</span>
-</button>
-<button class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-xl px-3 py-1">
-<span class="material-symbols-outlined">menu_book</span>
-<span class="font-label text-[10px]">Classes</span>
-</button>
-<button class="flex flex-col items-center justify-center text-on-surface-variant">
-<span class="material-symbols-outlined">notifications</span>
-<span class="font-label text-[10px]">Alerts</span>
-</button>
-<button class="flex flex-col items-center justify-center text-on-surface-variant">
-<span class="material-symbols-outlined">person</span>
-<span class="font-label text-[10px]">Profile</span>
-</button>
-</nav>
-<script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const container = document.getElementById('student-list-content');
-            
-            students.forEach((student, index) => {
-                const row = document.createElement('div');
-                row.className = "bg-surface-container-lowest border border-outline-variant rounded-2xl p-4 flex flex-col md:flex-row items-center gap-4 transition-all hover:shadow-md hover:border-primary/30";
-                
-                row.innerHTML = `
-                    <div class="flex items-center flex-1 w-full gap-4">
-                        <div class="w-14 h-14 rounded-full overflow-hidden bg-surface-container-high shrink-0 ring-2 ring-background shadow-sm">
-                            <img src="placeholder" data-alt="${studentImages[index]}" class="w-full h-full object-cover">
-                        </div>
-                        <div class="flex flex-col min-w-0">
-                            <h3 class="font-section-title text-on-surface truncate">${student.name}</h3>
-                            <span class="text-label font-label text-outline uppercase tracking-tight">${student.id}</span>
-                        </div>
-                    </div>
-                    
-                    <div class="w-full md:w-auto">
-                        <div class="flex items-center bg-surface-container-high p-1 rounded-xl w-full md:w-80">
-                            <label class="flex-1 text-center cursor-pointer">
-                                <input type="radio" name="attendance-${index}" value="present" class="hidden peer" checked>
-                                <div class="py-2 rounded-lg text-small font-semibold transition-all peer-checked:bg-secondary peer-checked:text-white text-on-surface-variant hover:bg-surface-container-highest">Present</div>
-                            </label>
-                            <label class="flex-1 text-center cursor-pointer">
-                                <input type="radio" name="attendance-${index}" value="absent" class="hidden peer">
-                                <div class="py-2 rounded-lg text-small font-semibold transition-all peer-checked:bg-error peer-checked:text-white text-on-surface-variant hover:bg-surface-container-highest">Absent</div>
-                            </label>
-                            <label class="flex-1 text-center cursor-pointer">
-                                <input type="radio" name="attendance-${index}" value="late" class="hidden peer">
-                                <div class="py-2 rounded-lg text-small font-semibold transition-all peer-checked:bg-tertiary-container peer-checked:text-white text-on-surface-variant hover:bg-surface-container-highest">Late</div>
-                            </label>
-                        </div>
-                    </div>
-                `;
-                container.appendChild(row);
+        async function loadStudentList() {
+            try {
+                const user = getUser();
+                const res = await authFetch('/api/coordinator/students');
+                if (!res.ok) throw new Error('Could not load student list');
+                const students = await res.json();
+                const container = document.querySelector('#student-list, tbody, .student-list-container');
+                if (container && students.length > 0) {
+                    container.innerHTML = students.map((s, i) => `
+                        <tr class="border-b border-outline-variant hover:bg-surface-container transition-colors">
+                            <td class="py-3 px-4 font-body">${i+1}</td>
+                            <td class="py-3 px-4">${s.registerNo || '—'}</td>
+                            <td class="py-3 px-4 font-section-title">${s.fullName || '—'}</td>
+                            <td class="py-3 px-4 text-center">
+                                <input type="checkbox" data-student-id="${s._id}" 
+                                    class="w-5 h-5 rounded border-outline-variant text-primary cursor-pointer attendance-checkbox"
+                                    id="att-${s._id}">
+                            </td>
+                        </tr>`).join('');
+                }
+            } catch (err) {
+                showToast(err.message, 'error');
+            }
+        }
+        loadStudentList();
+
+        // Submit absent list
+        const submitBtn = document.querySelector('#mark-absent-btn, button.bg-primary');
+        if (submitBtn) {
+            submitBtn.addEventListener('click', async () => {
+                const checked = Array.from(document.querySelectorAll('.attendance-checkbox:checked'));
+                const absentIds = checked.map(el => el.dataset.studentId);
+                if (absentIds.length === 0) { showToast('No absences marked', 'warning'); return; }
+                const orig = submitBtn.innerHTML;
+                setLoading(submitBtn, true, orig);
+                try {
+                    const res = await authFetch('/api/coordinator/mark-absent', {
+                        method: 'POST',
+                        body: JSON.stringify({ student_ids: absentIds, date: new Date().toISOString().split('T')[0] })
+                    });
+                    const data = await res.json();
+                    if (!res.ok) throw new Error(data.detail || 'Submission failed');
+                    showToast(`${absentIds.length} student(s) marked absent`, 'success');
+                    setLoading(submitBtn, false, orig);
+                } catch (err) {
+                    showToast(err.message, 'error');
+                    setLoading(submitBtn, false, orig);
+                }
             });
-
-            // Summary calculation logic
-            const updateSummary = () => {
-                const radios = document.querySelectorAll('input[type="radio"]:checked');
-                let p = 0, a = 0, l = 0;
-                radios.forEach(r => {
-                    if(r.value === 'present') p++;
-                    else if(r.value === 'absent') a++;
-                    else if(r.value === 'late') l++;
-                });
-                document.getElementById('presentCount').innerText = p;
-                document.getElementById('absentCount').innerText = a;
-                document.getElementById('lateCount').innerText = l;
-            };
-
-            container.addEventListener('change', updateSummary);
-            updateSummary();
-
-            document.getElementById('markAllBtn').addEventListener('click', () => {
-                document.querySelectorAll('input[value="present"]').forEach(r => r.checked = true);
-                updateSummary();
-            });
-        });
+        }
+        document.getElementById('logoutBtn')?.addEventListener('click', logout);
     </script>
 </body></html>

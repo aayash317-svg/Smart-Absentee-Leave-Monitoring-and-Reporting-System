@@ -65,4 +65,4 @@ app.mount("/erp", StaticFiles(directory="stitch_smart_absence_erp"), name="erp")
 @app.get("/")
 async def root_redirect():
     """Redirect requests from root to the frontend login landing page."""
-    return RedirectResponse(url="/erp/login_attendance_hub/code.html")
+    return RedirectResponse(url="/erp/index.html")

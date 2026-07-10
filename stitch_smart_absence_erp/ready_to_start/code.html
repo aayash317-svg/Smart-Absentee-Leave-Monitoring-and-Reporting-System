@@ -127,7 +127,8 @@
       min-height: max(884px, 100dvh);
     }
   </style>
-  </head>
+    <script src="../../api.js"></script>
+</head>
 <body class="flex flex-col min-h-screen items-center justify-center overflow-hidden">
 <!-- Confetti layer -->
 <canvas class="confetti-canvas" id="confetti"></canvas>
@@ -187,71 +188,17 @@
         </p>
 </footer>
 <script>
-        // Simple confetti effect
-        const canvas = document.getElementById('confetti');
-        const ctx = canvas.getContext('2d');
-        let particles = [];
-
-        function resize() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-
-        window.addEventListener('resize', resize);
-        resize();
-
-        class Particle {
-            constructor() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height - canvas.height;
-                this.size = Math.random() * 8 + 4;
-                this.speedX = Math.random() * 3 - 1.5;
-                this.speedY = Math.random() * 3 + 2;
-                this.color = ['#2563eb', '#004ac6', '#b4c5ff', '#006e2d'][Math.floor(Math.random() * 4)];
-                this.rotation = Math.random() * 360;
-                this.rotationSpeed = Math.random() * 10 - 5;
+// Guard: if already logged in, redirect to dashboard
+        const user = getUser();
+        if (user) { redirectByRole(); }
+        // Wire CTA button
+        document.querySelectorAll('button, a').forEach(el => {
+            if (/start|login|sign.?in/i.test(el.textContent)) {
+                el.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    window.location.href = '/erp/login_attendance_hub/code.html';
+                });
             }
-            update() {
-                this.y += this.speedY;
-                this.x += this.speedX;
-                this.rotation += this.rotationSpeed;
-                if (this.y > canvas.height) {
-                    this.y = -20;
-                    this.x = Math.random() * canvas.width;
-                }
-            }
-            draw() {
-                ctx.save();
-                ctx.translate(this.x, this.y);
-                ctx.rotate(this.rotation * Math.PI / 180);
-                ctx.fillStyle = this.color;
-                ctx.fillRect(-this.size / 2, -this.size / 2, this.size, this.size);
-                ctx.restore();
-            }
-        }
-
-        function init() {
-            for (let i = 0; i < 40; i++) {
-                particles.push(new Particle());
-            }
-        }
-
-        function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            particles.forEach(p => {
-                p.update();
-                p.draw();
-            });
-            requestAnimationFrame(animate);
-        }
-
-        init();
-        animate();
-
-        // Interaction for the button
-        document.querySelector('a').addEventListener('click', (e) => {
-            // In a real app, this would navigate
-            console.log('Navigating to dashboard...');
         });
     </script>
 </body></html>

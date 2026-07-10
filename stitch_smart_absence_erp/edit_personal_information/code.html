@@ -114,7 +114,8 @@
       min-height: max(884px, 100dvh);
     }
   </style>
-  </head>
+    <script src="../../api.js"></script>
+</head>
 <body class="bg-background text-on-surface min-h-screen">
 <!-- Top Navigation Bar -->
 <header class="fixed top-0 w-full z-50 bg-surface border-b border-outline-variant h-16 flex items-center justify-between px-margin-mobile md:px-margin-desktop">
@@ -300,34 +301,53 @@
 </div>
 </nav>
 <script>
-        // Simple micro-interaction for the save button
-        const saveBtn = document.querySelector('button:has(span[data-icon="save"])');
-        if (saveBtn) {
-            saveBtn.addEventListener('click', () => {
-                const originalContent = saveBtn.innerHTML;
-                saveBtn.innerHTML = `
-                    <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    Updating...
-                `;
-                saveBtn.disabled = true;
-                setTimeout(() => {
-                    saveBtn.innerHTML = `
-                        <span class="material-symbols-outlined text-[20px]" data-icon="check_circle">check_circle</span>
-                        Saved Successfully
-                    `;
-                    saveBtn.classList.remove('bg-primary');
-                    saveBtn.classList.add('bg-secondary');
-                    setTimeout(() => {
-                        saveBtn.innerHTML = originalContent;
-                        saveBtn.classList.remove('bg-secondary');
-                        saveBtn.classList.add('bg-primary');
-                        saveBtn.disabled = false;
-                    }, 2000);
-                }, 1500);
+if (redirectIfNotLoggedIn()) return;
+
+        // Pre-fill form with current user data
+        async function prefillForm() {
+            try {
+                const res = await authFetch('/api/student/profile');
+                if (!res.ok) return;
+                const data = await res.json();
+                const form = document.querySelector('form');
+                if (!form) return;
+                const map = {
+                    'phone': data.phone || '', 'mobile': data.phone || '',
+                    'address': data.address || '', 'email': data.email || '',
+                    'fullName': data.fullName || '', 'name': data.fullName || ''
+                };
+                Object.entries(map).forEach(([key, val]) => {
+                    const el = form.querySelector(`[name="${key}"], [id="${key}"]`);
+                    if (el) el.value = val;
+                });
+            } catch(err) { /* silent */ }
+        }
+        prefillForm();
+
+        const editForm = document.querySelector('form');
+        if (editForm) {
+            editForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const formData = new FormData(editForm);
+                const payload = Object.fromEntries(formData.entries());
+                const btn = editForm.querySelector('button[type="submit"]');
+                const orig = btn.innerHTML;
+                setLoading(btn, true, orig);
+                try {
+                    const res = await authFetch('/api/student/profile', {
+                        method: 'PUT',
+                        body: JSON.stringify(payload)
+                    });
+                    const data = await res.json();
+                    if (!res.ok) throw new Error(data.detail || 'Update failed');
+                    showToast('Profile updated successfully!', 'success');
+                    setLoading(btn, false, orig);
+                } catch (err) {
+                    showToast(err.message, 'error');
+                    setLoading(btn, false, orig);
+                }
             });
         }
+        document.getElementById('logoutBtn')?.addEventListener('click', logout);
     </script>
 </body></html>

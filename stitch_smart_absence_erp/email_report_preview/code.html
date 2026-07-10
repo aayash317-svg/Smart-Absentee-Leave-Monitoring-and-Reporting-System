@@ -81,7 +81,8 @@
       min-height: max(884px, 100dvh);
     }
   </style>
-  </head>
+    <script src="../../api.js"></script>
+</head>
 <body class="bg-background text-on-surface antialiased overflow-x-hidden">
 <!-- Top App Bar -->
 <header class="fixed top-0 left-0 right-0 z-50 bg-white border-b border-outline-variant h-16 flex items-center px-4 justify-between">
@@ -248,22 +249,39 @@
         </button>
 </div>
 <script>
-        // Micro-interactions
-        document.querySelectorAll('button').forEach(btn => {
-            btn.addEventListener('click', function(e) {
-                // Visual ripple or simple feedback could go here
-            });
-        });
+if (redirectIfNotLoggedIn()) return;
 
-        // Toggle handling
-        const toggle = document.querySelector('input[type="checkbox"]');
-        toggle.addEventListener('change', function() {
-            const container = this.closest('div');
-            if (this.checked) {
-                console.log('Automated reporting enabled');
-            } else {
-                console.log('Automated reporting disabled');
+        const user = getUser();
+        const role = user?.role;
+
+        async function downloadReport(format = 'excel') {
+            const btn = document.querySelector('#download-btn, button.bg-primary');
+            const orig = btn?.innerHTML;
+            if (btn) setLoading(btn, true, orig);
+            try {
+                const endpoint = role === 'Dean'
+                    ? '/api/dean/report/excel'
+                    : '/api/hod/report/excel';
+                const res = await authFetch(endpoint);
+                if (!res.ok) throw new Error('Report generation failed');
+                const blob = await res.blob();
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `attendance_report_${new Date().toISOString().split('T')[0]}.xlsx`;
+                a.click();
+                URL.revokeObjectURL(url);
+                showToast('Report downloaded successfully!', 'success');
+            } catch (err) {
+                showToast(err.message, 'error');
+            } finally {
+                if (btn) setLoading(btn, false, orig);
             }
+        }
+
+        document.querySelectorAll('#download-btn, button.bg-primary, a[download]').forEach(el => {
+            el.addEventListener('click', (e) => { e.preventDefault(); downloadReport(); });
         });
+        document.getElementById('logoutBtn')?.addEventListener('click', logout);
     </script>
 </body></html>

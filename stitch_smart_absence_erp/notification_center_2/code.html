@@ -116,7 +116,8 @@
       min-height: max(884px, 100dvh);
     }
   </style>
-  </head>
+    <script src="../../api.js"></script>
+</head>
 <body class="bg-surface text-on-surface min-h-screen pb-24">
 <!-- TopAppBar -->
 <header class="fixed top-0 w-full z-50 bg-surface dark:bg-surface-dim border-b border-outline-variant dark:border-outline flex items-center justify-between px-margin-mobile md:px-margin-desktop h-14 w-full">
@@ -247,17 +248,18 @@
 </a>
 </nav>
 <script>
-        // Simple Interaction logic for unread indicators
-        document.querySelectorAll('.notification-card').forEach(card => {
-            card.addEventListener('click', function() {
-                const indicator = this.querySelector('.absolute.bg-primary');
-                if (indicator) {
-                    indicator.classList.add('scale-0', 'opacity-0');
-                    setTimeout(() => indicator.remove(), 300);
-                    this.classList.remove('bg-surface-container-lowest', 'border-outline-variant');
-                    this.classList.add('opacity-80');
-                }
-            });
-        });
+if (redirectIfNotLoggedIn()) return;
+
+        async function loadExtendedNotifications() {
+            try {
+                const res = await authFetch('/api/student/notifications');
+                if (!res.ok) return;
+                const items = await res.json();
+                const badge = document.querySelector('.notification-count, [data-count]');
+                if (badge) badge.textContent = items.filter(n => !n.isRead).length;
+            } catch { /* static fallback */ }
+        }
+        loadExtendedNotifications();
+        document.getElementById('logoutBtn')?.addEventListener('click', logout);
     </script>
 </body></html>

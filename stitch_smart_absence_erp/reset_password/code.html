@@ -116,7 +116,8 @@
       min-height: max(884px, 100dvh);
     }
   </style>
-  </head>
+    <script src="../../api.js"></script>
+</head>
 <body class="bg-surface-container-lowest min-h-screen flex flex-col text-on-surface">
 <!-- TopAppBar -->
 <header class="w-full top-0 sticky bg-surface dark:bg-background flex items-center px-margin-mobile h-14 w-full max-w-full mx-auto z-50">
@@ -215,57 +216,46 @@
 </button>
 </nav>
 <script>
-        function toggleVisibility(id) {
-            const input = document.getElementById(id);
-            const btn = input.nextElementSibling.querySelector('span');
-            if (input.type === 'password') {
-                input.type = 'text';
-                btn.innerText = 'visibility_off';
-            } else {
-                input.type = 'password';
-                btn.innerText = 'visibility';
-            }
-        }
-
+// Password strength checkers
         const passwordInput = document.getElementById('new-password');
-        const reqLength = document.getElementById('req-length');
-        const reqNumber = document.getElementById('req-number');
+        const reqLength  = document.getElementById('req-length');
+        const reqNumber  = document.getElementById('req-number');
         const reqSpecial = document.getElementById('req-special');
 
-        passwordInput.addEventListener('input', () => {
-            const val = passwordInput.value;
-            
-            // Length check
-            if (val.length >= 8) reqLength.classList.add('valid');
-            else reqLength.classList.remove('valid');
+        if (passwordInput) {
+            passwordInput.addEventListener('input', () => {
+                const val = passwordInput.value;
+                if (reqLength)  reqLength.classList.toggle('valid', val.length >= 8);
+                if (reqNumber)  reqNumber.classList.toggle('valid', /\d/.test(val));
+                if (reqSpecial) reqSpecial.classList.toggle('valid', /[!@#$%^&*(),.?":{}|<>]/.test(val));
+            });
+        }
 
-            // Number check
-            if (/\d/.test(val)) reqNumber.classList.add('valid');
-            else reqNumber.classList.remove('valid');
-
-            // Special character check
-            if (/[!@#$%^&*(),.?":{}|<>]/.test(val)) reqSpecial.classList.add('valid');
-            else reqSpecial.classList.remove('valid');
-        });
-
-        document.getElementById('reset-form').addEventListener('submit', (e) => {
+        document.getElementById('reset-form').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const confirm = document.getElementById('confirm-password').value;
-            if (passwordInput.value !== confirm) {
-                alert("Passwords do not match!");
-                return;
+            const pw = passwordInput?.value || '';
+            const confirm = document.getElementById('confirm-password')?.value || '';
+            if (pw !== confirm) { showToast('Passwords do not match!', 'warning'); return; }
+            if (pw.length < 8 || !/\d/.test(pw) || !/[!@#$%^&*(),.?":{}|<>]/.test(pw)) {
+                showToast('Please meet all password requirements', 'warning'); return;
             }
-            if (passwordInput.value.length >= 8 && /\d/.test(passwordInput.value) && /[!@#$%^&*(),.?":{}|<>]/.test(passwordInput.value)) {
-                // Success animation/redirect
-                const btn = e.target.querySelector('button[type="submit"]');
-                btn.innerHTML = '<span class="material-symbols-outlined animate-spin">sync</span> Updating...';
-                setTimeout(() => {
-                    btn.innerHTML = '<span class="material-symbols-outlined">check_circle</span> Updated Successfully';
-                    btn.classList.replace('bg-primary-container', 'bg-secondary-container');
-                    btn.classList.replace('text-on-primary-container', 'text-on-secondary-container');
-                }, 1500);
-            } else {
-                alert("Please meet all password requirements.");
+            const token = new URLSearchParams(window.location.search).get('token') || '';
+            const btn = e.target.querySelector('button[type="submit"]');
+            const orig = btn.innerHTML;
+            setLoading(btn, true, orig);
+            try {
+                const res = await fetch('/api/auth/reset-password', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ token, new_password: pw })
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.detail || 'Reset failed');
+                showToast('Password updated successfully!', 'success');
+                setTimeout(() => window.location.href = '/erp/reset_successful/code.html', 1800);
+            } catch (err) {
+                showToast(err.message, 'error');
+                setLoading(btn, false, orig);
             }
         });
     </script>

@@ -128,6 +128,7 @@
       min-height: max(884px, 100dvh);
     }
   </style>
+  <script src="../../api.js"></script>
 </head>
 <body class="bg-background font-body text-on-surface antialiased min-h-screen">
 <!-- TopAppBar -->
@@ -390,16 +391,26 @@
 </a>
 </nav>
 <script>
-        // Micro-interaction for attendance bar
-        document.addEventListener('DOMContentLoaded', () => {
-            const bars = document.querySelectorAll('.bg-primary.h-full');
-            bars.forEach(bar => {
-                const width = bar.style.width;
-                bar.style.width = '0%';
-                setTimeout(() => {
-                    bar.style.width = width;
-                }, 300);
-            });
-        });
+if (redirectIfNotLoggedIn()) return;
+
+        async function loadProfile() {
+            try {
+                const res = await authFetch('/api/student/profile');
+                if (!res.ok) throw new Error('Could not load profile');
+                const data = await res.json();
+                // Populate name
+                document.querySelectorAll('[data-field="name"], .student-name').forEach(el => el.textContent = data.fullName || '');
+                document.querySelectorAll('[data-field="email"], .student-email').forEach(el => el.textContent = data.email || '');
+                document.querySelectorAll('[data-field="regNo"], .student-regno').forEach(el => el.textContent = data.registerNo || '');
+                document.querySelectorAll('[data-field="dept"], .student-dept').forEach(el => el.textContent = data.department || '');
+                document.querySelectorAll('[data-field="year"], .student-year').forEach(el => el.textContent = 'Year ' + (data.year || ''));
+                document.querySelectorAll('[data-field="attendance"], .attendance-pct').forEach(el => el.textContent = (data.attendancePercentage || 0).toFixed(1) + '%');
+            } catch (err) {
+                showToast(err.message, 'error');
+            }
+        }
+        loadProfile();
+
+        document.getElementById('logoutBtn')?.addEventListener('click', logout);
     </script>
 </body></html>

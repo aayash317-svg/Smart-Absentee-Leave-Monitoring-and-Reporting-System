@@ -104,7 +104,8 @@
       min-height: max(884px, 100dvh);
     }
   </style>
-  </head>
+    <script src="../../api.js"></script>
+</head>
 <body class="bg-background text-on-surface">
 <!-- TopAppBar -->
 <header class="w-full top-0 sticky z-40 flex justify-between items-center px-lg py-md w-full bg-surface border-b border-outline-variant transition-colors">
@@ -460,29 +461,34 @@
 </div>
 </nav>
 <script>
-        // Micro-interactions
-        document.querySelectorAll('button').forEach(btn => {
-            btn.addEventListener('mousedown', () => {
-                btn.style.transform = 'scale(0.95)';
-                btn.style.transition = 'transform 0.15s ease';
-            });
-            btn.addEventListener('mouseup', () => {
-                btn.style.transform = 'scale(1)';
-            });
-            btn.addEventListener('mouseleave', () => {
-                btn.style.transform = 'scale(1)';
-            });
-        });
+if (redirectIfNotLoggedIn()) return;
 
-        // Hover animation logic for table rows
-        const rows = document.querySelectorAll('tbody tr');
-        rows.forEach(row => {
-            row.addEventListener('mouseenter', () => {
-                row.classList.add('translate-x-1');
-            });
-            row.addEventListener('mouseleave', () => {
-                row.classList.remove('translate-x-1');
-            });
-        });
+        async function loadFines() {
+            try {
+                const res = await authFetch('/api/student/fines');
+                if (!res.ok) throw new Error('Could not load fines');
+                const fines = await res.json();
+                const total = fines.reduce((s, f) => s + (f.amount || 0), 0);
+                document.querySelectorAll('.total-fine, [data-field="totalFine"]').forEach(el => el.textContent = '₹' + total.toFixed(2));
+                const container = document.querySelector('#fines-list, .fines-table-body, tbody');
+                if (container) {
+                    if (fines.length === 0) {
+                        container.innerHTML = '<tr><td colspan="5" class="py-8 text-center text-outline">No fines recorded</td></tr>';
+                    } else {
+                        container.innerHTML = fines.map(f => `
+                            <tr class="border-b border-outline-variant hover:bg-surface-container transition-colors">
+                                <td class="py-3 px-4 font-body">${formatDate(f.date)}</td>
+                                <td class="py-3 px-4">${f.reason || '—'}</td>
+                                <td class="py-3 px-4 font-semibold">₹${(f.amount || 0).toFixed(2)}</td>
+                                <td class="py-3 px-4"><span class="px-2 py-1 rounded-full text-xs font-semibold ${f.status === 'Paid' ? 'bg-secondary-container text-on-secondary-container' : 'bg-error-container text-on-error-container'}">${f.status || 'Unpaid'}</span></td>
+                            </tr>`).join('');
+                    }
+                }
+            } catch (err) {
+                showToast(err.message, 'error');
+            }
+        }
+        loadFines();
+        document.getElementById('logoutBtn')?.addEventListener('click', logout);
     </script>
 </body></html>

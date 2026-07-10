@@ -134,7 +134,8 @@
       min-height: max(884px, 100dvh);
     }
   </style>
-  </head>
+    <script src="../../api.js"></script>
+</head>
 <body class="flex flex-col min-h-screen">
 <!-- TopAppBar Fragment (Transactional/Auth - Suppressed Nav Items) -->
 <header class="w-full top-0 sticky bg-surface flex items-center px-margin-mobile h-14 max-w-md mx-auto z-50">
@@ -193,80 +194,17 @@
 </main>
 <!-- Bottom Navigation Suppressed for Login/Success Screens -->
 <script>
-        // Set dynamic timestamp
-        const timeElement = document.getElementById('timestamp');
-        const now = new Date();
-        timeElement.textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-
-        // Simple Confetti Micro-interaction
-        const canvas = document.getElementById('confetti');
-        const ctx = canvas.getContext('2d');
-        let particles = [];
-
-        function resize() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-
-        window.addEventListener('resize', resize);
-        resize();
-
-        class Particle {
-            constructor() {
-                this.x = canvas.width / 2;
-                this.y = canvas.height / 2;
-                this.size = Math.random() * 8 + 4;
-                this.speedX = Math.random() * 10 - 5;
-                this.speedY = Math.random() * -15 - 5;
-                this.gravity = 0.5;
-                this.color = ['#2563EB', '#16A34A', '#7CF994', '#DBE1FF'][Math.floor(Math.random() * 4)];
-                this.opacity = 1;
-            }
-
-            update() {
-                this.speedY += this.gravity;
-                this.x += this.speedX;
-                this.y += this.speedY;
-                this.opacity -= 0.01;
-            }
-
-            draw() {
-                ctx.globalAlpha = this.opacity;
-                ctx.fillStyle = this.color;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fill();
-            }
-        }
-
-        function createConfetti() {
-            for (let i = 0; i < 50; i++) {
-                particles.push(new Particle());
-            }
-        }
-
-        function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            for (let i = 0; i < particles.length; i++) {
-                particles[i].update();
-                particles[i].draw();
-                if (particles[i].opacity <= 0) {
-                    particles.splice(i, 1);
-                    i--;
-                }
-            }
-            requestAnimationFrame(animate);
-        }
-
-        // Trigger on load
+// After 3 seconds auto-redirect to login
         setTimeout(() => {
-            createConfetti();
-            animate();
-        }, 300);
-
-        // Click interaction for delight
-        document.body.addEventListener('click', (e) => {
-            // Optional: localized confetti at click position could be added here
+            window.location.href = '/erp/login_attendance_hub/code.html';
+        }, 3500);
+        document.querySelectorAll('button, a').forEach(el => {
+            if (/login|sign.?in|back/i.test(el.textContent)) {
+                el.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    window.location.href = '/erp/login_attendance_hub/code.html';
+                });
+            }
         });
     </script>
 </body></html>

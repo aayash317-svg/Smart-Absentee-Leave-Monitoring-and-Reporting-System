@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 
 <html class="light" lang="en"><head>
 <meta charset="utf-8"/>
@@ -127,6 +127,7 @@
       min-height: max(884px, 100dvh);
     }
   </style>
+  <script src="../api.js"></script>
 </head>
 <body class="bg-background text-on-background min-h-screen flex flex-col">
 <!-- TopAppBar -->
@@ -165,7 +166,7 @@
 <div class="relative z-10 flex flex-col items-end">
 <div class="text-right">
 <p class="font-label text-label opacity-80">Department of Computer Science</p>
-<p class="font-h3 text-h3">3rd Year • Semester VI</p>
+<p class="font-h3 text-h3">3rd Year â€¢ Semester VI</p>
 </div>
 </div>
 </div>
@@ -371,7 +372,7 @@
                 // 1. Update Hero Details
                 document.querySelector('h2.font-h1.text-h1').textContent = 'Good Morning, ' + data.studentInfo.fullName.split(' ')[0];
                 document.querySelector('p.font-label.text-label.opacity-80').textContent = data.studentInfo.departmentName;
-                document.querySelector('p.font-h3.text-h3').textContent = `${data.studentInfo.year} Year • Semester ${data.studentInfo.semester}`;
+                document.querySelector('p.font-h3.text-h3').textContent = `${data.studentInfo.year} Year â€¢ Semester ${data.studentInfo.semester}`;
 
                 // 2. Update Sidebar Details
                 const sidebarName = document.querySelector('aside p.font-body.text-body.text-surface');

@@ -120,7 +120,8 @@
       min-height: max(884px, 100dvh);
     }
   </style>
-  </head>
+    <script src="../../api.js"></script>
+</head>
 <body class="bg-background text-on-surface font-body selection:bg-primary-container selection:text-on-primary-container">
 <!-- TopAppBar -->
 <header class="fixed top-0 w-full z-50 bg-surface dark:bg-surface-container-high border-b border-outline-variant dark:border-outline flex items-center justify-between px-margin-mobile md:px-margin-desktop h-16 w-full">
@@ -332,18 +333,36 @@
 </a>
 </nav>
 <script>
-        // Simple micro-interaction for toggle feedback
-        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-            checkbox.addEventListener('change', function() {
-                const parent = this.closest('div.flex.items-start');
-                if (parent) {
-                    if (this.checked) {
-                        parent.classList.add('border-primary/30');
-                    } else {
-                        parent.classList.remove('border-primary/30');
-                    }
+if (redirectIfNotLoggedIn()) return;
+
+        // Password change form
+        const pwForm = document.querySelector('form');
+        if (pwForm) {
+            pwForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const currentPw = pwForm.querySelector('[name="currentPassword"], [id="current-password"]')?.value;
+                const newPw     = pwForm.querySelector('[name="newPassword"], [id="new-password"]')?.value;
+                const confirmPw = pwForm.querySelector('[name="confirmPassword"], [id="confirm-password"]')?.value;
+                if (newPw !== confirmPw) { showToast('New passwords do not match', 'warning'); return; }
+                const btn = pwForm.querySelector('button[type="submit"]');
+                const orig = btn.innerHTML;
+                setLoading(btn, true, orig);
+                try {
+                    const res = await authFetch('/api/auth/change-password', {
+                        method: 'POST',
+                        body: JSON.stringify({ current_password: currentPw, new_password: newPw })
+                    });
+                    const data = await res.json();
+                    if (!res.ok) throw new Error(data.detail || 'Password change failed');
+                    showToast('Password changed successfully!', 'success');
+                    pwForm.reset();
+                    setLoading(btn, false, orig);
+                } catch (err) {
+                    showToast(err.message, 'error');
+                    setLoading(btn, false, orig);
                 }
             });
-        });
+        }
+        document.getElementById('logoutBtn')?.addEventListener('click', logout);
     </script>
 </body></html>

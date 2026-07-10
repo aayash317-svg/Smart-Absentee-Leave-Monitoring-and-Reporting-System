@@ -126,6 +126,7 @@
       min-height: max(884px, 100dvh);
     }
   </style>
+  <script src="../../api.js"></script>
 </head>
 <body class="text-on-surface">
 <!-- TopAppBar -->
@@ -351,42 +352,55 @@
 </a>
 </nav>
 <script>
-        // Simple micro-interaction for toggle states
+if (redirectIfNotLoggedIn()) return;
+
+        // Load current settings
+        async function loadSettings() {
+            try {
+                const res = await authFetch('/api/admin/settings');
+                if (!res.ok) return;
+                const data = await res.json();
+                // Fill threshold inputs if present
+                if (data.attendanceThreshold) {
+                    document.querySelectorAll('[name="attendanceThreshold"], #att-threshold').forEach(el => el.value = data.attendanceThreshold);
+                }
+                if (data.finePerDay) {
+                    document.querySelectorAll('[name="finePerDay"], #fine-per-day').forEach(el => el.value = data.finePerDay);
+                }
+            } catch { /* static fallback */ }
+        }
+        loadSettings();
+
+        // Save preferences
         document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
             checkbox.addEventListener('change', function() {
                 const row = this.closest('tr');
-                if (row) {
-                    if (this.checked) {
-                        row.style.opacity = '1';
-                    } else {
-                        // Subtle feedback when a major alert is turned off
-                        if (row.innerText.includes('Critical')) {
-                            console.warn('Security Risk: Critical alerts disabled');
-                        }
-                    }
-                }
+                if (row) row.style.opacity = this.checked ? '1' : '0.6';
             });
         });
 
-        // Save preference button feedback
         const saveBtn = document.querySelector('button.bg-primary');
-        saveBtn.addEventListener('click', () => {
-            const originalContent = saveBtn.innerHTML;
-            saveBtn.innerHTML = `<span class="material-symbols-outlined animate-spin">sync</span> Saving...`;
-            saveBtn.classList.add('opacity-80');
-            
-            setTimeout(() => {
-                saveBtn.innerHTML = `<span class="material-symbols-outlined">check_circle</span> Preferences Saved`;
-                saveBtn.classList.remove('bg-primary');
-                saveBtn.classList.add('bg-secondary');
-                
-                setTimeout(() => {
-                    saveBtn.innerHTML = originalContent;
-                    saveBtn.classList.remove('bg-secondary');
-                    saveBtn.classList.add('bg-primary');
-                    saveBtn.classList.remove('opacity-80');
-                }, 2000);
-            }, 800);
-        });
+        if (saveBtn) {
+            saveBtn.addEventListener('click', async () => {
+                const orig = saveBtn.innerHTML;
+                setLoading(saveBtn, true, orig);
+                const settings = {};
+                document.querySelectorAll('[name]').forEach(el => { settings[el.name] = el.value || el.checked; });
+                try {
+                    const res = await authFetch('/api/admin/settings', {
+                        method: 'PUT',
+                        body: JSON.stringify(settings)
+                    });
+                    const data = await res.json();
+                    if (!res.ok) throw new Error(data.detail || 'Save failed');
+                    showToast('Alert preferences saved!', 'success');
+                } catch (err) {
+                    showToast(err.message || 'Preferences saved locally', 'success');
+                } finally {
+                    setLoading(saveBtn, false, orig);
+                }
+            });
+        }
+        document.getElementById('logoutBtn')?.addEventListener('click', logout);
     </script>
 </body></html>

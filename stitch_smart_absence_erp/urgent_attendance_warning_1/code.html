@@ -124,7 +124,8 @@
       min-height: max(884px, 100dvh);
     }
   </style>
-  </head>
+    <script src="../../api.js"></script>
+</head>
 <body class="bg-background text-on-background font-body">
 <!-- TopAppBar -->
 <header class="fixed top-0 w-full z-50 flex items-center justify-between px-margin-mobile md:px-margin-desktop h-14 w-full bg-surface dark:bg-surface-dim border-b border-outline-variant dark:border-outline">
@@ -299,28 +300,26 @@
 </div>
 </aside>
 <script>
-        // Micro-interaction for the alert pulsating effect
-        const alertIcon = document.querySelector('.animate-pulse');
-        if (alertIcon) {
-            setInterval(() => {
-                alertIcon.classList.toggle('scale-105');
-            }, 1000);
-        }
+if (redirectIfNotLoggedIn()) return;
 
-        // Simulating the loading of the progress ring
-        window.addEventListener('DOMContentLoaded', () => {
-            const circle = document.querySelector('.progress-ring-circle');
-            if (circle) {
-                const radius = circle.r.baseVal.value;
-                const circumference = radius * 2 * Math.PI;
-                circle.style.strokeDasharray = `${circumference} ${circumference}`;
-                
-                // Target: 72%
-                const offset = circumference - (72 / 100) * circumference;
-                setTimeout(() => {
-                    circle.style.strokeDashoffset = offset;
-                }, 500);
+        async function loadWarningData() {
+            try {
+                const res = await authFetch('/api/student/profile');
+                if (!res.ok) throw new Error('Could not load attendance data');
+                const data = await res.json();
+                const pct = data.attendancePercentage || 0;
+                document.querySelectorAll('.attendance-pct, [data-field="attendance"]').forEach(el => el.textContent = pct.toFixed(1) + '%');
+                document.querySelectorAll('[data-field="name"]').forEach(el => el.textContent = data.fullName || '');
+                // If attendance is fine, redirect back to dashboard
+                if (pct >= 85) {
+                    showToast('Your attendance is good!', 'success');
+                    setTimeout(() => window.location.href = '/erp/student_dashboard/code.html', 1500);
+                }
+            } catch (err) {
+                showToast(err.message, 'error');
             }
-        });
+        }
+        loadWarningData();
+        document.getElementById('logoutBtn')?.addEventListener('click', logout);
     </script>
 </body></html>

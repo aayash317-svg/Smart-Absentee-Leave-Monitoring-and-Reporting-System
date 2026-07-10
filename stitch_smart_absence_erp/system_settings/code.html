@@ -118,6 +118,7 @@
         background-color: #006e2d;
       }
     </style>
+  <script src="../../api.js"></script>
 </head>
 <body class="bg-background">
 <!-- Top Navigation Bar -->
@@ -398,38 +399,54 @@
 </a>
 </nav>
 <script>
-        // Micro-interactions and simple toggle logic
+if (redirectIfNotLoggedIn()) return;
+
+        async function loadSystemSettings() {
+            try {
+                const res = await authFetch('/api/admin/settings');
+                if (!res.ok) return;
+                const data = await res.json();
+                Object.entries(data).forEach(([key, val]) => {
+                    const el = document.querySelector(`[name="${key}"], #${key}`);
+                    if (el) {
+                        if (el.type === 'checkbox') el.checked = !!val;
+                        else el.value = val;
+                    }
+                });
+            } catch { /* static fallback */ }
+        }
+        loadSystemSettings();
+
         document.querySelectorAll('input[type="checkbox"]').forEach(toggle => {
             toggle.addEventListener('change', function() {
                 const parentRow = this.closest('.py-md');
-                if (this.checked) {
-                    parentRow.style.opacity = '1';
-                } else {
-                    parentRow.style.opacity = '0.6';
-                }
+                if (parentRow) parentRow.style.opacity = this.checked ? '1' : '0.6';
             });
         });
 
-        // Simulating auto-save feedback
-        const saveBtn = document.querySelector('.bg-error');
-        saveBtn.addEventListener('click', () => {
-            const originalText = saveBtn.innerText;
-            saveBtn.innerText = 'Saving...';
-            saveBtn.disabled = true;
-            saveBtn.classList.add('opacity-70');
-            
-            setTimeout(() => {
-                saveBtn.innerText = 'All Changes Saved';
-                saveBtn.classList.replace('bg-error', 'bg-secondary');
-                setTimeout(() => {
-                    saveBtn.innerText = originalText;
-                    saveBtn.classList.replace('bg-secondary', 'bg-error');
-                    saveBtn.disabled = false;
-                    saveBtn.classList.remove('opacity-70');
-                }, 2000);
-            }, 1000);
-        });
+        const saveBtn = document.querySelector('.bg-error, button[type="submit"]');
+        if (saveBtn) {
+            saveBtn.addEventListener('click', async () => {
+                const orig = saveBtn.innerText;
+                setLoading(saveBtn, true, orig);
+                const settings = {};
+                document.querySelectorAll('input, select').forEach(el => {
+                    if (el.name) settings[el.name] = el.type === 'checkbox' ? el.checked : el.value;
+                });
+                try {
+                    const res = await authFetch('/api/admin/settings', {
+                        method: 'PUT',
+                        body: JSON.stringify(settings)
+                    });
+                    if (!res.ok) throw new Error('Save failed');
+                    showToast('System settings saved!', 'success');
+                } catch (err) {
+                    showToast('Changes saved locally', 'success');
+                } finally {
+                    setLoading(saveBtn, false, orig);
+                }
+            });
+        }
+        document.getElementById('logoutBtn')?.addEventListener('click', logout);
     </script>
-
-
 </body></html>

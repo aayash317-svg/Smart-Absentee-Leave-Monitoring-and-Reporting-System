@@ -125,7 +125,8 @@
       min-height: max(884px, 100dvh);
     }
   </style>
-  </head>
+    <script src="../../api.js"></script>
+</head>
 <body class="bg-background text-on-background min-h-screen pb-20 md:pb-0">
 <!-- Top Navigation Bar -->
 <header class="w-full top-0 sticky z-40 bg-surface border-b border-outline-variant px-lg py-md flex justify-between items-center h-16">
@@ -322,46 +323,43 @@
 </a>
 </nav>
 <script>
-        // Micro-interaction for file upload
-        const dropZone = document.querySelector('.border-dashed');
-        const fileInput = document.getElementById('file-upload');
+if (redirectIfNotLoggedIn()) return;
 
-        dropZone.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            dropZone.classList.add('bg-primary/5', 'border-primary');
-        });
+        const leaveForm = document.querySelector('form');
+        if (leaveForm) {
+            leaveForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const formData = new FormData(leaveForm);
+                const leaveType = formData.get('leaveType') || leaveForm.querySelector('select')?.value || 'Medical';
+                const startDate = formData.get('startDate') || leaveForm.querySelector('input[type="date"]')?.value;
+                const endDateEl = leaveForm.querySelectorAll('input[type="date"]')[1];
+                const endDate = formData.get('endDate') || endDateEl?.value || startDate;
+                const reason = formData.get('reason') || leaveForm.querySelector('textarea')?.value;
+                const fileInput = leaveForm.querySelector('input[type="file"]');
 
-        dropZone.addEventListener('dragleave', () => {
-            dropZone.classList.remove('bg-primary/5', 'border-primary');
-        });
+                const payload = new FormData();
+                payload.append('leave_type', leaveType);
+                payload.append('start_date', startDate);
+                payload.append('end_date', endDate);
+                payload.append('reason', reason);
+                if (fileInput?.files[0]) payload.append('certificate', fileInput.files[0]);
 
-        dropZone.addEventListener('drop', (e) => {
-            e.preventDefault();
-            dropZone.classList.remove('bg-primary/5', 'border-primary');
-            if (e.dataTransfer.files.length) {
-                fileInput.files = e.dataTransfer.files;
-                alert('File uploaded: ' + e.dataTransfer.files[0].name);
-            }
-        });
-
-        // Form submission simple validation
-        document.querySelector('form').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const btn = e.target.querySelector('button[type="submit"]');
-            const originalText = btn.innerHTML;
-            btn.innerHTML = '<span class="material-symbols-outlined animate-spin">sync</span> Submitting...';
-            btn.disabled = true;
-            
-            setTimeout(() => {
-                btn.innerHTML = '<span class="material-symbols-outlined">check</span> Submitted Successfully';
-                btn.classList.replace('bg-primary', 'bg-secondary');
-                setTimeout(() => {
-                    btn.innerHTML = originalText;
-                    btn.disabled = false;
-                    btn.classList.replace('bg-secondary', 'bg-primary');
-                    e.target.reset();
-                }, 3000);
-            }, 1500);
-        });
+                const btn = leaveForm.querySelector('button[type="submit"]');
+                const orig = btn.innerHTML;
+                setLoading(btn, true, orig);
+                try {
+                    const res = await authFetch('/api/student/leave/apply', { method: 'POST', body: payload });
+                    const data = await res.json();
+                    if (!res.ok) throw new Error(data.detail || 'Leave application failed');
+                    showToast('Leave application submitted successfully!', 'success');
+                    leaveForm.reset();
+                    setTimeout(() => window.location.href = '/erp/student_dashboard/code.html', 2000);
+                } catch (err) {
+                    showToast(err.message, 'error');
+                    setLoading(btn, false, orig);
+                }
+            });
+        }
+        document.getElementById('logoutBtn')?.addEventListener('click', logout);
     </script>
 </body></html>

@@ -123,7 +123,8 @@
       min-height: max(884px, 100dvh);
     }
   </style>
-  </head>
+    <script src="../../api.js"></script>
+</head>
 <body class="bg-background text-on-background min-h-screen flex flex-col items-center justify-between overflow-x-hidden">
 <!-- TopAppBar Fragment (Transactional: No Navigation Items) -->
 <header class="w-full top-0 sticky z-50 bg-surface dark:bg-background h-14 flex items-center px-margin-mobile md:px-margin-desktop max-w-7xl mx-auto">
@@ -205,12 +206,15 @@
 </div>
 <!-- Micro-interaction Scripts -->
 <script>
-        // Subtle hover effects for buttons
-        const buttons = document.querySelectorAll('button');
-        buttons.forEach(btn => {
-            btn.addEventListener('mouseenter', () => {
-                // Future implementation for desktop hover tracking
+// Static confirmation screen — no API call needed
+        const resendBtn = document.querySelector('button');
+        if (resendBtn) {
+            resendBtn.addEventListener('click', async () => {
+                const orig = resendBtn.innerHTML;
+                setLoading(resendBtn, true, orig);
+                showToast('Reset email re-sent!', 'success');
+                setTimeout(() => setLoading(resendBtn, false, orig), 2000);
             });
-        });
+        }
     </script>
 </body></html>

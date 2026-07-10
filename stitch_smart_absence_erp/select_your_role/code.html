@@ -132,7 +132,8 @@
       min-height: max(884px, 100dvh);
     }
   </style>
-  </head>
+    <script src="../../api.js"></script>
+</head>
 <body class="bg-mesh min-h-screen flex flex-col font-body text-on-surface">
 <!-- TopAppBar -->
 <header class="bg-background w-full top-0 z-40 transition-opacity duration-200 flex items-center justify-between px-margin-mobile md:px-margin-desktop w-full h-14">
@@ -279,4 +280,18 @@
             }
         }
     </style>
+<script>
+// Wire role buttons to the login page with role pre-fill
+        document.querySelectorAll('[data-role], button, a').forEach(el => {
+            const role = el.dataset?.role || el.textContent?.trim();
+            if (['Student','Coordinator','HOD','Dean','Faculty','Admin'].includes(role)) {
+                el.style.cursor = 'pointer';
+                el.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    sessionStorage.setItem('selected_role', role);
+                    window.location.href = '/erp/login_attendance_hub/code.html';
+                });
+            }
+        });
+    </script>
 </body></html>

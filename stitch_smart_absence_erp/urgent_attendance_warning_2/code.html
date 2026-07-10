@@ -125,7 +125,8 @@
       min-height: max(884px, 100dvh);
     }
   </style>
-  </head>
+    <script src="../../api.js"></script>
+</head>
 <body class="bg-background text-on-surface font-body overflow-x-hidden">
 <!-- TopAppBar -->
 <header class="fixed top-0 w-full z-50 flex justify-between items-center px-margin-mobile md:px-margin-desktop h-14 bg-surface border-b border-outline-variant">
@@ -336,15 +337,21 @@
 </a>
 </nav>
 <script>
-        // Micro-interaction for the progress bar on load
-        document.addEventListener('DOMContentLoaded', () => {
-            const progressBar = document.querySelector('.bg-error');
-            if (progressBar) {
-                progressBar.style.width = '0%';
-                setTimeout(() => {
-                    progressBar.style.width = '72%';
-                }, 300);
+if (redirectIfNotLoggedIn()) return;
+
+        async function loadCriticalWarning() {
+            try {
+                const res = await authFetch('/api/student/profile');
+                if (!res.ok) throw new Error('Could not load data');
+                const data = await res.json();
+                const pct = data.attendancePercentage || 0;
+                document.querySelectorAll('.attendance-pct, [data-field="attendance"]').forEach(el => el.textContent = pct.toFixed(1) + '%');
+                document.querySelectorAll('[data-field="name"]').forEach(el => el.textContent = data.fullName || '');
+            } catch (err) {
+                showToast(err.message, 'error');
             }
-        });
+        }
+        loadCriticalWarning();
+        document.getElementById('logoutBtn')?.addEventListener('click', logout);
     </script>
 </body></html>

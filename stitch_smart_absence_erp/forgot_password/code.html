@@ -132,7 +132,8 @@
       min-height: max(884px, 100dvh);
     }
   </style>
-  </head>
+    <script src="../../api.js"></script>
+</head>
 <body class="bg-background text-on-background min-h-screen flex flex-col items-center">
 <!-- Top App Bar (Shared Component Strategy) -->
 <header class="w-full top-0 sticky z-50 bg-surface dark:bg-background h-14 flex items-center justify-center">
@@ -198,29 +199,28 @@
 <!-- Suppressed for this specific task-focused screen to prioritize content canvas -->
 <!-- Micro-interaction Script -->
 <script>
-        document.getElementById('reset-form').addEventListener('submit', function(e) {
+document.getElementById('reset-form').addEventListener('submit', async function(e) {
             e.preventDefault();
+            const emailInput = e.target.querySelector('input[type="email"]');
             const btn = e.target.querySelector('button[type="submit"]');
-            const originalContent = btn.innerHTML;
-            
-            // Loading State Animation
-            btn.disabled = true;
-            btn.innerHTML = `<span class="material-symbols-outlined animate-spin">sync</span><span>Sending...</span>`;
-            
-            setTimeout(() => {
-                btn.classList.replace('bg-primary-container', 'bg-secondary');
-                btn.classList.replace('text-on-primary-container', 'text-on-secondary');
-                btn.innerHTML = `<span class="material-symbols-outlined">check_circle</span><span>Email Sent!</span>`;
-                
-                // Show a success message toast (conceptual)
-                setTimeout(() => {
-                    alert('A password reset link has been sent to your university email.');
-                    btn.disabled = false;
-                    btn.innerHTML = originalContent;
-                    btn.classList.replace('bg-secondary', 'bg-primary-container');
-                    btn.classList.replace('text-on-secondary', 'text-on-primary-container');
-                }, 1000);
-            }, 1500);
+            const orig = btn.innerHTML;
+            if (!emailInput?.value) { showToast('Please enter your email address', 'warning'); return; }
+            setLoading(btn, true, orig);
+            try {
+                const res = await fetch('/api/auth/forgot-password', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: emailInput.value })
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.detail || 'Request failed');
+                showToast('Reset link sent to your email!', 'success');
+                btn.innerHTML = '<span class="material-symbols-outlined">check_circle</span><span>Email Sent!</span>';
+                setTimeout(() => window.location.href = '/erp/check_your_email/code.html', 1800);
+            } catch (err) {
+                showToast(err.message, 'error');
+                setLoading(btn, false, orig);
+            }
         });
     </script>
 </body></html>

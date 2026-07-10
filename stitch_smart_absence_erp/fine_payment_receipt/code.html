@@ -128,7 +128,8 @@
       min-height: max(884px, 100dvh);
     }
   </style>
-  </head>
+    <script src="../../api.js"></script>
+</head>
 <body class="bg-surface text-on-surface font-body text-body min-h-screen flex flex-col items-center">
 <!-- TopAppBar -->
 <header class="w-full top-0 sticky bg-surface border-b border-outline-variant z-50 flex justify-between items-center px-lg py-md">
@@ -246,22 +247,22 @@
 </a>
 </nav>
 <script>
-        // Simple micro-interaction for the card on load
-        document.addEventListener('DOMContentLoaded', () => {
-            const card = document.getElementById('receipt-card');
-            card.style.opacity = '0';
-            card.style.transform = 'translateY(20px)';
-            
-            setTimeout(() => {
-                card.style.transition = 'all 0.6s cubic-bezier(0.22, 1, 0.36, 1)';
-                card.style.opacity = '1';
-                card.style.transform = 'translateY(0)';
-            }, 300);
-        });
+if (redirectIfNotLoggedIn()) return;
 
-        // Toggle dark mode (example trigger)
-        function toggleDarkMode() {
-            document.documentElement.classList.toggle('dark');
+        async function loadReceiptData() {
+            try {
+                const res = await authFetch('/api/student/fines');
+                if (!res.ok) throw new Error('Could not load receipt data');
+                const fines = await res.json();
+                const paid = fines.filter(f => f.status === 'Paid');
+                const total = paid.reduce((s, f) => s + (f.amount || 0), 0);
+                document.querySelectorAll('[data-field="receiptTotal"]').forEach(el => el.textContent = '₹' + total.toFixed(2));
+                document.querySelectorAll('[data-field="fineCount"]').forEach(el => el.textContent = paid.length + ' fines paid');
+            } catch (err) {
+                showToast(err.message, 'error');
+            }
         }
+        loadReceiptData();
+        document.getElementById('logoutBtn')?.addEventListener('click', logout);
     </script>
 </body></html>
