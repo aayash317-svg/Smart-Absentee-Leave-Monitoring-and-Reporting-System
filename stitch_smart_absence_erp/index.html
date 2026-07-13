@@ -2244,11 +2244,14 @@
         }
 
         async function apiFetch(endpoint, options = {}) {
-            options.headers = {
+            const headers = {
                 ...options.headers,
-                ...getAuthHeaders(),
-                "Content-Type": "application/json"
+                ...getAuthHeaders()
             };
+            if (!(options.body instanceof FormData)) {
+                headers["Content-Type"] = "application/json";
+            }
+            options.headers = headers;
             const response = await fetch(`${API_URL}/api${endpoint}`, options);
             if (response.status === 401) {
                 const refresh = localStorage.getItem("refresh_token");
@@ -2386,6 +2389,30 @@
         let hodMetrics = null;
         let deanMetrics = null;
 
+        async function fetchNotifications() {
+            try {
+                const resp = await apiFetch("/student/notifications");
+                const notifs = await resp.json();
+                const feed = document.getElementById("notifPageFeed");
+                if (feed) {
+                    feed.innerHTML = notifs.length
+                        ? notifs.map(n => `
+                            <div class="activity-item" style="margin-bottom:12px;padding:12px;border: 1px solid var(--border-color);border-radius: 8px;">
+                                <div class="activity-icon">🔔</div>
+                                <div class="activity-content" style="flex:1;margin-left:12px;">
+                                    <div class="activity-title" style="font-weight:600;">${n.title}</div>
+                                    <div class="activity-desc" style="color:var(--text-secondary);font-size:13px;margin-top:2px;">${n.message}</div>
+                                </div>
+                                <div class="activity-time" style="font-size:12px;color:var(--text-tertiary);">${new Date(n.createdAt).toLocaleDateString()}</div>
+                            </div>
+                        `).join('')
+                        : `<div class="table-empty">No notifications yet</div>`;
+                }
+            } catch (err) {
+                console.error("Failed to load notifications", err);
+            }
+        }
+
         async function fetchPageData(pageId) {
             if (currentRole === 'student') {
                 const profResp = await apiFetch("/student/profile");
@@ -2447,6 +2474,10 @@
                     const absResp = await apiFetch("/student/absentee/history");
                     const absences = await absResp.json();
                     renderStudentHistoryTable(absences);
+                }
+
+                if (pageId === 'notifications') {
+                    await fetchNotifications();
                 }
             }
             
@@ -2953,18 +2984,24 @@
             const reason = document.getElementById('leaveReason').value || 'No reason provided';
             if (!from) { showToast('Please select a start date'); return; }
             
+            const formData = new FormData();
+            formData.append('leave_type', type);
+            formData.append('start_date', from);
+            formData.append('end_date', to);
+            formData.append('reason', reason);
+            
+            const fileInput = document.getElementById('leaveDoc');
+            if (fileInput && fileInput.files && fileInput.files[0]) {
+                formData.append('certificate', fileInput.files[0]);
+            }
+            
             try {
                 await apiFetch('/student/leave/apply', {
                     method: 'POST',
-                    body: JSON.stringify({
-                        startDate: from,
-                        endDate: to,
-                        leaveType: type,
-                        reason: reason,
-                        certificateUrl: null
-                    })
+                    body: formData
                 });
                 document.getElementById('leaveReason').value = '';
+                if (fileInput) fileInput.value = '';
                 showToast('Leave request submitted successfully');
                 navigateTo('leave-status');
             } catch (err) {
