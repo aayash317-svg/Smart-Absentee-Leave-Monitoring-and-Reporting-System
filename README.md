@@ -1,23 +1,58 @@
 # 🎓 Smart Absentee Leave Monitoring and Reporting System
 
-> An enterprise-grade FastAPI backend with a fully modular architecture for managing student attendance, leave applications, fine enforcement, role-based reporting, and real-time notifications across a college ERP.
+> A production-ready, full-stack College ERP built with FastAPI + MongoDB + Vanilla JS — automating the complete lifecycle of student attendance management, leave applications, fine enforcement, PDF/Excel reporting, and multi-channel notifications.
+
+[![Python](https://img.shields.io/badge/Python-3.11-blue)](https://python.org)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.110-green)](https://fastapi.tiangolo.com)
+[![MongoDB](https://img.shields.io/badge/MongoDB-7.0-brightgreen)](https://mongodb.com)
+[![Tests](https://img.shields.io/badge/Tests-8%2F8%20Passing-success)](tests/)
+[![License](https://img.shields.io/badge/License-Academic-orange)](LICENSE)
 
 ---
 
 ## 📌 Project Overview
 
-The **Smart Absentee Leave Monitoring and Reporting System** is a full-stack college ERP built to automate the entire lifecycle of student attendance management — from marking absences and submitting leave applications to generating PDF/Excel reports, sending SMS/email alerts, and enforcing progressive fine policies.
+The **Smart Absentee Leave Monitoring and Reporting System** is a full-stack college ERP that automates the entire lifecycle of student attendance management — from marking daily absences to generating reports and sending low-attendance alerts.
+
+### ✅ What's Fully Built & Working
+
+| Feature | Status |
+|---|---|
+| JWT Authentication (access + refresh tokens) | ✅ Complete |
+| Role-Based Access Control (5 roles) | ✅ Complete |
+| Password hashing (bcrypt, cost=12) | ✅ Complete |
+| Brute-force lockout (5 attempts → 5 min ban) | ✅ Complete |
+| All 32 frontend screens wired to live API | ✅ Complete |
+| Student leave application + file upload | ✅ Complete |
+| Progressive fine calculation | ✅ Complete |
+| Coordinator bulk attendance marking | ✅ Complete |
+| HOD / Dean leave approval workflow | ✅ Complete |
+| PDF + Excel report generation | ✅ Complete |
+| In-app + SMS notification delivery logs | ✅ Complete |
+| Forgot / Reset / Change password flow | ✅ Complete |
+| Admin audit logs, user management | ✅ Complete |
+| System settings (thresholds, toggles) | ✅ Complete |
+| Database seeded with 10 students + all roles | ✅ Complete |
+| 8 automated tests (pytest) | ✅ 8/8 Pass |
+| Docker support | ✅ Complete |
+| Security headers (CSP, X-Frame, XSS) | ✅ Complete |
+
+---
+
+## 🛠️ Technology Stack
 
 | Layer | Technology |
 |---|---|
 | Backend Framework | FastAPI (Python 3.11) |
 | Database | MongoDB (via Motor async driver) |
-| Authentication | JWT (Access + Refresh tokens) |
-| Password Security | bcrypt hashing |
+| Authentication | JWT — HS256 (Access + Refresh tokens) |
+| Password Security | bcrypt (cost factor 12) |
 | Report Generation | ReportLab (PDF), openpyxl (Excel) |
 | Notifications | SMTP Email + Twilio SMS |
-| Frontend | Vanilla HTML/CSS/JS |
+| Frontend | Vanilla HTML / Tailwind CSS / Vanilla JS |
+| Shared Frontend Utility | `api.js` — authFetch, toast, logout, role routing |
 | Testing | pytest + pytest-asyncio |
+| Containerization | Docker + docker-compose |
 
 ---
 
@@ -27,112 +62,140 @@ The **Smart Absentee Leave Monitoring and Reporting System** is a full-stack col
 Smart-Absentee-Leave-Monitoring-and-Reporting-System/
 │
 ├── backend/
-│   ├── app/
-│   │   ├── api/                    ← Route handlers (REST endpoints)
-│   │   │   ├── auth.py             ← Login, logout, token refresh
-│   │   │   ├── student.py          ← Apply leave, view attendance
-│   │   │   ├── coordinator.py      ← Mark absentees, process leaves
-│   │   │   ├── hod.py              ← Department reports, leave approval
-│   │   │   ├── dean.py             ← Institution-wide analytics
-│   │   │   ├── admin.py            ← Audit logs, user management
-│   │   │   └── deps.py             ← Shared dependency injectors
-│   │   │
-│   │   ├── core/                   ← Security and config layer
-│   │   │   ├── config.py           ← Environment settings (.env)
-│   │   │   ├── jwt.py              ← Token encode/decode/validate
-│   │   │   ├── password.py         ← bcrypt hash/verify + strength check
-│   │   │   ├── permissions.py      ← Role-based access guards (RBAC)
-│   │   │   └── security.py         ← Unified re-export of all security modules
-│   │   │
-│   │   ├── middleware/             ← Global request pipeline
-│   │   │   ├── jwt.py              ← JWT extraction middleware
-│   │   │   ├── logging.py          ← Request/response duration logger
-│   │   │   ├── cors.py             ← CORS policy (localhost origins)
-│   │   │   └── rate_limit.py       ← Sliding-window IP throttle (10 req/min on auth)
-│   │   │
-│   │   ├── models/                 ← MongoDB document schemas (Pydantic)
-│   │   │   ├── user.py             ← User collection schema
-│   │   │   ├── student.py          ← Student profile schema
-│   │   │   ├── leave.py            ← Leave application schema
-│   │   │   ├── fine.py             ← Fine payment schema
-│   │   │   └── attendance.py       ← Absentee log schema
-│   │   │
-│   │   ├── services/               ← Business logic layer
-│   │   │   ├── auth_service.py     ← Login verification, token generation
-│   │   │   ├── leave_service.py    ← Leave logic + progressive fine rules
-│   │   │   ├── email_service.py    ← SMTP email client
-│   │   │   ├── sms_service.py      ← Twilio SMS dispatcher
-│   │   │   ├── notification_service.py ← Combined in-app + SMS + email alerts
-│   │   │   ├── pdf_service.py      ← ReportLab PDF attendance report
-│   │   │   ├── excel_service.py    ← openpyxl Excel workbook exporter
-│   │   │   └── report_service.py   ← Report compilation orchestrator
-│   │   │
-│   │   ├── database/
-│   │   │   └── connection.py       ← Motor async MongoDB client
-│   │   │
-│   │   ├── utils/
-│   │   │   └── upload.py           ← File upload validator (5MB, pdf/png/jpg)
-│   │   │
-│   │   └── main.py                 ← App entrypoint (middlewares + routers + static mount)
-│   │
-│   └── requirements.txt
+│   ├── .env                            ← Environment config (never commit secrets!)
+│   ├── .env.example                    ← Template for required env vars
+│   ├── requirements.txt
+│   └── app/
+│       ├── main.py                     ← App entrypoint: middlewares + routers + static
+│       │
+│       ├── api/                        ← REST route handlers
+│       │   ├── auth.py                 ← Login, register, forgot/reset/change password
+│       │   ├── student.py              ← Profile, attendance, fines, leave, notifications
+│       │   ├── coordinator.py          ← Mark absences, process leaves, student list
+│       │   ├── hod.py                  ← Dept metrics, leave approval, Excel report
+│       │   ├── dean.py                 ← Institution metrics, global Excel report
+│       │   ├── admin.py                ← Users, audit logs, settings, SMS log, activity
+│       │   ├── dashboard.py            ← Unified role-aware metrics endpoint
+│       │   └── deps.py                 ← Shared auth dependencies (get_current_user, RoleChecker)
+│       │
+│       ├── core/                       ← Security & configuration
+│       │   ├── config.py               ← Pydantic settings from .env
+│       │   ├── jwt.py                  ← Token create / decode / validate
+│       │   ├── password.py             ← bcrypt hash / verify / strength check
+│       │   ├── permissions.py          ← RBAC guards (require_dean, require_hod, etc.)
+│       │   └── security.py             ← Unified re-export of all security utilities
+│       │
+│       ├── middleware/
+│       │   ├── jwt.py                  ← Security headers + Bearer token extraction
+│       │   ├── logging.py              ← Structured request/response logger
+│       │   ├── cors.py                 ← CORS allowlist (localhost origins)
+│       │   └── rate_limit.py           ← Sliding-window IP throttle on auth routes
+│       │
+│       ├── models/                     ← MongoDB document schemas (Pydantic)
+│       │   ├── user.py
+│       │   ├── student.py
+│       │   ├── leave.py
+│       │   ├── fine.py
+│       │   └── attendance.py
+│       │
+│       ├── repositories/               ← Data access layer (MongoDB queries)
+│       │   ├── user.py
+│       │   ├── student.py
+│       │   ├── absentee.py
+│       │   ├── fine.py
+│       │   └── leave.py
+│       │
+│       ├── schemas/                    ← Request / response Pydantic models
+│       │   ├── auth.py
+│       │   ├── student.py
+│       │   └── coordinator.py
+│       │
+│       ├── services/                   ← Business logic layer
+│       │   ├── auth_service.py         ← Login, lockout, token refresh
+│       │   ├── leave_service.py        ← Apply / approve / reject + fine calculation
+│       │   ├── fine_service.py         ← Progressive delay fine rules
+│       │   ├── email_service.py        ← SMTP email sender
+│       │   ├── sms_service.py          ← Twilio SMS dispatcher
+│       │   ├── notification_service.py ← In-app + email + SMS combined alerts
+│       │   ├── pdf_service.py          ← ReportLab PDF attendance report
+│       │   ├── excel_service.py        ← openpyxl Excel workbook exporter
+│       │   └── report_service.py       ← Report compilation orchestrator
+│       │
+│       ├── database/
+│       │   ├── connection.py           ← Motor async MongoDB client (singleton)
+│       │   └── seed.py                 ← Database seeder (10 students + all roles)
+│       │
+│       └── utils/
+│           └── upload.py               ← File validator (5 MB limit, pdf/png/jpg)
 │
-├── stitch_smart_absence_erp/       ← Frontend HTML pages (33 screens)
-│   ├── login_attendance_hub/       ← Login page
-│   ├── student_dashboard/          ← Student home
-│   ├── coordinator_dashboard/      ← Coordinator home
-│   ├── hod_dashboard/              ← HOD home
-│   ├── dean_dashboard/             ← Dean home
-│   ├── apply_for_leave/            ← Student leave application form
-│   ├── fine_management/            ← Fine list and payment
-│   ├── faculty_attendance_marking/ ← Mark daily attendance
-│   ├── notification_center_1/      ← Notification inbox
-│   └── ... (33 total pages)
+├── stitch_smart_absence_erp/           ← 32 frontend HTML screens
+│   ├── api.js                          ← Shared auth + fetch + toast utility
+│   ├── index.html                      ← Hub index (role-aware redirect)
+│   ├── login_attendance_hub/
+│   ├── student_dashboard/
+│   ├── coordinator_dashboard/
+│   ├── hod_dashboard/
+│   ├── dean_dashboard/
+│   ├── apply_for_leave/
+│   ├── fine_management/
+│   ├── faculty_attendance_marking/
+│   ├── notification_center_1/
+│   ├── notification_center_2/
+│   └── ... (32 total screens)
 │
-└── tests/
-    ├── test_auth.py                ← bcrypt, JWT, password strength tests
-    ├── test_student.py             ← File upload, leave schema tests
-    ├── test_leave.py               ← Progressive fine delay calculation tests
-    └── test_reports.py             ← PDF/Excel binary output tests
+├── tests/
+│   ├── test_auth.py                    ← bcrypt, JWT, password strength
+│   ├── test_student.py                 ← File upload, leave schema
+│   ├── test_leave.py                   ← Progressive fine delay calculation
+│   └── test_reports.py                 ← PDF/Excel binary output
+│
+├── logs/
+│   ├── app.log
+│   └── error.log
+│
+├── Dockerfile
+├── docker-compose.yml
+└── inject_api.py                       ← Automation: wires api.js into all screens
 ```
 
 ---
 
 ## 🔐 Security Design
 
-### Password Security
-All passwords are hashed using **bcrypt** — they are never stored in plaintext. Even the developer cannot recover the original password.
+### 1. Password Security
+All passwords hashed with **bcrypt (cost=12)** — never stored in plaintext. Constant-time comparison prevents timing attacks.
 
+### 2. JWT Authentication
 ```
-User creates password
-      ↓
-bcrypt hashes it → $2b$12$P2U4jM1r6gL2QW0fN...
-      ↓
-Stored in MongoDB
-```
-
-On login:
-```
-User enters password → bcrypt compare → Match? → Login Success
+Login → Verify credentials → Issue Access Token (short-lived) + Refresh Token
+→ Every API request sends: Authorization: Bearer <token>
+→ Backend validates on every request
 ```
 
-### JWT Authentication
-Every protected API call requires a valid JWT access token:
+### 3. Brute-Force Protection
 ```
-Login → Server verifies credentials → Issues JWT → Client stores token
-→ Every API request sends token in Authorization header
-→ Backend validates on every request (never trust the frontend)
+Wrong password → Increment failedLoginAttempts counter in MongoDB
+5 failures     → Account locked for 5 minutes (lockoutUntil timestamp)
+Success        → Counter resets to 0
 ```
 
-### Role-Based Access Control (RBAC)
+### 4. Role-Based Access Control (RBAC)
 
-| Role | Access |
+| Role | Permissions |
 |---|---|
-| **Student** | Apply leave, view own attendance history |
-| **Coordinator** | Mark absentees, process leave applications |
-| **HOD** | Department reports, approve leaves, download spreadsheets |
-| **Dean** | Institution-wide comparative reports |
-| **Admin** | Full system access, audit logs, user management |
+| **Student** | View own profile, attendance, fines; apply for leave; change password |
+| **Coordinator** | Mark absences (bulk), view/process pending leaves for their department |
+| **HOD** | Dept metrics, approve/reject leaves, download dept Excel report |
+| **Dean** | Institution-wide analytics, global attendance/leave reports |
+| **Admin** | Full access: user management, audit logs, system settings, SMS logs |
+
+### 5. Security Headers (every response)
+```
+X-Frame-Options: DENY
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 1; mode=block
+Content-Security-Policy: default-src 'self'; ...
+```
 
 ---
 
@@ -142,179 +205,258 @@ Login → Server verifies credentials → Issues JWT → Client stores token
 - Python 3.11+
 - MongoDB running on `localhost:27017`
 
-### 1. Install Dependencies
+### Step 1 — Install Dependencies
 ```bash
 pip install -r backend/requirements.txt
 ```
 
-### 2. Set Up Environment Variables
-Create a `.env` file inside `backend/`:
+### Step 2 — Configure Environment
+The `backend/.env` file is already pre-configured for local development. To change settings, edit `backend/.env.example` and rename it to `.env`.
+
 ```env
 MONGO_URI=mongodb://localhost:27017
-DATABASE_NAME=smart_erp
-SECRET_KEY=your-super-secret-jwt-key-here
-ALGORITHM=HS256
-ACCESS_TOKEN_EXPIRE_MINUTES=30
+MONGO_DB_NAME=smart_absentee_db_v2
+JWT_SECRET=your-super-secret-jwt-key-here
+JWT_ALGORITHM=HS256
+ACCESS_TOKEN_EXPIRE_MINUTES=60
 REFRESH_TOKEN_EXPIRE_DAYS=7
 
-# Email (SMTP)
+# Email (SMTP) — Optional
 SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
 SMTP_USER=your-email@gmail.com
 SMTP_PASSWORD=your-app-password
 
-# Twilio SMS (optional)
+# Twilio SMS — Optional
 TWILIO_ACCOUNT_SID=ACxxxxxxxxxxxx
 TWILIO_AUTH_TOKEN=your-auth-token
 TWILIO_FROM_NUMBER=+1234567890
 ```
 
-### 3. Start the Server
+### Step 3 — Seed the Database
 ```bash
-python -m uvicorn backend.app.main:app --reload
+# Windows PowerShell
+$env:PYTHONPATH="d:\collge att"; python -m backend.app.database.seed
+
+# Linux / Mac
+PYTHONPATH=. python -m backend.app.database.seed
 ```
 
-### 4. Access
+### Step 4 — Start the Server
+```bash
+python -m uvicorn backend.app.main:app --host 127.0.0.1 --port 8000 --reload
+```
+
+### Step 5 — Open the App
 | URL | Description |
 |---|---|
-| `http://localhost:8000/` | Frontend (Login Page) |
-| `http://localhost:8000/docs` | Interactive Swagger API Docs |
-| `http://localhost:8000/redoc` | ReDoc API Reference |
+| `http://127.0.0.1:8000` | Frontend (auto-redirects to login) |
+| `http://127.0.0.1:8000/docs` | Interactive Swagger API Docs |
+| `http://127.0.0.1:8000/redoc` | ReDoc API Reference |
+
+---
+
+## 🐳 Running with Docker
+
+```bash
+docker-compose up --build
+```
+
+The full stack (FastAPI + MongoDB) launches with a single command. App available at `http://localhost:8000`.
+
+---
+
+## 🧑‍💻 Demo Login Credentials
+
+> **Password for ALL accounts: `Pass123!`**
+
+### Staff Accounts
+
+| Role | Email |
+|---|---|
+| Dean | `dean@college.edu` |
+| HOD — Computer Science | `hod.cs@college.edu` |
+| HOD — Information Technology | `hod.it@college.edu` |
+| Coordinator — CS | `coord.cs@college.edu` |
+| Coordinator — IT | `coord.it@college.edu` |
+
+### Student Accounts (10 Students)
+
+| # | Name | Email | Dept | Attendance | Fine |
+|---|---|---|---|---|---|
+| 1 | Arjun Kumar | `student.cs1@college.edu` | CSE | 92% | ₹0 |
+| 2 | Priya Sharma | `student.cs2@college.edu` | CSE | 74% | ₹40 |
+| 3 | Rohan Patel | `student.cs3@college.edu` | CSE | 88% | ₹0 |
+| 4 | Neha Verma | `student.cs4@college.edu` | CSE | 65% | ₹80 |
+| 5 | Aayash A | `student.it1@college.edu` | IT | 96% | ₹0 |
+| 6 | Mohammed Salman | `student.it2@college.edu` | IT | 60% | ₹120 |
+| 7 | Divya Nair | `student.it3@college.edu` | IT | 85% | ₹0 |
+| 8 | Karan Singh | `student.it4@college.edu` | IT | 70% | ₹20 |
+| 9 | Sneha Reddy | `student.ece1@college.edu` | ECE | 91% | ₹0 |
+| 10 | Vikram Mehta | `student.ece2@college.edu` | ECE | 55% | ₹200 |
+
+> 💡 Students 2, 4, 6, 10 have low attendance (below 75%) and are ideal for testing warning/fine/leave workflows.
+
+---
+
+## 🌐 API Endpoints — Complete Reference
+
+### 🔑 Authentication (`/api/auth`)
+| Method | Endpoint | Auth | Description |
+|---|---|---|---|
+| `POST` | `/api/auth/login` | ❌ Public | Login → returns access + refresh tokens |
+| `POST` | `/api/auth/register` | ❌ Public | Register a new user |
+| `POST` | `/api/auth/refresh` | ❌ Public | Renew access token via refresh token |
+| `GET` | `/api/auth/me` | ✅ JWT | Get logged-in user info |
+| `POST` | `/api/auth/forgot-password` | ❌ Public | Request password reset link |
+| `POST` | `/api/auth/reset-password` | ❌ Public | Reset password via token |
+| `POST` | `/api/auth/change-password` | ✅ JWT | Change own password (requires current) |
+
+### 👨‍🎓 Student (`/api/student`)
+| Method | Endpoint | Auth | Description |
+|---|---|---|---|
+| `GET` | `/api/student/profile` | ✅ Student | Own academic profile |
+| `PUT` | `/api/student/profile` | ✅ Student | Update editable profile fields |
+| `GET` | `/api/student/attendance` | ✅ Student | Subject-wise attendance records |
+| `GET` | `/api/student/fines` | ✅ Student | Outstanding and paid fines |
+| `GET` | `/api/student/notifications` | ✅ Student | In-app notification feed |
+| `POST` | `/api/student/leave/apply` | ✅ Student | Submit leave (multipart + certificate) |
+| `GET` | `/api/student/leave/history` | ✅ Student | Past leave applications |
+| `GET` | `/api/student/absentee/history` | ✅ Student | Absentee date records |
+| `GET` | `/api/student/fine/history` | ✅ Student | Fine history detail |
+
+### 🏫 Coordinator (`/api/coordinator`)
+| Method | Endpoint | Auth | Description |
+|---|---|---|---|
+| `GET` | `/api/coordinator/students` | ✅ Staff | Department student list |
+| `POST` | `/api/coordinator/mark-absent` | ✅ Staff | Bulk mark students absent |
+| `POST` | `/api/coordinator/attendance/mark` | ✅ Staff | Single student absence mark |
+| `GET` | `/api/coordinator/leave/pending` | ✅ Staff | Pending leave requests |
+| `PUT` | `/api/coordinator/leave/action/{id}` | ✅ Staff | Approve or reject leave |
+| `GET` | `/api/coordinator/students/search` | ✅ Staff | Search students by name/regNo |
+
+### 📊 HOD (`/api/hod`)
+| Method | Endpoint | Auth | Description |
+|---|---|---|---|
+| `GET` | `/api/hod/metrics` | ✅ HOD | Department attendance metrics |
+| `GET` | `/api/hod/report/excel` | ✅ HOD | Download dept Excel report |
+| `GET` | `/api/hod/leaves/pending` | ✅ HOD | Pending leaves for approval |
+| `POST` | `/api/hod/leaves/approve/{id}` | ✅ HOD | Approve a leave |
+| `POST` | `/api/hod/leaves/reject/{id}` | ✅ HOD | Reject a leave |
+
+### 🎓 Dean (`/api/dean`)
+| Method | Endpoint | Auth | Description |
+|---|---|---|---|
+| `GET` | `/api/dean/metrics` | ✅ Dean | Institution-wide stats |
+| `GET` | `/api/dean/report/excel` | ✅ Dean | Global Excel attendance report |
+| `GET` | `/api/dean/report/excel/department/{id}` | ✅ Dean | Per-dept Excel report |
+
+### ⚙️ Admin (`/api/admin`)
+| Method | Endpoint | Auth | Description |
+|---|---|---|---|
+| `GET` | `/api/admin/users` | ✅ Admin | All registered users |
+| `POST` | `/api/admin/users/{id}/toggle-status` | ✅ Admin | Activate / deactivate user |
+| `DELETE` | `/api/admin/users/{id}` | ✅ Admin | Soft delete user |
+| `GET` | `/api/admin/audit-logs` | ✅ Admin | System audit trail |
+| `GET` | `/api/admin/activity` | ✅ Admin | Activity log (alias) |
+| `GET` | `/api/admin/settings` | ✅ Admin | System configuration |
+| `PUT` | `/api/admin/settings` | ✅ Admin | Update system configuration |
+| `GET` | `/api/admin/sms-log` | ✅ Admin | SMS delivery history |
+
+### 📈 Dashboard (`/api/dashboard`)
+| Method | Endpoint | Auth | Description |
+|---|---|---|---|
+| `GET` | `/api/dashboard/metrics` | ✅ JWT | Role-aware unified metrics |
+
+---
+
+## 🖥️ Frontend Screens (32 Screens)
+
+All screens are served from `/erp/<screen_name>/code.html` and wired to the live backend via `stitch_smart_absence_erp/api.js`.
+
+| Screen | Path | API Connected |
+|---|---|---|
+| Login | `login_attendance_hub/` | ✅ POST /auth/login |
+| Sign In Hub | `sign_in_to_hub/` | ✅ POST /auth/login |
+| Forgot Password | `forgot_password/` | ✅ POST /auth/forgot-password |
+| Check Email | `check_your_email/` | ✅ Static |
+| Reset Password | `reset_password/` | ✅ POST /auth/reset-password |
+| Reset Successful | `reset_successful/` | ✅ Auto-redirect |
+| Welcome Screen | `welcome_to_attendance_hub/` | ✅ Static |
+| Select Role | `select_your_role/` | ✅ Static |
+| Ready to Start | `ready_to_start/` | ✅ Auth guard |
+| Student Dashboard | `student_dashboard/` | ✅ GET /student/profile |
+| Student Profile | `student_profile_overview/` | ✅ GET /student/profile |
+| Academic Info | `academic_information/` | ✅ GET /student/profile |
+| Attendance Monitor | `attendance_hub_precision_monitor/` | ✅ GET /student/attendance |
+| Apply Leave | `apply_for_leave/` | ✅ POST /student/leave/apply |
+| Fine Management | `fine_management/` | ✅ GET /student/fines |
+| Fine Receipt | `fine_payment_receipt/` | ✅ GET /student/fines |
+| Low Attendance 1 | `urgent_attendance_warning_1/` | ✅ GET /student/profile |
+| Low Attendance 2 | `urgent_attendance_warning_2/` | ✅ GET /student/profile |
+| Edit Profile | `edit_personal_information/` | ✅ PUT /student/profile |
+| Privacy Settings | `account_privacy_settings/` | ✅ POST /auth/change-password |
+| Notifications 1 | `notification_center_1/` | ✅ GET /student/notifications |
+| Notifications 2 | `notification_center_2/` | ✅ GET /student/notifications |
+| Coordinator Dashboard | `coordinator_dashboard/` | ✅ GET /coordinator/leave/pending |
+| Faculty Marking | `faculty_attendance_marking/` | ✅ GET /coordinator/students + POST /mark-absent |
+| HOD Dashboard | `hod_dashboard/` | ✅ GET /hod/metrics |
+| Dean Dashboard | `dean_dashboard/` | ✅ GET /dean/metrics |
+| Email Report | `email_report_preview/` | ✅ GET /hod/report/excel |
+| SMS Log | `sms_log_history/` | ✅ GET /admin/sms-log |
+| SMS Template | `sms_template_preview/` | ✅ Static |
+| Alert Config | `alert_configuration/` | ✅ GET/PUT /admin/settings |
+| Activity Logs | `admin_activity_logs/` | ✅ GET /admin/activity |
+| System Settings | `system_settings/` | ✅ GET/PUT /admin/settings |
 
 ---
 
 ## 🧪 Running Tests
+
 ```bash
-python -m pytest
+# Windows
+$env:PYTHONPATH="d:\collge att"; python -m pytest -v
+
+# Linux / Mac
+PYTHONPATH=. python -m pytest -v
 ```
 
-All 8 tests pass:
+**All 8 tests pass:**
 ```
-tests/test_auth.py      ...   [Password hashing, JWT encode/decode, strength rules]
-tests/test_leave.py     .     [Progressive fine delay calculation]
-tests/test_reports.py   ..    [PDF binary magic bytes, Excel ZIP archive check]
-tests/test_student.py   ..    [File upload constraints, leave schema validation]
-======================== 8 passed in ~3s =========================
+tests/test_auth.py::test_password_hashing        PASSED
+tests/test_auth.py::test_password_strength       PASSED
+tests/test_auth.py::test_jwt_tokens              PASSED
+tests/test_leave.py::test_calculate_delay_fine   PASSED
+tests/test_reports.py::test_pdf_report_generation PASSED
+tests/test_reports.py::test_excel_report_generation PASSED
+tests/test_student.py::test_file_upload_validation PASSED
+tests/test_student.py::test_leave_apply_schema   PASSED
+======================== 8 passed in ~3s ============================
 ```
 
 ---
 
-## 📋 API Endpoints Summary
+## 🔧 Fine Policy Rules
 
-### Auth
-| Method | Endpoint | Description |
-|---|---|---|
-| `POST` | `/auth/login` | Login with username + password |
-| `POST` | `/auth/refresh` | Refresh access token |
-| `POST` | `/auth/logout` | Invalidate session |
-
-### Student
-| Method | Endpoint | Description |
-|---|---|---|
-| `GET` | `/student/attendance` | View own attendance percentage |
-| `POST` | `/student/leave/apply` | Submit a leave application |
-| `GET` | `/student/leave/history` | View past leave applications |
-| `GET` | `/student/fines` | View outstanding fines |
-
-### Coordinator
-| Method | Endpoint | Description |
-|---|---|---|
-| `POST` | `/coordinator/attendance/mark` | Mark daily absentees |
-| `GET` | `/coordinator/leaves/pending` | List pending leave requests |
-| `PATCH` | `/coordinator/leave/{id}/approve` | Approve/reject a leave |
-
-### HOD
-| Method | Endpoint | Description |
-|---|---|---|
-| `GET` | `/hod/dashboard` | Department attendance overview |
-| `GET` | `/hod/report/pdf` | Download department PDF report |
-| `GET` | `/hod/report/excel` | Download department Excel report |
-
-### Dean
-| Method | Endpoint | Description |
-|---|---|---|
-| `GET` | `/dean/dashboard` | Institution-wide attendance stats |
-| `GET` | `/dean/report/excel` | Download institution-wide Excel report |
-
-### Admin
-| Method | Endpoint | Description |
-|---|---|---|
-| `GET` | `/admin/audit-logs` | View all system audit logs |
-| `PATCH` | `/admin/user/{id}/toggle` | Activate/deactivate a user |
-| `DELETE` | `/admin/user/{id}` | Soft delete a user |
-
----
-
-## 🖥️ Frontend Pages (33 Screens)
-
-| Page | Path |
+| Days Delay | Fine Amount |
 |---|---|
-| Login | `login_attendance_hub/` |
-| Select Role | `select_your_role/` |
-| Student Dashboard | `student_dashboard/` |
-| Apply for Leave | `apply_for_leave/` |
-| Attendance Precision Monitor | `precision_monitor/` |
-| Fine Management | `fine_management/` |
-| Fine Payment Receipt | `fine_payment_receipt/` |
-| Coordinator Dashboard | `coordinator_dashboard/` |
-| Faculty Attendance Marking | `faculty_attendance_marking/` |
-| HOD Dashboard | `hod_dashboard/` |
-| Dean Dashboard | `dean_dashboard/` |
-| Notification Center | `notification_center_1/`, `notification_center_2/` |
-| Urgent Attendance Warning | `urgent_attendance_warning_1/`, `urgent_attendance_warning_2/` |
-| Student Profile | `student_profile_overview/` |
-| Edit Personal Info | `edit_personal_information/` |
-| Academic Information | `academic_information/` |
-| Admin Activity Logs | `admin_activity_logs/` |
-| SMS Log History | `sms_log_history/` |
-| System Settings | `system_settings/` |
-| Alert Configuration | `alert_configuration/` |
-| Forgot Password | `forgot_password/` |
-| Reset Password | `reset_password/` |
-| Reset Successful | `reset_successful/` |
-| Check Your Email | `check_your_email/` |
-| Welcome Screen | `welcome_to_attendance_hub/` |
-| Ready to Start | `ready_to_start/` |
-| Email Report Preview | `email_report_preview/` |
-| SMS Template Preview | `sms_template_preview/` |
-| Account & Privacy Settings | `account_privacy_settings/` |
-| Attendance Hub Monitor | `attendance_hub_precision_monitor/` |
-| Sign In to Hub | `sign_in_to_hub/` |
+| 0 days | ₹0 |
+| 1 day | ₹10 |
+| 2 days | ₹20 |
+| 3 days | ₹40 |
+| 4 days | ₹80 |
+| 5+ days | ₹80 + ₹20 per additional day |
 
 ---
-
-## 🔧 Upcoming Work (TODO)
-
-> These are the items that still need to be completed before the system is production-ready.
-
-### 🔴 High Priority
-
-- [ ] **Frontend ↔ Backend Integration** — Wire all 33 HTML pages to the live FastAPI REST endpoints using `fetch()` / `axios`. Currently all frontend pages are static.
-- [ ] **Database Seeding** — Create a `seed_data.py` or Mongo script to populate initial data: departments, sample students, coordinator accounts, and HOD/Dean/Admin users so the system can be tested end-to-end.
-- [ ] **`.env` File Setup for Production** — Document and finalize all required environment variables. Add a `.env.example` file to the repo.
-
-### 🟡 Medium Priority
-
-- [ ] **Forgot Password / OTP Flow** — The `forgot_password/`, `check_your_email/`, `reset_password/`, and `reset_successful/` pages exist in the frontend but the backend OTP generation and email-based reset flow needs to be implemented in `auth.py`.
-- [ ] **Real-time Notifications** — Replace the current polling-based notification system with WebSocket support so students and staff receive alerts instantly without refreshing the page.
-- [ ] **Fine Payment Integration** — The fine payment receipt and fine management pages need to be connected to a payment gateway (Razorpay / Stripe) or at least a manual "mark as paid" workflow in the admin panel.
-- [ ] **Attendance Auto-Alert Trigger** — Automatically send SMS and email when a student's attendance drops below the threshold (75% or configurable). The `notification_service.py` exists but the trigger logic in `leave_service.py` needs to be connected.
-- [ ] **Student Profile Photo Upload** — The profile page allows uploading a photo but the backend endpoint and file storage (local or cloud S3) need to be implemented.
-
-### 🟢 Lower Priority
-
-- [ ] **Admin Dashboard UI** — The `admin_activity_logs/` and `system_settings/` pages need to be connected to the `/admin/*` endpoints.
-- [ ] **SMS Template Editor** — The `sms_template_preview/` page allows editing SMS templates. The backend needs a template collection in MongoDB and a CRUD API.
-- [ ] **Alert Configuration** — The `alert_configuration/` page needs a backend API to read/write configurable threshold values (e.g., "send warning at 80% attendance").
-- [ ] **Export Scheduling** — Allow HODs and Deans to schedule automatic weekly/monthly report emails via a cron job.
-- [ ] **Docker Setup** — Add a `Dockerfile` and `docker-compose.yml` so the entire stack (FastAPI + MongoDB) can be launched with a single command.
-- [ ] **Production Deployment** — Deploy backend on a cloud server (e.g., Railway, Render, or VPS). Configure a domain and HTTPS.
-- [ ] **API Rate Limiting Tuning** — Extend rate limiting beyond auth endpoints to apply to all sensitive write operations.
-- [ ] **Pagination on All List Endpoints** — Add `skip` / `limit` parameters to all list endpoints (attendance logs, leaves, students) to handle large datasets.
-
----
-
 
 ## 📄 License
 
-This project is for academic and educational purposes.
+This project is built for academic and educational purposes.
+
+---
+
+## 👤 Developer
+
+**Aayash** — Full Stack Developer  
+GitHub: [@aayash317-svg](https://github.com/aayash317-svg)  
+Repo: [Smart-Absentee-Leave-Monitoring-and-Reporting-System](https://github.com/aayash317-svg/Smart-Absentee-Leave-Monitoring-and-Reporting-System)
