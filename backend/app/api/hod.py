@@ -21,15 +21,28 @@ async def get_department_metrics(current_user: dict = Depends(get_current_user),
     """Fetch aggregated metrics for the HOD's department."""
     db = get_db()
     dept_id = current_user.get("departmentId")
-    if not dept_id:
+    dept_code = current_user.get("department")
+    if not dept_id and not dept_code:
         raise HTTPException(status_code=400, detail="HOD is not assigned to a department")
         
-    dept_obj_id = ObjectId(dept_id) if isinstance(dept_id, str) else dept_id
-    
-    total_students = await db.students.count_documents({"departmentId": dept_obj_id})
+    dept_conditions = []
+    if dept_id:
+        matches = [dept_id, str(dept_id)]
+        try:
+            matches.append(ObjectId(dept_id))
+        except Exception:
+            pass
+        dept_conditions.append({"departmentId": {"$in": matches}})
+    if dept_code:
+        dept_conditions.append({"department": dept_code})
+
+    base_filter = {"isDeleted": {"$ne": True}}
+    dept_filter = {"$and": [base_filter, {"$or": dept_conditions}]} if dept_conditions else base_filter
+
+    total_students = await db.students.count_documents(dept_filter)
     
     pipeline = [
-        {"$match": {"departmentId": dept_obj_id}},
+        {"$match": dept_filter},
         {"$group": {"_id": None, "avg_att": {"$avg": "$attendancePercentage"}}}
     ]
     result = []
@@ -39,12 +52,12 @@ async def get_department_metrics(current_user: dict = Depends(get_current_user),
     avg_attendance = result[0]["avg_att"] if result else 100.0
     
     low_att_count = await db.students.count_documents({
-        "departmentId": dept_obj_id,
+        **dept_filter,
         "attendancePercentage": {"$lt": 75.0}
     })
     
     # Get pending leaves count
-    student_ids = [s["_id"] for s in await db.students.find({"departmentId": dept_obj_id}, {"_id": 1}).to_list(length=1000)]
+    student_ids = [s["_id"] for s in await db.students.find(dept_filter, {"_id": 1}).to_list(length=1000)]
     pending_leaves = await db.leaveApplications.count_documents({
         "studentId": {"$in": student_ids},
         "status": "Pending"
@@ -74,6 +87,23 @@ async def download_department_report(current_user: dict = Depends(get_current_us
         content=excel_bytes,
         media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         headers={"Content-Disposition": f"attachment; filename=department_attendance_{str(dept_id)}.xlsx"}
+    )
+
+@router.get("/report/pdf")
+async def download_department_pdf_report(current_user: dict = Depends(get_current_user), _=Depends(require_hod)):
+    """Generate and download the attendance report PDF for the HOD's department."""
+    dept_id = current_user.get("departmentId")
+    if not dept_id:
+        raise HTTPException(status_code=400, detail="HOD is not assigned to a department")
+        
+    pdf_bytes = await ReportService.get_department_pdf(str(dept_id))
+    if not pdf_bytes:
+        raise HTTPException(status_code=404, detail="No student records found in department")
+        
+    return Response(
+        content=pdf_bytes,
+        media_type="application/pdf",
+        headers={"Content-Disposition": f"attachment; filename=department_attendance_{str(dept_id)}.pdf"}
     )
 
 @router.get("/leaves/pending")

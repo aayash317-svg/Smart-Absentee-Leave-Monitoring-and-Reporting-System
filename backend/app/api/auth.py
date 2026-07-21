@@ -32,6 +32,49 @@ async def get_me(current_user: dict = Depends(get_current_user)):
     return current_user
 
 
+class UpdateProfileRequest(BaseModel):
+    phone: Optional[str] = None
+    mobile: Optional[str] = None
+    fullName: Optional[str] = None
+    address: Optional[str] = None
+
+
+@router.put("/me")
+async def update_me(payload: UpdateProfileRequest, current_user: dict = Depends(get_current_user)):
+    """Update the authenticated user's own profile fields (phone, mobile, fullName, address)."""
+    from bson.objectid import ObjectId
+    db = get_db()
+    update_fields: dict = {}
+
+    phone_val = payload.phone or payload.mobile
+    if phone_val:
+        update_fields["phone"] = str(phone_val)
+        update_fields["mobile"] = str(phone_val)
+    if payload.fullName:
+        update_fields["fullName"] = str(payload.fullName)
+    if payload.address:
+        update_fields["address"] = str(payload.address)
+
+    if not update_fields:
+        return {"message": "No fields to update"}
+
+    update_fields["updatedAt"] = datetime.datetime.utcnow()
+    await db.users.update_one(
+        {"_id": ObjectId(current_user["id"])},
+        {"$set": update_fields}
+    )
+
+    # Sync phone to students collection if this user is a student
+    role = current_user.get("role", "")
+    if role.lower() == "student":
+        await db.students.update_one(
+            {"$or": [{"userId": current_user["id"]}, {"userId": ObjectId(current_user["id"])}]},
+            {"$set": update_fields}
+        )
+
+    return {"message": "Profile updated successfully", "updatedFields": list(update_fields.keys())}
+
+
 # ── Password Reset Flow ───────────────────────────────────────────────────────
 
 class ForgotPasswordRequest(BaseModel):

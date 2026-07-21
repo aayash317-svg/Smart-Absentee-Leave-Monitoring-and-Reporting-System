@@ -14,11 +14,10 @@ from .pdf_service import generate_attendance_pdf
 class ReportService:
     """Orchestrates report generation for department or institution-wide data."""
 
-    @staticmethod
-    def _compile_data(department_id: str = None) -> dict:
+    @classmethod
+    async def _compile_data(cls, department_id: str = None) -> dict:
         """
-        Query MongoDB (sync) and compile student data for report generation.
-        Uses get_db() which returns the Motor async client; called inside async context.
+        Query MongoDB (async) and compile student data for report generation.
         """
         db = get_db()
         dept_name = "All Departments"
@@ -26,23 +25,30 @@ class ReportService:
 
         if department_id:
             try:
-                oid = ObjectId(department_id)
-                query["departmentId"] = oid
-                dept = db.departments.find_one({"_id": oid})
+                dept_obj_id = ObjectId(department_id) if isinstance(department_id, str) else department_id
+                query["$or"] = [
+                    {"departmentId": dept_obj_id},
+                    {"departmentId": str(department_id)}
+                ]
+                dept = await db.departments.find_one({"_id": dept_obj_id})
+                if not dept:
+                    dept = await db.departments.find_one({"_id": str(department_id)})
                 if dept:
-                    dept_name = dept.get("departmentName", "Unknown Department")
+                    dept_name = dept.get("departmentName", dept.get("name", "Department Report"))
+                else:
+                    dept_name = f"Department ({department_id})"
             except Exception:
-                pass
+                query["departmentId"] = str(department_id)
 
-        students = list(db.students.find(query).sort("fullName", 1))
+        students = await db.students.find(query).sort("fullName", 1).to_list(length=1000)
         students_list = [
             {
-                "fullName": s.get("fullName", ""),
-                "registerNo": s.get("registerNo", ""),
-                "enrollNo": s.get("enrollNo", ""),
+                "fullName": s.get("fullName", s.get("name", "Student")),
+                "registerNo": s.get("registerNo", s.get("register_number", "")),
+                "enrollNo": s.get("enrollNo", f"ENR-{s.get('registerNo', '')}"),
                 "year": s.get("year", 1),
                 "semester": s.get("semester", 1),
-                "attendancePercentage": s.get("attendancePercentage", 100.0),
+                "attendancePercentage": float(s.get("attendancePercentage", 100.0)),
             }
             for s in students
         ]
@@ -56,32 +62,28 @@ class ReportService:
     @classmethod
     async def get_institution_excel(cls) -> bytes:
         """Generate institution-wide Excel attendance report. Returns raw bytes."""
-        data = cls._compile_data(department_id=None)
+        data = await cls._compile_data(department_id=None)
         buf: io.BytesIO = generate_attendance_excel(data)
         return buf.read()
 
     @classmethod
     async def get_department_excel(cls, department_id: str) -> bytes:
         """Generate department-specific Excel attendance report. Returns raw bytes."""
-        data = cls._compile_data(department_id=department_id)
-        if not data["students"]:
-            return b""
+        data = await cls._compile_data(department_id=department_id)
         buf: io.BytesIO = generate_attendance_excel(data)
         return buf.read()
 
     @classmethod
     async def get_institution_pdf(cls) -> bytes:
         """Generate institution-wide PDF attendance report. Returns raw bytes."""
-        data = cls._compile_data(department_id=None)
+        data = await cls._compile_data(department_id=None)
         buf: io.BytesIO = generate_attendance_pdf(data)
         return buf.read()
 
     @classmethod
     async def get_department_pdf(cls, department_id: str) -> bytes:
         """Generate department-specific PDF attendance report. Returns raw bytes."""
-        data = cls._compile_data(department_id=department_id)
-        if not data["students"]:
-            return b""
+        data = await cls._compile_data(department_id=department_id)
         buf: io.BytesIO = generate_attendance_pdf(data)
         return buf.read()
 

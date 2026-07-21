@@ -130,6 +130,8 @@ async def get_profile(current_user: dict = Depends(get_current_user), _=student_
     if not student:
         raise HTTPException(status_code=404, detail="Student profile not found")
 
+    phone_num = student.get("phone") or student.get("mobile") or current_user.get("phone", "")
+
     return StudentProfile(
         registerNo=student.get("registerNo", ""),
         enrollNo=student.get("enrollNo", ""),
@@ -140,24 +142,52 @@ async def get_profile(current_user: dict = Depends(get_current_user), _=student_
         semester=student.get("semester", 1),
         section=student.get("section", ""),
         attendancePercentage=student.get("attendancePercentage", 100.0),
-        totalFine=student.get("totalFine", 0.0)
+        totalFine=student.get("totalFine", 0.0),
+        phone=phone_num,
+        mobile=phone_num,
+        email=student.get("email", current_user.get("email", "")),
+        address=student.get("address", current_user.get("address", ""))
     )
 
 
 @router.put("/profile")
 async def update_profile(
+    payload: dict,
     current_user: dict = Depends(get_current_user),
     _=student_auth
 ):
-    """Update authenticated student's editable profile fields (phone, address)."""
-    from fastapi import Request
-    # Accept arbitrary body fields
+    """Update authenticated student's editable profile fields (phone, mobile, address, email)."""
     db = get_db()
     student = await student_repo.get_by_user_id(current_user["id"])
     if not student:
         raise HTTPException(status_code=404, detail="Student profile not found")
-    # Return current profile (actual update wired to request body below)
-    return {"message": "Profile update recorded"}
+
+    update_fields = {}
+    phone_val = payload.get("phone") or payload.get("mobile") or payload.get("phone_number")
+    if phone_val:
+        update_fields["phone"] = str(phone_val)
+        update_fields["mobile"] = str(phone_val)
+
+    if payload.get("address"):
+        update_fields["address"] = str(payload["address"])
+
+    if payload.get("email"):
+        update_fields["email"] = str(payload["email"])
+
+    if update_fields:
+        update_fields["updatedAt"] = datetime.datetime.utcnow()
+        # 1. Update in students collection
+        await db.students.update_one(
+            {"_id": student["_id"]},
+            {"$set": update_fields}
+        )
+        # 2. Update in users collection
+        await db.users.update_one(
+            {"_id": ObjectId(current_user["id"])},
+            {"$set": update_fields}
+        )
+
+    return {"message": "Profile updated successfully", "updatedFields": update_fields}
 
 
 @router.get("/attendance")

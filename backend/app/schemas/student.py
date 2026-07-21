@@ -44,3 +44,7 @@ class StudentProfile(BaseModel):
     section: str
     attendancePercentage: float
     totalFine: float
+    phone: Optional[str] = ""
+    mobile: Optional[str] = ""
+    email: Optional[str] = ""
+    address: Optional[str] = ""

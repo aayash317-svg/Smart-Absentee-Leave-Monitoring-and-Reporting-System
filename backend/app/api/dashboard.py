@@ -48,8 +48,17 @@ async def get_metrics(current_user: dict = Depends(get_current_user)):
         student_id = student.get("_id")
         pending = 0
         if student_id:
+            s_ids = [student_id]
+            try:
+                s_ids.append(str(student_id))
+            except Exception:
+                pass
+            try:
+                s_ids.append(ObjectId(student_id))
+            except Exception:
+                pass
             pending = await db.leaveApplications.count_documents({
-                "studentId": student_id, "status": "Pending"
+                "studentId": {"$in": s_ids}, "status": "Pending"
             })
 
         notifs = await db.notifications.find(
@@ -83,12 +92,27 @@ async def get_metrics(current_user: dict = Depends(get_current_user)):
 
     elif role in ("Coordinator", "HOD"):
         dept_id = current_user.get("departmentId")
-        query = {}
+        dept_code = current_user.get("department")
+        
+        dept_conditions = []
         if dept_id:
+            matches = [dept_id, str(dept_id)]
             try:
-                query["departmentId"] = ObjectId(dept_id) if isinstance(dept_id, str) else dept_id
+                matches.append(ObjectId(dept_id))
             except Exception:
                 pass
+            dept_conditions.append({"departmentId": {"$in": matches}})
+        if dept_code:
+            dept_conditions.append({"department": dept_code})
+        elif isinstance(dept_id, str) and not ObjectId.is_valid(dept_id):
+            dept_conditions.append({"department": dept_id})
+            
+        base_filter = {"isDeleted": {"$ne": True}}
+        if dept_conditions:
+            query = {"$and": [base_filter, {"$or": dept_conditions}]}
+        else:
+            query = base_filter
+
         total_students = await db.students.count_documents(query)
         pipeline = [{"$match": query}, {"$group": {"_id": None, "avg": {"$avg": "$attendancePercentage"}}}]
         result = []

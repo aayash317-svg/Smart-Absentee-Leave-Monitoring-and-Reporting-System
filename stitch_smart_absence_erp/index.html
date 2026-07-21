@@ -1166,34 +1166,8 @@
         <div class="login-right">
             <div class="login-form">
                 <div class="login-form-title">Welcome back</div>
-                <div class="login-form-subtitle">Select your role and sign in to continue</div>
-                <div class="login-error" id="loginError">Invalid credentials. Try the demo password:
-                    <strong>demo123</strong>
-                </div>
-                <div class="role-selector" id="roleSelector">
-                    <div class="role-option active" data-role="student"
-                        style="--role-c:#2563EB;--role-bg:rgba(37,99,235,.08)">
-                        <div class="role-option-icon">🎓</div>
-                        <div class="role-option-label">Student</div>
-                    </div>
-                    <div class="role-option" data-role="coordinator"
-                        style="--role-c:#16A34A;--role-bg:rgba(22,163,74,.08)">
-                        <div class="role-option-icon">🧑‍🏫</div>
-                        <div class="role-option-label">Coordinator</div>
-                    </div>
-                    <div class="role-option" data-role="hod" style="--role-c:#F59E0B;--role-bg:rgba(245,158,11,.08)">
-                        <div class="role-option-icon">🏛️</div>
-                        <div class="role-option-label">HOD</div>
-                    </div>
-                    <div class="role-option" data-role="dean" style="--role-c:#7C3AED;--role-bg:rgba(124,58,237,.08)">
-                        <div class="role-option-icon">🎩</div>
-                        <div class="role-option-label">Dean</div>
-                    </div>
-                    <div class="role-option" data-role="admin" style="--role-c:#DC2626;--role-bg:rgba(220,38,38,.08)">
-                        <div class="role-option-icon">⚙️</div>
-                        <div class="role-option-label">Admin</div>
-                    </div>
-                </div>
+                <div class="login-form-subtitle">Sign in with your Email, Register Number, or Staff ID</div>
+                <div class="login-error" id="loginError">Invalid credentials. Try your Email or Register Number.</div>
                 <div class="form-group">
                     <label class="form-label">Email Address</label>
                     <input class="form-input" id="loginUsername" placeholder="e.g. student.cs1@college.edu">
@@ -1556,25 +1530,22 @@
                     <div class="page-subtitle">Export attendance and leave data</div>
                     <div class="grid">
                         <div class="card">
-                            <div class="card-title" style="margin-bottom:14px;">Daily Report</div>
-                            <p style="font-size:13px;color:var(--text-secondary);margin-bottom:16px;">Attendance summary
-                                for today across all sections.</p>
+                            <div class="card-title" style="margin-bottom:14px;">Daily Attendance PDF</div>
+                            <p style="font-size:13px;color:var(--text-secondary);margin-bottom:16px;">Complete PDF attendance summary for department students.</p>
                             <button class="btn btn-secondary btn-sm"
-                                onclick="showToast('Daily report (PDF) generated')">📄 Export PDF</button>
+                                onclick="downloadCoordinatorReport('pdf')">📄 Export PDF</button>
                         </div>
                         <div class="card">
-                            <div class="card-title" style="margin-bottom:14px;">Weekly Report</div>
-                            <p style="font-size:13px;color:var(--text-secondary);margin-bottom:16px;">7-day attendance &
-                                leave trend report.</p>
+                            <div class="card-title" style="margin-bottom:14px;">Attendance Spreadsheet</div>
+                            <p style="font-size:13px;color:var(--text-secondary);margin-bottom:16px;">Full department attendance &amp; leave Excel spreadsheet.</p>
                             <button class="btn btn-secondary btn-sm"
-                                onclick="showToast('Weekly report (Excel) generated')">📊 Export Excel</button>
+                                onclick="downloadCoordinatorReport('excel')">📊 Export Excel</button>
                         </div>
                         <div class="card">
-                            <div class="card-title" style="margin-bottom:14px;">Defaulter List</div>
-                            <p style="font-size:13px;color:var(--text-secondary);margin-bottom:16px;">Students below 75%
-                                attendance threshold.</p>
+                            <div class="card-title" style="margin-bottom:14px;">Defaulter List PDF</div>
+                            <p style="font-size:13px;color:var(--text-secondary);margin-bottom:16px;">Export PDF list of students requiring attendance attention.</p>
                             <button class="btn btn-secondary btn-sm"
-                                onclick="showToast('Defaulter list (PDF) generated')">📄 Export PDF</button>
+                                onclick="downloadCoordinatorReport('pdf')">📄 Export PDF</button>
                         </div>
                     </div>
                 </div>
@@ -1930,7 +1901,7 @@
                             <div class="form-group"><label class="form-label">Section</label><input class="form-input"
                                     id="profileSection" readonly></div>
                         </div>
-                        <button class="btn btn-primary" onclick="showToast('Profile updated')">Save Changes</button>
+                        <button class="btn btn-primary" onclick="saveProfile()">Save Changes</button>
                     </div>
                 </div>
 
@@ -2218,25 +2189,31 @@
         let currentRole = "student";
 
         /* ============================================================
-           LOGIN
+           API INTEGRATION UTILITIES
            ============================================================ */
-        document.getElementById('roleSelector').addEventListener('click', (e) => {
-            const opt = e.target.closest('.role-option');
-            if (!opt) return;
-            document.querySelectorAll('.role-option').forEach(o => o.classList.remove('active'));
-            opt.classList.add('active');
-        });
+        const API_URL = "";
+
+        const roleSel = document.getElementById('roleSelector');
+        if (roleSel) {
+            roleSel.addEventListener('click', (e) => {
+                const opt = e.target.closest('.role-option');
+                if (!opt) return;
+                document.querySelectorAll('.role-option').forEach(o => o.classList.remove('active'));
+                opt.classList.add('active');
+            });
+        }
 
         function showLoginError(message) {
             const errorBox = document.getElementById('loginError');
-            errorBox.innerHTML = message;
-            errorBox.style.display = 'flex';
+            if (errorBox) {
+                errorBox.innerHTML = message;
+                errorBox.style.display = 'flex';
+            }
         }
 
         /* ============================================================
            API INTEGRATION UTILITIES
            ============================================================ */
-        const API_URL = "";
 
         function getAuthHeaders() {
             const token = localStorage.getItem("access_token");
@@ -2306,7 +2283,7 @@
                 
                 const roleLower = me.role.toLowerCase();
                 studentOnboarded = true; 
-                completeLogin(roleLower, me.fullName, me.email);
+                completeLogin(roleLower, me.fullName, me.email, me.phone || me.mobile || '');
             } catch (err) {
                 showLoginError(err.message);
             }
@@ -2316,21 +2293,25 @@
         let studentProfile = null;
         let pendingLogin = null;
 
-        function completeLogin(role, displayName, email) {
-            finishLogin(role, displayName, email);
+        function completeLogin(role, displayName, email, phone = '') {
+            finishLogin(role, displayName, email, phone);
         }
 
-        function finishLogin(role, displayName, email) {
+        function finishLogin(role, displayName, email, phone = '') {
             currentRole = role;
             document.getElementById('loginPage').style.display = 'none';
             document.getElementById('mainApp').classList.add('active');
-            initRoleUI(role, displayName, email);
-            navigateTo('dashboard');
+            initRoleUI(role, displayName, email, phone);
+            const initialPage = window.location.hash.replace('#', '') || 'dashboard';
+            const validPages = (NAV_CONFIG[role] || []).map(item => item.id);
+            const targetPage = validPages.includes(initialPage) ? initialPage : 'dashboard';
+            navigateTo(targetPage, false);
         }
 
         function handleLogout() {
             localStorage.removeItem("access_token");
             localStorage.removeItem("refresh_token");
+            try { history.pushState(null, '', ' '); } catch (e) {}
             document.getElementById('mainApp').classList.remove('active');
             document.getElementById('loginPage').style.display = 'flex';
             document.getElementById('loginError').style.display = 'none';
@@ -2341,7 +2322,7 @@
         /* ============================================================
            ROLE UI / NAVIGATION
            ============================================================ */
-        function initRoleUI(role, displayName, email) {
+        function initRoleUI(role, displayName, email, phone = '') {
             const meta = ROLE_META[role];
             const name = displayName || meta.name;
             document.getElementById('roleChip').textContent = meta.label;
@@ -2355,6 +2336,7 @@
             document.getElementById('profileAvatar').style.borderColor = meta.color;
             document.getElementById('profileFullName').value = name;
             if (email) document.getElementById('profileEmail').value = email;
+            if (phone) document.getElementById('profilePhone').value = phone;
 
             const navMenu = document.getElementById('navMenu');
             navMenu.innerHTML = '';
@@ -2368,16 +2350,25 @@
             });
         }
 
-        async function navigateTo(pageId) {
+        async function navigateTo(pageId, pushHash = true) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             const target = document.getElementById('page-' + pageId);
             if (target) target.classList.add('active');
             document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
             const navLink = document.querySelector(`.nav-link[data-page="${pageId}"]`);
             if (navLink) navLink.classList.add('active');
-            const label = (NAV_CONFIG[currentRole].find(i => i.id === pageId) || { label: pageId }).label;
-            document.getElementById('pageBreadcrumb').textContent = label;
-            document.getElementById('sidebar').classList.remove('mobile-open');
+            
+            const navItems = NAV_CONFIG[currentRole] || [];
+            const label = (navItems.find(i => i.id === pageId) || { label: pageId }).label;
+            const breadcrumb = document.getElementById('pageBreadcrumb');
+            if (breadcrumb) breadcrumb.textContent = label;
+            
+            const sidebar = document.getElementById('sidebar');
+            if (sidebar) sidebar.classList.remove('mobile-open');
+
+            if (pushHash && window.location.hash !== '#' + pageId) {
+                history.pushState({ pageId }, '', '#' + pageId);
+            }
 
             try {
                 await fetchPageData(pageId);
@@ -2414,6 +2405,20 @@
         }
 
         async function fetchPageData(pageId) {
+            if (pageId === 'profile') {
+                try {
+                    const meResp = await apiFetch("/auth/me");
+                    const me = await meResp.json();
+                    if (me) {
+                        document.getElementById('profileFullName').value = me.fullName || '';
+                        document.getElementById('profileEmail').value = me.email || '';
+                        document.getElementById('profilePhone').value = me.phone || me.mobile || '';
+                    }
+                } catch (e) {
+                    console.error("Failed to load user profile", e);
+                }
+            }
+
             if (currentRole === 'student') {
                 const profResp = await apiFetch("/student/profile");
                 studentProfile = await profResp.json();
@@ -2426,6 +2431,7 @@
                     document.getElementById('profileDept').value = studentProfile.departmentName;
                     document.getElementById('profileYear').value = studentProfile.year + ' Year';
                     document.getElementById('profileSection').value = studentProfile.section;
+                    document.getElementById('profilePhone').value = studentProfile.phone || studentProfile.mobile || document.getElementById('profilePhone').value || '';
                 }
 
                 if (pageId === 'dashboard') {
@@ -2939,36 +2945,58 @@
             }
         }
 
-        async function downloadHODReport() {
+        async function downloadCoordinatorReport(fmt = 'excel') {
             try {
-                const resp = await apiFetch("/hod/report/excel");
+                const endpoint = fmt === 'pdf' ? '/coordinator/report/pdf' : '/coordinator/report/excel';
+                const resp = await apiFetch(endpoint);
                 const blob = await resp.blob();
                 const url = window.URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = 'department_report.xlsx';
+                a.download = `coordinator_department_report.${fmt === 'pdf' ? 'pdf' : 'xlsx'}`;
                 document.body.appendChild(a);
                 a.click();
                 a.remove();
-                showToast("Excel Report Downloaded");
+                showToast(`${fmt.toUpperCase()} Report Downloaded`);
             } catch (err) {
                 showToast("Failed to download report: " + err.message);
             }
         }
 
-        async function downloadDeanReport(deptId = null) {
+        async function downloadHODReport(fmt = 'excel') {
             try {
-                const url = deptId ? `/dean/report/excel/department/${deptId}` : `/dean/report/excel`;
+                const endpoint = fmt === 'pdf' ? '/hod/report/pdf' : '/hod/report/excel';
+                const resp = await apiFetch(endpoint);
+                const blob = await resp.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `department_report.${fmt === 'pdf' ? 'pdf' : 'xlsx'}`;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                showToast(`${fmt.toUpperCase()} Report Downloaded`);
+            } catch (err) {
+                showToast("Failed to download report: " + err.message);
+            }
+        }
+
+        async function downloadDeanReport(deptId = null, fmt = 'excel') {
+            try {
+                let url = deptId ? `/dean/report/excel/department/${deptId}` : `/dean/report/excel`;
+                if (fmt === 'pdf') {
+                    url = deptId ? `/dean/report/pdf/department/${deptId}` : `/dean/report/pdf`;
+                }
                 const resp = await apiFetch(url);
                 const blob = await resp.blob();
                 const downloadUrl = window.URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = downloadUrl;
-                a.download = deptId ? `department_${deptId}_report.xlsx` : 'institution_report.xlsx';
+                a.download = deptId ? `department_${deptId}_report.${fmt === 'pdf' ? 'pdf' : 'xlsx'}` : `institution_report.${fmt === 'pdf' ? 'pdf' : 'xlsx'}`;
                 document.body.appendChild(a);
                 a.click();
                 a.remove();
-                showToast("Excel Report Downloaded");
+                showToast(`${fmt.toUpperCase()} Report Downloaded`);
             } catch (err) {
                 showToast("Failed to download report: " + err.message);
             }
@@ -3006,6 +3034,43 @@
                 navigateTo('leave-status');
             } catch (err) {
                 showToast(`Failed to submit request: ${err.message}`);
+            }
+        }
+
+        async function saveProfile() {
+            const fullName = document.getElementById('profileFullName').value.trim();
+            const phone = document.getElementById('profilePhone').value.trim();
+            
+            try {
+                const res = await apiFetch('/auth/me', {
+                    method: 'PUT',
+                    body: JSON.stringify({ fullName, phone })
+                });
+
+                if (currentRole === 'student') {
+                    await apiFetch('/student/profile', {
+                        method: 'PUT',
+                        body: JSON.stringify({ phone })
+                    });
+                }
+
+                if (fullName) {
+                    document.getElementById('profileName').textContent = fullName;
+                    const avatar = document.getElementById('profileAvatar');
+                    if (avatar) avatar.textContent = fullName.charAt(0).toUpperCase();
+                }
+
+                const updatedMeResp = await apiFetch("/auth/me");
+                const updatedMe = await updatedMeResp.json();
+                if (updatedMe) {
+                    if (updatedMe.fullName) document.getElementById('profileFullName').value = updatedMe.fullName;
+                    if (updatedMe.email) document.getElementById('profileEmail').value = updatedMe.email;
+                    document.getElementById('profilePhone').value = updatedMe.phone || updatedMe.mobile || phone;
+                }
+
+                showToast('Profile updated successfully');
+            } catch (err) {
+                showToast(`Failed to update profile: ${err.message}`);
             }
         }
 
@@ -3048,6 +3113,37 @@
             clearTimeout(toastTimer);
             toastTimer = setTimeout(() => toast.classList.remove('show'), 2800);
         }
+
+        /* ============================================================
+           SESSION RESTORATION & BROWSER NAVIGATION (BACK/REFRESH)
+           ============================================================ */
+        window.addEventListener('popstate', () => {
+            if (!localStorage.getItem("access_token")) return;
+            const hashPage = window.location.hash.replace('#', '');
+            if (hashPage && currentRole && NAV_CONFIG[currentRole] && NAV_CONFIG[currentRole].some(i => i.id === hashPage)) {
+                navigateTo(hashPage, false);
+            } else if (currentRole) {
+                navigateTo('dashboard', false);
+            }
+        });
+
+        async function restoreSession() {
+            const token = localStorage.getItem("access_token");
+            if (!token) return;
+            try {
+                const meResp = await apiFetch("/auth/me");
+                if (meResp && meResp.ok) {
+                    const me = await meResp.json();
+                    const roleLower = me.role.toLowerCase();
+                    studentOnboarded = true;
+                    finishLogin(roleLower, me.fullName, me.email, me.phone || me.mobile || '');
+                }
+            } catch (err) {
+                console.log("Session restore check:", err.message);
+            }
+        }
+        document.addEventListener('DOMContentLoaded', restoreSession);
+        restoreSession();
     </script>
 </body>
 

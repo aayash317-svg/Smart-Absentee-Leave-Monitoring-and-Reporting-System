@@ -22,19 +22,44 @@ class StudentRepository(BaseRepository):
     async def get_by_register_no(self, reg_no: str) -> Optional[Dict[str, Any]]:
         return await self.find_one({"registerNo": reg_no})
 
-    async def search_students(self, query: str = None, department_id: str = None) -> List[Dict[str, Any]]:
-        filter_dict = {}
-        if department_id:
-            try:
-                filter_dict["departmentId"] = ObjectId(department_id)
-            except Exception:
-                pass
+    async def search_students(self, query: str = None, department_id: str = None, department_code: str = None) -> List[Dict[str, Any]]:
+        conditions = []
+        
+        if department_id or department_code:
+            or_dept = []
+            if department_id:
+                dept_matches = [department_id, str(department_id)]
+                try:
+                    dept_matches.append(ObjectId(department_id))
+                except Exception:
+                    pass
+                or_dept.append({"departmentId": {"$in": dept_matches}})
+                
+            if department_code:
+                or_dept.append({"department": department_code})
+            elif isinstance(department_id, str) and not ObjectId.is_valid(department_id):
+                or_dept.append({"department": department_id})
+                
+            if len(or_dept) == 1:
+                conditions.append(or_dept[0])
+            elif len(or_dept) > 1:
+                conditions.append({"$or": or_dept})
         
         if query:
-            filter_dict["$or"] = [
-                {"fullName": {"$regex": query, "$options": "i"}},
-                {"registerNo": {"$regex": query, "$options": "i"}},
-                {"enrollNo": {"$regex": query, "$options": "i"}}
-            ]
+            conditions.append({
+                "$or": [
+                    {"fullName": {"$regex": query, "$options": "i"}},
+                    {"registerNo": {"$regex": query, "$options": "i"}},
+                    {"enrollNo": {"$regex": query, "$options": "i"}},
+                    {"id": {"$regex": query, "$options": "i"}}
+                ]
+            })
+            
+        if not conditions:
+            filter_dict = {}
+        elif len(conditions) == 1:
+            filter_dict = conditions[0]
+        else:
+            filter_dict = {"$and": conditions}
             
         return await self.find_all(filter_dict)

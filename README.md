@@ -37,8 +37,8 @@ The **Smart Absentee Leave Monitoring and Reporting System** is a full-stack col
 | Forgot / Reset / Change password flow | ✅ Complete |
 | Admin audit logs, user management | ✅ Complete |
 | System settings (thresholds, toggles) | ✅ Complete |
-| Database seeded with 10 students + all roles | ✅ Complete |
-| 8 automated tests (pytest) | ✅ 8/8 Pass |
+| Database seeded with 30 students across 3 departments + all staff roles | ✅ Complete |
+| 16 automated tests (pytest) | ✅ 16/16 Pass |
 | Docker support | ✅ Complete |
 | Security headers (CSP, X-Frame, XSS) | ✅ Complete |
 

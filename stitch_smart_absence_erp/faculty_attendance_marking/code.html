@@ -207,8 +207,11 @@
 <!-- Student List Container -->
 <div class="flex-1 overflow-y-auto custom-scrollbar bg-background pb-32">
 <div class="max-w-5xl mx-auto py-8 px-margin-mobile">
-<div class="grid grid-cols-1 gap-3">
+<div class="grid grid-cols-1 gap-3" id="student-list">
 <!-- Student Row Template -->
+</div>
+</div>
+</div>
 <script>
 if (redirectIfNotLoggedIn()) return;
 
@@ -218,19 +221,49 @@ if (redirectIfNotLoggedIn()) return;
                 const res = await authFetch('/api/coordinator/students');
                 if (!res.ok) throw new Error('Could not load student list');
                 const students = await res.json();
-                const container = document.querySelector('#student-list, tbody, .student-list-container');
-                if (container && students.length > 0) {
-                    container.innerHTML = students.map((s, i) => `
-                        <tr class="border-b border-outline-variant hover:bg-surface-container transition-colors">
-                            <td class="py-3 px-4 font-body">${i+1}</td>
-                            <td class="py-3 px-4">${s.registerNo || '—'}</td>
-                            <td class="py-3 px-4 font-section-title">${s.fullName || '—'}</td>
-                            <td class="py-3 px-4 text-center">
-                                <input type="checkbox" data-student-id="${s._id}" 
-                                    class="w-5 h-5 rounded border-outline-variant text-primary cursor-pointer attendance-checkbox"
-                                    id="att-${s._id}">
-                            </td>
-                        </tr>`).join('');
+                const container = document.querySelector('#student-list') || document.querySelector('tbody, .student-list-container');
+                if (container) {
+                    if (!students || students.length === 0) {
+                        container.innerHTML = '<div class="text-center py-8 text-outline">No students found in your department.</div>';
+                        return;
+                    }
+                    if (container.tagName === 'TBODY') {
+                        container.innerHTML = students.map((s, i) => `
+                            <tr class="border-b border-outline-variant hover:bg-surface-container transition-colors">
+                                <td class="py-3 px-4 font-body">${i+1}</td>
+                                <td class="py-3 px-4">${s.registerNo || s.register_number || '—'}</td>
+                                <td class="py-3 px-4 font-section-title">${s.fullName || s.name || '—'}</td>
+                                <td class="py-3 px-4 text-center">
+                                    <input type="checkbox" data-student-id="${s._id || s.id}" 
+                                        class="w-5 h-5 rounded border-outline-variant text-primary cursor-pointer attendance-checkbox"
+                                        id="att-${s._id || s.id}">
+                                </td>
+                            </tr>`).join('');
+                    } else {
+                        container.innerHTML = students.map((s, i) => `
+                            <div class="flex items-center justify-between p-4 bg-surface-container-lowest border border-outline-variant rounded-2xl hover:border-primary transition-all">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold">
+                                        ${(s.fullName || s.name || 'S')[0]}
+                                    </div>
+                                    <div>
+                                        <h4 class="font-semibold text-surface-on">${s.fullName || s.name || 'Student'}</h4>
+                                        <p class="text-xs text-outline font-mono">${s.registerNo || s.register_number || 'ID: ' + (s.id || 'N/A')}</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <span class="text-xs font-semibold px-2.5 py-1 rounded-full ${parseFloat(s.attendancePercentage || 90) < 75 ? 'bg-error/10 text-error' : 'bg-success/10 text-success'}">
+                                        ${s.attendancePercentage || 90}% Att.
+                                    </span>
+                                    <label class="flex items-center gap-2 cursor-pointer bg-surface-container px-3 py-1.5 rounded-xl hover:bg-surface-container-high transition-all">
+                                        <input type="checkbox" data-student-id="${s._id || s.id}" 
+                                            class="w-5 h-5 rounded border-outline-variant text-error cursor-pointer attendance-checkbox"
+                                            id="att-${s._id || s.id}">
+                                        <span class="text-xs font-semibold text-error">Mark Absent</span>
+                                    </label>
+                                </div>
+                            </div>`).join('');
+                    }
                 }
             } catch (err) {
                 showToast(err.message, 'error');

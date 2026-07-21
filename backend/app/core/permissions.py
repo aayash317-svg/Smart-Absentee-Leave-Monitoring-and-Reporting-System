@@ -12,7 +12,7 @@ def _get_current_user():
     from fastapi import Header
     from typing import Optional
 
-    def _dep(authorization: Optional[str] = Header(None)) -> dict:
+    async def _dep(authorization: Optional[str] = Header(None)) -> dict:
         if not authorization:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Authorization header missing")
         parts = authorization.split(" ", 1)
@@ -20,7 +20,7 @@ def _get_current_user():
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid authorization header format")
         payload = decode_access_token(parts[1])
         db = get_db()
-        user = db.users.find_one({"_id": safe_object_id(payload["sub"])})
+        user = await db.users.find_one({"_id": safe_object_id(payload["sub"])})
         if not user:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User not found")
         if user.get("status") != "Active":

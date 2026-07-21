@@ -74,6 +74,16 @@ async def download_institution_report(current_user: dict = Depends(get_current_u
         headers={"Content-Disposition": "attachment; filename=institution_attendance_report.xlsx"}
     )
 
+@router.get("/report/pdf")
+async def download_institution_pdf_report(current_user: dict = Depends(get_current_user), _=Depends(require_dean)):
+    """Download the PDF report representing the entire institution's directory."""
+    pdf_bytes = await ReportService.get_institution_pdf()
+    return Response(
+        content=pdf_bytes,
+        media_type="application/pdf",
+        headers={"Content-Disposition": "attachment; filename=institution_attendance_report.pdf"}
+    )
+
 @router.get("/report/excel/department/{dept_id}")
 async def download_department_report(dept_id: str, current_user: dict = Depends(get_current_user), _=Depends(require_dean)):
     """Download the spreadsheet report representing a specific department."""
@@ -84,4 +94,16 @@ async def download_department_report(dept_id: str, current_user: dict = Depends(
         content=excel_bytes,
         media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         headers={"Content-Disposition": f"attachment; filename=department_{dept_id}_attendance_report.xlsx"}
+    )
+
+@router.get("/report/pdf/department/{dept_id}")
+async def download_department_pdf_report(dept_id: str, current_user: dict = Depends(get_current_user), _=Depends(require_dean)):
+    """Download the PDF report representing a specific department."""
+    pdf_bytes = await ReportService.get_department_pdf(dept_id)
+    if not pdf_bytes:
+        raise HTTPException(status_code=404, detail="Department student records not found")
+    return Response(
+        content=pdf_bytes,
+        media_type="application/pdf",
+        headers={"Content-Disposition": f"attachment; filename=department_{dept_id}_attendance_report.pdf"}
     )

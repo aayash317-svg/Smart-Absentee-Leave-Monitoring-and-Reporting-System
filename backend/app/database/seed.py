@@ -209,28 +209,45 @@ async def seed_db():
     ]
     await db.users.insert_many(staff_users)
 
-    # ── 3. Students (15 Records) ──────────────────────────────────────────────
-    print("Seeding 15 Students...")
+    # ── 3. Students (30 Records - 10 per Department) ──────────────────────────
+    print("Seeding 30 Students (10 per department)...")
     
     students_raw = [
-        # CSE Students
-        ("ST001", "23CSE001", "Arjun Kumar",   "student.cse1@takshashilauniv.ac.in", dept_cs_id,   "CSE",   "CC001", 84.5),
-        ("ST002", "23CSE002", "Hari Prasad",   "student.cse2@takshashilauniv.ac.in", dept_cs_id,   "CSE",   "CC001", 76.2),
-        ("ST003", "23CSE003", "Vignesh Kumar", "student.cse3@takshashilauniv.ac.in", dept_cs_id,   "CSE",   "CC001", 73.5), # Warn
-        ("ST004", "23CSE004", "Ajay Kumar",    "student.cse4@takshashilauniv.ac.in", dept_cs_id,   "CSE",   "CC001", 64.0), # Defaulter
-        ("ST005", "23CSE005", "Kavin Raj",     "student.cse5@takshashilauniv.ac.in", dept_cs_id,   "CSE",   "CC001", 48.0), # Critical HOD
-        # AI&DS Students
-        ("ST101", "23AIDS001", "Ayash M",       "student.aids1@takshashilauniv.ac.in", dept_aids_id, "AI&DS", "CC002", 78.0),
-        ("ST102", "23AIDS002", "Ranjith Kumar", "student.aids2@takshashilauniv.ac.in", dept_aids_id, "AI&DS", "CC002", 91.0),
-        ("ST103", "23AIDS003", "Abinaya S",     "student.aids3@takshashilauniv.ac.in", dept_aids_id, "AI&DS", "CC002", 68.5), # Coord alert
-        ("ST104", "23AIDS004", "Naveen Raj",    "student.aids4@takshashilauniv.ac.in", dept_aids_id, "AI&DS", "CC002", 55.0), # Critical HOD
-        ("ST105", "23AIDS005", "Karthika P",    "student.aids5@takshashilauniv.ac.in", dept_aids_id, "AI&DS", "CC002", 82.0),
-        # AI&ML Students
-        ("ST201", "23AIML001", "Ashwin Kumar", "student.aiml1@takshashilauniv.ac.in", dept_aiml_id, "AI&ML", "CC003", 89.2),
-        ("ST202", "23AIML002", "Vishal Kumar", "student.aiml2@takshashilauniv.ac.in", dept_aiml_id, "AI&ML", "CC003", 72.0), # Parent alert
-        ("ST203", "23AIML003", "Monica S",     "student.aiml3@takshashilauniv.ac.in", dept_aiml_id, "AI&ML", "CC003", 61.5), # Defaulter
-        ("ST204", "23AIML004", "Hariharan",    "student.aiml4@takshashilauniv.ac.in", dept_aiml_id, "AI&ML", "CC003", 95.0),
-        ("ST205", "23AIML005", "Priyanka R",    "student.aiml5@takshashilauniv.ac.in", dept_aiml_id, "AI&ML", "CC003", 44.5), # HOD alert
+        # CSE Students (10)
+        ("ST001", "23CSE001", "Arjun Kumar",   "student.cse1@takshashilauniv.ac.in",  dept_cs_id,   "CSE",   "CC001", 84.5),
+        ("ST002", "23CSE002", "Hari Prasad",   "student.cse2@takshashilauniv.ac.in",  dept_cs_id,   "CSE",   "CC001", 76.2),
+        ("ST003", "23CSE003", "Vignesh Kumar", "student.cse3@takshashilauniv.ac.in",  dept_cs_id,   "CSE",   "CC001", 73.5),
+        ("ST004", "23CSE004", "Ajay Kumar",    "student.cse4@takshashilauniv.ac.in",  dept_cs_id,   "CSE",   "CC001", 64.0),
+        ("ST005", "23CSE005", "Kavin Raj",     "student.cse5@takshashilauniv.ac.in",  dept_cs_id,   "CSE",   "CC001", 48.0),
+        ("ST006", "23CSE006", "Deepak Raja",   "student.cse6@takshashilauniv.ac.in",  dept_cs_id,   "CSE",   "CC001", 88.0),
+        ("ST007", "23CSE007", "Gokul Nath",    "student.cse7@takshashilauniv.ac.in",  dept_cs_id,   "CSE",   "CC001", 79.5),
+        ("ST008", "23CSE008", "Manoj Kumar",   "student.cse8@takshashilauniv.ac.in",  dept_cs_id,   "CSE",   "CC001", 69.0),
+        ("ST009", "23CSE009", "Praveen Raj",   "student.cse9@takshashilauniv.ac.in",  dept_cs_id,   "CSE",   "CC001", 92.5),
+        ("ST010", "23CSE010", "Sanjay V",      "student.cse10@takshashilauniv.ac.in", dept_cs_id,   "CSE",   "CC001", 81.0),
+
+        # AI&DS Students (10)
+        ("ST101", "23AIDS001", "Ayash M",       "student.aids1@takshashilauniv.ac.in",  dept_aids_id, "AI&DS", "CC002", 78.0),
+        ("ST102", "23AIDS002", "Ranjith Kumar", "student.aids2@takshashilauniv.ac.in",  dept_aids_id, "AI&DS", "CC002", 91.0),
+        ("ST103", "23AIDS003", "Abinaya S",     "student.aids3@takshashilauniv.ac.in",  dept_aids_id, "AI&DS", "CC002", 68.5),
+        ("ST104", "23AIDS004", "Naveen Raj",    "student.aids4@takshashilauniv.ac.in",  dept_aids_id, "AI&DS", "CC002", 55.0),
+        ("ST105", "23AIDS005", "Karthika P",    "student.aids5@takshashilauniv.ac.in",  dept_aids_id, "AI&DS", "CC002", 82.0),
+        ("ST106", "23AIDS006", "Siddharth N",   "student.aids6@takshashilauniv.ac.in",  dept_aids_id, "AI&DS", "CC002", 87.5),
+        ("ST107", "23AIDS007", "Dharshini K",   "student.aids7@takshashilauniv.ac.in",  dept_aids_id, "AI&DS", "CC002", 74.0),
+        ("ST108", "23AIDS008", "Gowtham S",     "student.aids8@takshashilauniv.ac.in",  dept_aids_id, "AI&DS", "CC002", 93.0),
+        ("ST109", "23AIDS009", "Divya M",       "student.aids9@takshashilauniv.ac.in",  dept_aids_id, "AI&DS", "CC002", 63.5),
+        ("ST110", "23AIDS010", "Logeshwaran K", "student.aids10@takshashilauniv.ac.in", dept_aids_id, "AI&DS", "CC002", 85.0),
+
+        # AI&ML Students (10)
+        ("ST201", "23AIML001", "Ashwin Kumar",   "student.aiml1@takshashilauniv.ac.in",  dept_aiml_id, "AI&ML", "CC003", 89.2),
+        ("ST202", "23AIML002", "Vishal Kumar",   "student.aiml2@takshashilauniv.ac.in",  dept_aiml_id, "AI&ML", "CC003", 72.0),
+        ("ST203", "23AIML003", "Monica S",       "student.aiml3@takshashilauniv.ac.in",  dept_aiml_id, "AI&ML", "CC003", 61.5),
+        ("ST204", "23AIML004", "Hariharan",      "student.aiml4@takshashilauniv.ac.in",  dept_aiml_id, "AI&ML", "CC003", 95.0),
+        ("ST205", "23AIML005", "Priyanka R",      "student.aiml5@takshashilauniv.ac.in",  dept_aiml_id, "AI&ML", "CC003", 44.5),
+        ("ST206", "23AIML006", "Keerthana V",    "student.aiml6@takshashilauniv.ac.in",  dept_aiml_id, "AI&ML", "CC003", 83.0),
+        ("ST207", "23AIML007", "Nitheesh Kumar", "student.aiml7@takshashilauniv.ac.in",  dept_aiml_id, "AI&ML", "CC003", 77.5),
+        ("ST208", "23AIML008", "Swetha S",       "student.aiml8@takshashilauniv.ac.in",  dept_aiml_id, "AI&ML", "CC003", 66.0),
+        ("ST209", "23AIML009", "Yogeshwaran T",  "student.aiml9@takshashilauniv.ac.in",  dept_aiml_id, "AI&ML", "CC003", 90.0),
+        ("ST210", "23AIML010", "Varshini B",     "student.aiml10@takshashilauniv.ac.in", dept_aiml_id, "AI&ML", "CC003", 86.5),
     ]
 
     student_users = []

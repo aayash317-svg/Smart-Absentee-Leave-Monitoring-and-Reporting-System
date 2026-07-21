@@ -1,11 +1,12 @@
 import datetime
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Response
 from pydantic import BaseModel
 from typing import List, Optional
 from bson.objectid import ObjectId
 
 from ..schemas.coordinator import MarkAbsent, LeaveAction
 from ..services.leave_service import LeaveService
+from ..services.report_service import ReportService
 from ..repositories.student import StudentRepository
 from ..repositories.absentee import AbsenteeRepository
 from .deps import get_current_user, RoleChecker
@@ -102,23 +103,27 @@ async def process_leave(leave_id: str, req: LeaveAction, current_user: dict = De
 async def search_students(query: Optional[str] = None, current_user: dict = Depends(get_current_user), _=coordinator_auth):
     # Retrieve students belonging to coordinator's department if they are a coordinator
     dept_id = str(current_user["departmentId"]) if current_user.get("departmentId") else None
-    students = await student_repo.search_students(query=query, department_id=dept_id)
+    dept_code = current_user.get("department")
+    students = await student_repo.search_students(query=query, department_id=dept_id, department_code=dept_code)
     
     results = []
     for s in students:
-        s["id"] = str(s["_id"])
-        s["userId"] = str(s["userId"])
-        s["departmentId"] = str(s["departmentId"])
-        s.pop("_id")
+        s["id"] = str(s.get("id", s["_id"]))
+        s["_id"] = str(s["_id"])
+        if "userId" in s and s["userId"]:
+            s["userId"] = str(s["userId"])
+        if "departmentId" in s and s["departmentId"]:
+            s["departmentId"] = str(s["departmentId"])
         results.append(s)
     return results
 
 @router.get("/leave/pending")
 async def get_pending_leaves(current_user: dict = Depends(get_current_user), _=coordinator_auth):
     dept_id = current_user.get("departmentId")
-    if dept_id:
+    dept_code = current_user.get("department")
+    if dept_id or dept_code:
         # Fetch department students
-        dept_students = await student_repo.find_all({"departmentId": dept_id})
+        dept_students = await student_repo.search_students(department_id=str(dept_id) if dept_id else None, department_code=dept_code)
         student_ids = [str(s["_id"]) for s in dept_students]
         leaves = await leave_service.leave_repo.get_pending_leaves_by_students(student_ids)
     else:
@@ -151,15 +156,21 @@ async def get_pending_leaves(current_user: dict = Depends(get_current_user), _=c
 async def list_students(current_user: dict = Depends(get_current_user), _=coordinator_auth):
     """List students in coordinator's department (frontend faculty marking screen)."""
     dept_id = current_user.get("departmentId")
-    students = await student_repo.search_students(query=None, department_id=str(dept_id) if dept_id else None)
+    dept_code = current_user.get("department")
+    students = await student_repo.search_students(query=None, department_id=str(dept_id) if dept_id else None, department_code=dept_code)
     result = []
     for s in students:
         result.append({
             "_id": str(s["_id"]),
+            "id": str(s.get("id", s["_id"])),
             "registerNo": s.get("registerNo", ""),
+            "register_number": s.get("registerNo", ""),
             "fullName": s.get("fullName", ""),
+            "name": s.get("fullName", ""),
             "year": s.get("year", 1),
             "section": s.get("section", ""),
+            "department": s.get("department", "CSE"),
+            "attendancePercentage": s.get("attendancePercentage", 90.0),
         })
     return result
 
@@ -221,3 +232,31 @@ async def mark_bulk_absent(req: BulkAbsentRequest, current_user: dict = Depends(
         marked.append(sid)
 
     return {"message": f"Marked {len(marked)} student(s) absent", "marked": marked, "skipped": skipped}
+
+
+@router.get("/report/excel")
+async def download_coordinator_excel_report(current_user: dict = Depends(get_current_user), _=coordinator_auth):
+    """Generate and download Excel attendance report for coordinator's department."""
+    dept_id = current_user.get("departmentId")
+    content = await ReportService.get_department_excel(str(dept_id) if dept_id else None)
+    if not content:
+        raise HTTPException(status_code=404, detail="No report data available")
+    return Response(
+        content=content,
+        media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        headers={"Content-Disposition": "attachment; filename=department_attendance_report.xlsx"}
+    )
+
+
+@router.get("/report/pdf")
+async def download_coordinator_pdf_report(current_user: dict = Depends(get_current_user), _=coordinator_auth):
+    """Generate and download PDF attendance report for coordinator's department."""
+    dept_id = current_user.get("departmentId")
+    content = await ReportService.get_department_pdf(str(dept_id) if dept_id else None)
+    if not content:
+        raise HTTPException(status_code=404, detail="No report data available")
+    return Response(
+        content=content,
+        media_type="application/pdf",
+        headers={"Content-Disposition": "attachment; filename=department_attendance_report.pdf"}
+    )
