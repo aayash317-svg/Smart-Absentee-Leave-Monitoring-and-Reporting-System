@@ -381,7 +381,7 @@ async def seed_db():
     }}, upsert=True)
 
     client.close()
-    print("\n✅ Seeding completed successfully!")
+    print("\n[OK] Seeding completed successfully!")
     print("\n═══════════════════════════════════════════════════════════")
     print("  LOGIN CREDENTIALS — Password for ALL accounts: Pass123!")
     print("═══════════════════════════════════════════════════════════")
