@@ -26,19 +26,8 @@ class UserRegister(BaseModel):
         return v
 
 class UserLogin(BaseModel):
-    email: EmailStr
+    email: str  # Can be email, register number, or ID number
     password: str
-
-class Token(BaseModel):
-    access_token: str
-    refresh_token: str
-    token_type: str = "bearer"
-
-class TokenPayload(BaseModel):
-    sub: str
-    role: str
-    type: str
-    exp: int
 
 class UserOut(BaseModel):
     id: str
@@ -48,6 +37,27 @@ class UserOut(BaseModel):
     role: str
     status: str
     departmentId: Optional[str] = None
+    id_number: Optional[str] = None
+    register_number: Optional[str] = None
+    coordinator_id: Optional[str] = None
+    department: Optional[str] = None
+    is_active: bool = True
+    is_verified: bool = True
+    last_login: str = ""
+    attendance_percentage: str = ""
+    profile_image: str = ""
 
     class Config:
         from_attributes = True
+
+class Token(BaseModel):
+    access_token: str
+    refresh_token: str
+    token_type: str = "bearer"
+    user: Optional[UserOut] = None
+
+class TokenPayload(BaseModel):
+    sub: str
+    role: str
+    type: str
+    exp: int

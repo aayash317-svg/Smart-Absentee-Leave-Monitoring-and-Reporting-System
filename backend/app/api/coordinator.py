@@ -1,5 +1,6 @@
 import datetime
 from fastapi import APIRouter, Depends, HTTPException, status
+from pydantic import BaseModel
 from typing import List, Optional
 from bson.objectid import ObjectId
 
@@ -29,6 +30,11 @@ async def mark_student_absent(req: MarkAbsent, current_user: dict = Depends(get_
     if not student:
         raise HTTPException(status_code=404, detail="Student not found")
         
+    # Check department scope
+    if current_user.get("role") == "Coordinator":
+        if not student.get("departmentId") or str(student["departmentId"]) != str(current_user.get("departmentId")):
+            raise HTTPException(status_code=403, detail="You can only manage students in your own department")
+
     # Check if duplicate entry
     is_duplicate = await absentee_repo.check_existence(req.studentId, absent_dt)
     if is_duplicate:
@@ -45,27 +51,38 @@ async def mark_student_absent(req: MarkAbsent, current_user: dict = Depends(get_
         "createdAt": datetime.datetime.utcnow()
     })
     
-    # Recompute student's attendance percentage (simulated reduction)
+    # Recompute student's attendance percentage
     current_att = student.get("attendancePercentage", 90.0)
     new_att = max(0.0, current_att - 2.5)
-    await student_repo.update(str(student["_id"]), {"attendancePercentage": round(new_att, 1)})
+    new_att = round(new_att, 1)
+    await student_repo.update(str(student["_id"]), {"attendancePercentage": new_att})
     
-    # Trigger low attendance alert if it dips below 75%
-    if new_att < 75.0 and current_att >= 75.0:
-        db = absentee_repo.collection.database
-        await db.notifications.insert_one({
-            "recipientId": student["userId"],
-            "title": "Low Attendance Alert",
-            "message": f"Your attendance has dropped to {round(new_att, 1)}%, which is below the threshold of 75%. Please contact your coordinator.",
-            "type": "Student",
-            "isRead": False,
-            "createdAt": datetime.datetime.utcnow()
-        })
-        
-    return {"message": "Student marked absent successfully", "absenteeId": absentee_id, "newAttendancePercentage": round(new_att, 1)}
+    db = absentee_repo.collection.database
+    # Update in users collection
+    await db.users.update_one({"_id": ObjectId(student["userId"])}, {"$set": {"attendance_percentage": str(new_att)}})
+    
+    # Trigger low attendance alert thresholds
+    from ..utils.attendance import process_attendance_notifications
+    await process_attendance_notifications(db, student, current_att, new_att)
+    
+    return {"message": "Student marked absent successfully", "absenteeId": absentee_id, "newAttendancePercentage": new_att}
 
 @router.put("/leave/action/{leave_id}")
 async def process_leave(leave_id: str, req: LeaveAction, current_user: dict = Depends(get_current_user), _=coordinator_auth):
+    # Fetch leave application
+    leave = await leave_service.leave_repo.get_by_id(leave_id)
+    if not leave:
+        raise HTTPException(status_code=404, detail="Leave application not found")
+        
+    student = await student_repo.get_by_id(str(leave["studentId"]))
+    if not student:
+        raise HTTPException(status_code=404, detail="Student not found")
+        
+    # Check department scope
+    if current_user.get("role") == "Coordinator":
+        if not student.get("departmentId") or str(student["departmentId"]) != str(current_user.get("departmentId")):
+            raise HTTPException(status_code=403, detail="You can only manage leaves for students in your own department")
+
     if req.action == "approve":
         return await leave_service.approve_leave(
             leave_app_id=leave_id,
@@ -128,7 +145,6 @@ async def get_pending_leaves(current_user: dict = Depends(get_current_user), _=c
         })
     return results
 
-
 # ── Alias routes used by frontend screens ─────────────────────────────────
 
 @router.get("/students")
@@ -147,15 +163,10 @@ async def list_students(current_user: dict = Depends(get_current_user), _=coordi
         })
     return result
 
-
-class BulkMarkAbsent(MarkAbsent.__class__):
-    from pydantic import BaseModel
-from pydantic import BaseModel as _BaseModel
-class BulkAbsentRequest(_BaseModel):
+class BulkAbsentRequest(BaseModel):
     student_ids: List[str]
     date: str
     reason: str = "Absent"
-
 
 @router.post("/mark-absent")
 async def mark_bulk_absent(req: BulkAbsentRequest, current_user: dict = Depends(get_current_user), _=coordinator_auth):
@@ -167,15 +178,25 @@ async def mark_bulk_absent(req: BulkAbsentRequest, current_user: dict = Depends(
 
     marked = []
     skipped = []
+    db = absentee_repo.collection.database
+    
     for sid in req.student_ids:
         student = await student_repo.get_by_id(sid)
         if not student:
             skipped.append(sid)
             continue
+            
+        # Check department scope
+        if current_user.get("role") == "Coordinator":
+            if not student.get("departmentId") or str(student["departmentId"]) != str(current_user.get("departmentId")):
+                skipped.append(sid)
+                continue
+
         is_dup = await absentee_repo.check_existence(sid, absent_dt)
         if is_dup:
             skipped.append(sid)
             continue
+            
         await absentee_repo.create({
             "studentId": student["_id"],
             "date": absent_dt,
@@ -185,18 +206,18 @@ async def mark_bulk_absent(req: BulkAbsentRequest, current_user: dict = Depends(
             "leaveApplicationId": None,
             "createdAt": datetime.datetime.utcnow()
         })
+        
         current_att = student.get("attendancePercentage", 90.0)
         new_att = max(0.0, current_att - 2.5)
-        await student_repo.update(str(student["_id"]), {"attendancePercentage": round(new_att, 1)})
-        if new_att < 75.0 and current_att >= 75.0:
-            db = absentee_repo.collection.database
-            await db.notifications.insert_one({
-                "recipientId": student["userId"],
-                "title": "Low Attendance Alert",
-                "message": f"Your attendance has dropped to {round(new_att,1)}%. Please contact your coordinator.",
-                "type": "Student", "isRead": False,
-                "createdAt": datetime.datetime.utcnow()
-            })
+        new_att = round(new_att, 1)
+        await student_repo.update(str(student["_id"]), {"attendancePercentage": new_att})
+        
+        # Update user doc
+        await db.users.update_one({"_id": ObjectId(student["userId"])}, {"$set": {"attendance_percentage": str(new_att)}})
+        
+        # Trigger warnings
+        from ..utils.attendance import process_attendance_notifications
+        await process_attendance_notifications(db, student, current_att, new_att)
         marked.append(sid)
 
     return {"message": f"Marked {len(marked)} student(s) absent", "marked": marked, "skipped": skipped}

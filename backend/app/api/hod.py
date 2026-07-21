@@ -116,11 +116,35 @@ async def get_pending_leaves(current_user: dict = Depends(get_current_user), _=D
 @router.post("/leaves/approve/{leave_id}")
 async def approve_leave(leave_id: str, current_user: dict = Depends(get_current_user), _=Depends(require_hod)):
     """Approve a leave application."""
+    leave = await leave_service.leave_repo.get_by_id(leave_id)
+    if not leave:
+        raise HTTPException(status_code=404, detail="Leave application not found")
+        
+    db = get_db()
+    student = await db.students.find_one({"_id": leave["studentId"]})
+    if not student:
+        raise HTTPException(status_code=404, detail="Student not found")
+        
+    if str(student.get("departmentId")) != str(current_user.get("departmentId")):
+        raise HTTPException(status_code=403, detail="You can only process leaves for students in your department")
+
     res = await leave_service.approve_leave(leave_app_id=leave_id, coordinator_user_id=current_user["id"])
     return res
 
 @router.post("/leaves/reject/{leave_id}")
 async def reject_leave(leave_id: str, req: RejectLeaveRequest, current_user: dict = Depends(get_current_user), _=Depends(require_hod)):
     """Reject a leave application with a specified reason."""
+    leave = await leave_service.leave_repo.get_by_id(leave_id)
+    if not leave:
+        raise HTTPException(status_code=404, detail="Leave application not found")
+        
+    db = get_db()
+    student = await db.students.find_one({"_id": leave["studentId"]})
+    if not student:
+        raise HTTPException(status_code=404, detail="Student not found")
+        
+    if str(student.get("departmentId")) != str(current_user.get("departmentId")):
+        raise HTTPException(status_code=403, detail="You can only process leaves for students in your department")
+
     res = await leave_service.reject_leave(leave_app_id=leave_id, coordinator_user_id=current_user["id"], reason=req.reason)
     return res

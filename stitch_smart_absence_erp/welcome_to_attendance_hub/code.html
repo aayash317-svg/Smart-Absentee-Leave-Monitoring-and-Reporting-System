@@ -222,11 +222,16 @@
 <!-- Interactive Micro-interactions -->
 <script>
 // No login required — marketing/landing page
-        const goBtn = document.querySelector('a[href], button');
-        // Wire any "Get Started" link to role selector
+        // Wire Get Started button and links to login page
+        const getStartedBtn = document.querySelector('button');
+        if (getStartedBtn) {
+            getStartedBtn.addEventListener('click', () => {
+                window.location.href = '/erp/login_attendance_hub/code.html';
+            });
+        }
         document.querySelectorAll('a').forEach(a => {
             if (/get.?started|proceed|continue/i.test(a.textContent)) {
-                a.href = '/erp/select_your_role/code.html';
+                a.href = '/erp/login_attendance_hub/code.html';
             }
         });
     </script>

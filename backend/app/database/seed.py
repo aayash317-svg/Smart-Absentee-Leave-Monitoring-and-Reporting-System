@@ -1,8 +1,3 @@
-"""
-Database seeder for Smart Absentee Leave Monitoring and Reporting System.
-Run: python -m backend.app.database.seed
-Password for ALL accounts: Pass123!
-"""
 import asyncio
 import datetime
 from bson import ObjectId
@@ -11,13 +6,12 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from ..core.config import settings
 from ..core.password import hash_password
 
-
 async def seed_db():
     print(f"Connecting to MongoDB: {settings.MONGO_DB_NAME}...")
     client = AsyncIOMotorClient(settings.MONGO_URI)
     db = client[settings.MONGO_DB_NAME]
 
-    # ── Clear existing sample data ────────────────────────────────────────────
+    # ── Clear existing collections ────────────────────────────────────────────
     print("Clearing existing sample data...")
     for col in ["users", "students", "departments", "leaves", "fines",
                 "attendance_logs", "notifications", "audit_logs", "sms_logs",
@@ -25,350 +19,452 @@ async def seed_db():
         await db[col].delete_many({})
 
     # ── 1. Departments ────────────────────────────────────────────────────────
-    print("Seeding Departments...")
+    print("Seeding 3 Departments...")
     dept_cs_id  = ObjectId()
-    dept_it_id  = ObjectId()
-    dept_ece_id = ObjectId()
+    dept_aids_id = ObjectId()
+    dept_aiml_id = ObjectId()
 
     departments = [
-        {"_id": dept_cs_id,  "departmentName": "Computer Science & Engineering",
-         "code": "CSE", "createdAt": datetime.datetime.utcnow()},
-        {"_id": dept_it_id,  "departmentName": "Information Technology",
-         "code": "IT",  "createdAt": datetime.datetime.utcnow()},
-        {"_id": dept_ece_id, "departmentName": "Electronics & Communication Engineering",
-         "code": "ECE", "createdAt": datetime.datetime.utcnow()},
+        {"_id": dept_cs_id,  "departmentName": "Computer Science & Engineering", "departmentCode": "CSE", "createdAt": datetime.datetime.utcnow()},
+        {"_id": dept_aids_id, "departmentName": "Artificial Intelligence & Data Science", "departmentCode": "AI&DS", "createdAt": datetime.datetime.utcnow()},
+        {"_id": dept_aiml_id, "departmentName": "Artificial Intelligence & Machine Learning", "departmentCode": "AI&ML", "createdAt": datetime.datetime.utcnow()},
     ]
     await db.departments.insert_many(departments)
 
     # ── 2. Staff Users ────────────────────────────────────────────────────────
-    print("Seeding Staff Users...")
-    hashed = hash_password("Pass123!")
+    print("Seeding Staff Users (Admin, Dean, 3 HODs, 3 Coordinators)...")
+    
+    admin_hash = hash_password("Admin@2026")
+    dean_hash = hash_password("Dean@2026")
+    hod_hash = hash_password("Hod@2026")
+    cc_hash = hash_password("CC@2026")
 
-    dean_id      = ObjectId()
-    hod_cs_id    = ObjectId()
-    hod_it_id    = ObjectId()
-    coord_cs_id  = ObjectId()
-    coord_it_id  = ObjectId()
+    admin_user_id = ObjectId()
+    dean_user_id = ObjectId()
+    
+    hod_cs_uid = ObjectId()
+    hod_aids_uid = ObjectId()
+    hod_aiml_uid = ObjectId()
+
+    cc_cs_uid = ObjectId()
+    cc_aids_uid = ObjectId()
+    cc_aiml_uid = ObjectId()
 
     staff_users = [
+        # Admin
         {
-            "_id": dean_id,
-            "email": "dean@college.edu",
-            "fullName": "Dr. Sarah Jenkins",
+            "_id": admin_user_id,
+            "id_number": "ADMIN001",
+            "email": "admin@takshashilauniv.ac.in",
+            "fullName": "Super Admin",
+            "phone": "+91-99999-00000",
+            "password": admin_hash,
+            "role": "Admin",
+            "status": "Active",
+            "departmentId": None,
+            "is_active": True,
+            "is_verified": True,
+            "last_login": "",
+            "attendance_percentage": "",
+            "profile_image": "",
+            "createdAt": datetime.datetime.utcnow(),
+            "updatedAt": datetime.datetime.utcnow()
+        },
+        # Dean
+        {
+            "_id": dean_user_id,
+            "id_number": "DEAN001",
+            "email": "dean@takshashilauniv.ac.in",
+            "fullName": "Dr. Rajesh Kumar",
             "phone": "+91-99001-00001",
-            "password": hashed,
+            "password": dean_hash,
             "role": "Dean",
             "status": "Active",
             "departmentId": None,
-            "failedLoginAttempts": 0,
-            "lockoutUntil": None,
-            "createdAt": datetime.datetime.utcnow()
+            "department": "ALL",
+            "is_active": True,
+            "is_verified": True,
+            "last_login": "",
+            "attendance_percentage": "",
+            "profile_image": "",
+            "createdAt": datetime.datetime.utcnow(),
+            "updatedAt": datetime.datetime.utcnow()
         },
+        # HODs
         {
-            "_id": hod_cs_id,
-            "email": "hod.cs@college.edu",
-            "fullName": "Dr. Alan Turing",
+            "_id": hod_cs_uid,
+            "id_number": "HOD001",
+            "email": "hod.cse@takshashilauniv.ac.in",
+            "fullName": "Dr. Arun Kumar",
             "phone": "+91-99001-00002",
-            "password": hashed,
+            "password": hod_hash,
             "role": "HOD",
             "status": "Active",
             "departmentId": str(dept_cs_id),
-            "failedLoginAttempts": 0,
-            "lockoutUntil": None,
-            "createdAt": datetime.datetime.utcnow()
+            "department": "CSE",
+            "is_active": True,
+            "is_verified": True,
+            "last_login": "",
+            "attendance_percentage": "",
+            "profile_image": "",
+            "createdAt": datetime.datetime.utcnow(),
+            "updatedAt": datetime.datetime.utcnow()
         },
         {
-            "_id": hod_it_id,
-            "email": "hod.it@college.edu",
-            "fullName": "Dr. Tim Berners-Lee",
+            "_id": hod_aids_uid,
+            "id_number": "HOD002",
+            "email": "hod.aids@takshilauniv.ac.in", # Using user's specific email address
+            "fullName": "Dr. Surya Prakash",
             "phone": "+91-99001-00003",
-            "password": hashed,
+            "password": hod_hash,
             "role": "HOD",
             "status": "Active",
-            "departmentId": str(dept_it_id),
-            "failedLoginAttempts": 0,
-            "lockoutUntil": None,
-            "createdAt": datetime.datetime.utcnow()
+            "departmentId": str(dept_aids_id),
+            "department": "AI&DS",
+            "is_active": True,
+            "is_verified": True,
+            "last_login": "",
+            "attendance_percentage": "",
+            "profile_image": "",
+            "createdAt": datetime.datetime.utcnow(),
+            "updatedAt": datetime.datetime.utcnow()
         },
         {
-            "_id": coord_cs_id,
-            "email": "coord.cs@college.edu",
-            "fullName": "Grace Hopper",
+            "_id": hod_aiml_uid,
+            "id_number": "HOD003",
+            "email": "hod.aiml@takshashilauniv.ac.in",
+            "fullName": "Dr. Ramesh Kumar",
             "phone": "+91-99001-00004",
-            "password": hashed,
+            "password": hod_hash,
+            "role": "HOD",
+            "status": "Active",
+            "departmentId": str(dept_aiml_id),
+            "department": "AI&ML",
+            "is_active": True,
+            "is_verified": True,
+            "last_login": "",
+            "attendance_percentage": "",
+            "profile_image": "",
+            "createdAt": datetime.datetime.utcnow(),
+            "updatedAt": datetime.datetime.utcnow()
+        },
+        # Coordinators
+        {
+            "_id": cc_cs_uid,
+            "id_number": "CC001",
+            "email": "cc.cse@takshashilauniv.ac.in",
+            "fullName": "Mr. Karthikeyan",
+            "phone": "+91-99001-00005",
+            "password": cc_hash,
             "role": "Coordinator",
             "status": "Active",
             "departmentId": str(dept_cs_id),
-            "failedLoginAttempts": 0,
-            "lockoutUntil": None,
-            "createdAt": datetime.datetime.utcnow()
+            "department": "CSE",
+            "is_active": True,
+            "is_verified": True,
+            "last_login": "",
+            "attendance_percentage": "",
+            "profile_image": "",
+            "createdAt": datetime.datetime.utcnow(),
+            "updatedAt": datetime.datetime.utcnow()
         },
         {
-            "_id": coord_it_id,
-            "email": "coord.it@college.edu",
-            "fullName": "Ada Lovelace",
-            "phone": "+91-99001-00005",
-            "password": hashed,
+            "_id": cc_aids_uid,
+            "id_number": "CC002",
+            "email": "cc.aids@takshashilauniv.ac.in",
+            "fullName": "Mrs. Priyadharshini",
+            "phone": "+91-99001-00006",
+            "password": cc_hash,
             "role": "Coordinator",
             "status": "Active",
-            "departmentId": str(dept_it_id),
-            "failedLoginAttempts": 0,
-            "lockoutUntil": None,
-            "createdAt": datetime.datetime.utcnow()
+            "departmentId": str(dept_aids_id),
+            "department": "AI&DS",
+            "is_active": True,
+            "is_verified": True,
+            "last_login": "",
+            "attendance_percentage": "",
+            "profile_image": "",
+            "createdAt": datetime.datetime.utcnow(),
+            "updatedAt": datetime.datetime.utcnow()
         },
+        {
+            "_id": cc_aiml_uid,
+            "id_number": "CC003",
+            "email": "cc.aiml@takshashilauniv.ac.in",
+            "fullName": "Mr. Arun Kumar",
+            "phone": "+91-99001-00007",
+            "password": cc_hash,
+            "role": "Coordinator",
+            "status": "Active",
+            "departmentId": str(dept_aiml_id),
+            "department": "AI&ML",
+            "is_active": True,
+            "is_verified": True,
+            "last_login": "",
+            "attendance_percentage": "",
+            "profile_image": "",
+            "createdAt": datetime.datetime.utcnow(),
+            "updatedAt": datetime.datetime.utcnow()
+        }
     ]
     await db.users.insert_many(staff_users)
 
-    # ── 3. Student Users (10 students) ────────────────────────────────────────
-    print("Seeding 10 Student Users...")
-
-    # student user ids
-    su = [ObjectId() for _ in range(10)]
-    # student profile ids
-    sp = [ObjectId() for _ in range(10)]
-
-    # student raw data: (fullName, email, phone, dept_id, dept_name, program, year, sem, section, att%, fine, regNo, enrollNo)
-    raw = [
-        # CSE - 4 students
-        ("Arjun Kumar",       "student.cs1@college.edu",  "+91-90001-00001", dept_cs_id, "Computer Science & Engineering", "B.E. Computer Science",  3, 6, "A", 92.0, 0.0,   "REG2026CSE01", "ENR2026CSE01"),
-        ("Priya Sharma",      "student.cs2@college.edu",  "+91-90001-00002", dept_cs_id, "Computer Science & Engineering", "B.E. Computer Science",  3, 6, "A", 74.0, 40.0,  "REG2026CSE02", "ENR2026CSE02"),
-        ("Rohan Patel",       "student.cs3@college.edu",  "+91-90001-00003", dept_cs_id, "Computer Science & Engineering", "B.E. Computer Science",  2, 4, "B", 88.0, 0.0,   "REG2026CSE03", "ENR2026CSE03"),
-        ("Neha Verma",        "student.cs4@college.edu",  "+91-90001-00004", dept_cs_id, "Computer Science & Engineering", "B.E. Computer Science",  2, 4, "B", 65.0, 80.0,  "REG2026CSE04", "ENR2026CSE04"),
-        # IT - 4 students
-        ("Aayash A",          "student.it1@college.edu",  "+91-90001-00005", dept_it_id, "Information Technology",         "B.Tech Information Technology", 3, 6, "A", 96.0, 0.0,   "REG2026IT01", "ENR2026IT01"),
-        ("Mohammed Salman",   "student.it2@college.edu",  "+91-90001-00006", dept_it_id, "Information Technology",         "B.Tech Information Technology", 3, 6, "A", 60.0, 120.0, "REG2026IT02", "ENR2026IT02"),
-        ("Divya Nair",        "student.it3@college.edu",  "+91-90001-00007", dept_it_id, "Information Technology",         "B.Tech Information Technology", 2, 4, "B", 85.0, 0.0,   "REG2026IT03", "ENR2026IT03"),
-        ("Karan Singh",       "student.it4@college.edu",  "+91-90001-00008", dept_it_id, "Information Technology",         "B.Tech Information Technology", 2, 4, "B", 70.0, 20.0,  "REG2026IT04", "ENR2026IT04"),
-        # ECE - 2 students
-        ("Sneha Reddy",       "student.ece1@college.edu", "+91-90001-00009", dept_ece_id,"Electronics & Communication Engineering", "B.E. ECE", 3, 6, "A", 91.0, 0.0,   "REG2026ECE01", "ENR2026ECE01"),
-        ("Vikram Mehta",      "student.ece2@college.edu", "+91-90001-00010", dept_ece_id,"Electronics & Communication Engineering", "B.E. ECE", 1, 2, "A", 55.0, 200.0, "REG2026ECE02", "ENR2026ECE02"),
+    # ── 3. Students (15 Records) ──────────────────────────────────────────────
+    print("Seeding 15 Students...")
+    
+    students_raw = [
+        # CSE Students
+        ("ST001", "23CSE001", "Arjun Kumar",   "student.cse1@takshashilauniv.ac.in", dept_cs_id,   "CSE",   "CC001", 84.5),
+        ("ST002", "23CSE002", "Hari Prasad",   "student.cse2@takshashilauniv.ac.in", dept_cs_id,   "CSE",   "CC001", 76.2),
+        ("ST003", "23CSE003", "Vignesh Kumar", "student.cse3@takshashilauniv.ac.in", dept_cs_id,   "CSE",   "CC001", 73.5), # Warn
+        ("ST004", "23CSE004", "Ajay Kumar",    "student.cse4@takshashilauniv.ac.in", dept_cs_id,   "CSE",   "CC001", 64.0), # Defaulter
+        ("ST005", "23CSE005", "Kavin Raj",     "student.cse5@takshashilauniv.ac.in", dept_cs_id,   "CSE",   "CC001", 48.0), # Critical HOD
+        # AI&DS Students
+        ("ST101", "23AIDS001", "Ayash M",       "student.aids1@takshashilauniv.ac.in", dept_aids_id, "AI&DS", "CC002", 78.0),
+        ("ST102", "23AIDS002", "Ranjith Kumar", "student.aids2@takshashilauniv.ac.in", dept_aids_id, "AI&DS", "CC002", 91.0),
+        ("ST103", "23AIDS003", "Abinaya S",     "student.aids3@takshashilauniv.ac.in", dept_aids_id, "AI&DS", "CC002", 68.5), # Coord alert
+        ("ST104", "23AIDS004", "Naveen Raj",    "student.aids4@takshashilauniv.ac.in", dept_aids_id, "AI&DS", "CC002", 55.0), # Critical HOD
+        ("ST105", "23AIDS005", "Karthika P",    "student.aids5@takshashilauniv.ac.in", dept_aids_id, "AI&DS", "CC002", 82.0),
+        # AI&ML Students
+        ("ST201", "23AIML001", "Ashwin Kumar", "student.aiml1@takshashilauniv.ac.in", dept_aiml_id, "AI&ML", "CC003", 89.2),
+        ("ST202", "23AIML002", "Vishal Kumar", "student.aiml2@takshashilauniv.ac.in", dept_aiml_id, "AI&ML", "CC003", 72.0), # Parent alert
+        ("ST203", "23AIML003", "Monica S",     "student.aiml3@takshashilauniv.ac.in", dept_aiml_id, "AI&ML", "CC003", 61.5), # Defaulter
+        ("ST204", "23AIML004", "Hariharan",    "student.aiml4@takshashilauniv.ac.in", dept_aiml_id, "AI&ML", "CC003", 95.0),
+        ("ST205", "23AIML005", "Priyanka R",    "student.aiml5@takshashilauniv.ac.in", dept_aiml_id, "AI&ML", "CC003", 44.5), # HOD alert
     ]
 
-    student_user_docs = []
-    student_profile_docs = []
+    student_users = []
+    student_profiles = []
+    
+    student_profile_ids = {} 
+    student_user_ids = {} 
 
-    for i, (name, email, phone, dept_id, dept_name, program, year, sem, sec, att, fine, regNo, enrollNo) in enumerate(raw):
-        total = 50
-        attended = int(total * att / 100)
+    for id_num, reg_no, name, email, dept_oid, dept_code, cc_id, att in students_raw:
+        s_uid = ObjectId()
+        s_poid = ObjectId()
+        
+        student_profile_ids[id_num] = s_poid
+        student_user_ids[id_num] = s_uid
+        
+        s_hash = hash_password(reg_no) 
 
-        student_user_docs.append({
-            "_id": su[i],
+        student_users.append({
+            "_id": s_uid,
+            "id_number": id_num,
+            "register_number": reg_no,
             "email": email,
             "fullName": name,
-            "phone": phone,
-            "password": hashed,
+            "phone": "+91-90001-00000",
+            "password": s_hash,
             "role": "Student",
             "status": "Active",
-            "departmentId": str(dept_id),
-            "failedLoginAttempts": 0,
-            "lockoutUntil": None,
-            "createdAt": datetime.datetime.utcnow()
+            "departmentId": str(dept_oid),
+            "department": dept_code,
+            "coordinator_id": cc_id,
+            "is_active": True,
+            "is_verified": True,
+            "last_login": "",
+            "attendance_percentage": str(att),
+            "profile_image": "",
+            "createdAt": datetime.datetime.utcnow(),
+            "updatedAt": datetime.datetime.utcnow()
         })
 
-        student_profile_docs.append({
-            "_id": sp[i],
-            "userId": str(su[i]),
+        student_profiles.append({
+            "_id": s_poid,
+            "userId": str(s_uid),
+            "id": id_num,
             "fullName": name,
-            "registerNo": regNo,
-            "enrollNo": enrollNo,
-            "program": program,
-            "departmentId": str(dept_id),
-            "departmentName": dept_name,
-            "year": year,
-            "semester": sem,
-            "section": sec,
+            "name": name,
+            "registerNo": reg_no,
+            "register_number": reg_no,
+            "enrollNo": f"ENR-{reg_no}",
+            "program": "B.Tech",
+            "departmentId": str(dept_oid),
+            "departmentName": f"Department of {dept_code}",
+            "department": dept_code,
+            "coordinator_id": cc_id,
+            "year": 3,
+            "semester": 5,
+            "section": "A",
             "attendancePercentage": att,
-            "totalClasses": total,
-            "classesAttended": attended,
-            "totalFine": fine,
+            "totalClasses": 100,
+            "classesAttended": int(att),
+            "totalFine": 20.0 if id_num == "ST101" else 0.0,
             "createdAt": datetime.datetime.utcnow()
         })
 
-    await db.users.insert_many(student_user_docs)
-    await db.students.insert_many(student_profile_docs)
+    await db.users.insert_many(student_users)
+    await db.students.insert_many(student_profiles)
 
-    # ── 4. Absentee Logs ──────────────────────────────────────────────────────
-    print("Seeding Attendance / Absentee Logs...")
-    today     = datetime.datetime.utcnow().date()
-    yesterday = today - datetime.timedelta(days=1)
-    two_ago   = today - datetime.timedelta(days=2)
-    three_ago = today - datetime.timedelta(days=3)
+    # ── 4. Leave Applications (20 Records) ────────────────────────────────────
+    print("Seeding 20 Leave Records...")
+    today = datetime.datetime.utcnow()
+    
+    leaves = []
+    leave_types = ["Full Day", "Half Day", "Sick Leave", "Medical Leave"]
+    reasons = ["Fever", "Family wedding", "Vomiting", "Eye checkup", "Travel"]
+    
+    st_keys = list(student_profile_ids.keys()) 
+    
+    for i in range(20):
+        st_key = st_keys[i % len(st_keys)]
+        st_poid = student_profile_ids[st_key]
+        st_uid = student_user_ids[st_key]
+        
+        st_name = next(s["fullName"] for s in student_profiles if s["_id"] == st_poid)
+        st_reg = next(s["registerNo"] for s in student_profiles if s["_id"] == st_poid)
+        st_dept = next(s["department"] for s in student_profiles if s["_id"] == st_poid)
+        st_dept_id = next(s["departmentId"] for s in student_profiles if s["_id"] == st_poid)
+        st_cc = next(s["coordinator_id"] for s in student_profiles if s["_id"] == st_poid)
+        
+        days_ago = i + 1
+        start_date = today - datetime.timedelta(days=days_ago)
+        end_date = start_date 
+        
+        status_val = "Pending"
+        if i < 10:
+            status_val = "Approved"
+        elif i < 15:
+            status_val = "Rejected"
+            
+        fine_amount = 0.0
+        delay = (i % 3)
+        applied_date = start_date + datetime.timedelta(days=delay)
+        if delay == 1:
+            fine_amount = 10.0
+        elif delay == 2:
+            fine_amount = 20.0
+            
+        l_doc = {
+            "_id": ObjectId(),
+            "leave_id": f"LV{i+1:03d}",
+            "student_id": st_key,
+            "studentId": st_poid,
+            "name": st_name,
+            "studentName": st_name,
+            "register_no": st_reg,
+            "registerNo": st_reg,
+            "department": st_dept,
+            "departmentName": f"Department of {st_dept}",
+            "departmentId": ObjectId(st_dept_id),
+            "leave_type": leave_types[i % len(leave_types)],
+            "leaveType": leave_types[i % len(leave_types)],
+            "reason": reasons[i % len(reasons)],
+            "status": status_val,
+            "coordinator_id": st_cc,
+            "fine": str(int(fine_amount)),
+            "calculatedFine": fine_amount,
+            "delayDays": delay,
+            "startDate": start_date,
+            "endDate": end_date,
+            "appliedDate": applied_date,
+            "approvedBy": cc_aids_uid if status_val == "Approved" else None,
+            "created_at": start_date.isoformat(),
+            "updated_at": today.isoformat(),
+            "createdAt": start_date,
+            "updatedAt": today
+        }
+        leaves.append(l_doc)
+        
+    await db.leaveApplications.insert_many(leaves)
+    await db.leaves.insert_many(leaves)
 
-    def dt(d): return datetime.datetime.combine(d, datetime.time.min)
+    # ── 5. Notifications (20 Records) ─────────────────────────────────────────
+    print("Seeding 20 Notifications...")
+    notifications = []
+    
+    for i in range(20):
+        st_key = st_keys[i % len(st_keys)]
+        st_uid = student_user_ids[st_key]
+        
+        n_doc = {
+            "notification_id": f"NT{i+1:03d}",
+            "student_id": st_key,
+            "recipientId": st_uid,
+            "title": "Leave Approved" if i % 2 == 0 else "Low Attendance Warning",
+            "message": "Your leave has been approved." if i % 2 == 0 else "Your attendance is dropping. Please check.",
+            "is_read": False,
+            "isRead": False,
+            "type": "Student",
+            "createdAt": today - datetime.timedelta(hours=i),
+            "created_at": (today - datetime.timedelta(hours=i)).isoformat()
+        }
+        notifications.append(n_doc)
+        
+    await db.notifications.insert_many(notifications)
 
-    absentee_logs = [
-        # Priya (cs2) - low attendance
-        {"studentId": str(sp[1]), "registerNo": "REG2026CSE02", "fullName": "Priya Sharma",
-         "departmentId": str(dept_cs_id), "date": dt(yesterday), "hour": 2,
-         "subject": "Distributed Systems", "markedBy": "Grace Hopper",
-         "status": "Absent", "leaveApproved": False, "createdAt": datetime.datetime.utcnow()},
-        {"studentId": str(sp[1]), "registerNo": "REG2026CSE02", "fullName": "Priya Sharma",
-         "departmentId": str(dept_cs_id), "date": dt(two_ago), "hour": 4,
-         "subject": "Theory of Computation", "markedBy": "Grace Hopper",
-         "status": "Absent", "leaveApproved": False, "createdAt": datetime.datetime.utcnow()},
-        # Neha (cs4) - low attendance
-        {"studentId": str(sp[3]), "registerNo": "REG2026CSE04", "fullName": "Neha Verma",
-         "departmentId": str(dept_cs_id), "date": dt(today), "hour": 1,
-         "subject": "Software Design", "markedBy": "Grace Hopper",
-         "status": "Absent", "leaveApproved": False, "createdAt": datetime.datetime.utcnow()},
-        # Mohammed Salman (it2) - very low attendance
-        {"studentId": str(sp[5]), "registerNo": "REG2026IT02", "fullName": "Mohammed Salman",
-         "departmentId": str(dept_it_id), "date": dt(today), "hour": 1,
-         "subject": "Mobile Computing", "markedBy": "Ada Lovelace",
-         "status": "Absent", "leaveApproved": False, "createdAt": datetime.datetime.utcnow()},
-        {"studentId": str(sp[5]), "registerNo": "REG2026IT02", "fullName": "Mohammed Salman",
-         "departmentId": str(dept_it_id), "date": dt(yesterday), "hour": 3,
-         "subject": "Software Engineering", "markedBy": "Ada Lovelace",
-         "status": "Absent", "leaveApproved": False, "createdAt": datetime.datetime.utcnow()},
-        # Karan (it4) - medium absence
-        {"studentId": str(sp[7]), "registerNo": "REG2026IT04", "fullName": "Karan Singh",
-         "departmentId": str(dept_it_id), "date": dt(two_ago), "hour": 2,
-         "subject": "Database Management", "markedBy": "Ada Lovelace",
-         "status": "Absent", "leaveApproved": False, "createdAt": datetime.datetime.utcnow()},
-        # Vikram (ece2) - very low
-        {"studentId": str(sp[9]), "registerNo": "REG2026ECE02", "fullName": "Vikram Mehta",
-         "departmentId": str(dept_ece_id), "date": dt(three_ago), "hour": 1,
-         "subject": "Signal Processing", "markedBy": "Dr. Sarah Jenkins",
-         "status": "Absent", "leaveApproved": False, "createdAt": datetime.datetime.utcnow()},
-    ]
+    # ── 6. Attendance Logs / Absentees (15 Records) ───────────────────────────
+    print("Seeding 15 Attendance / Absentee Records...")
+    absentee_logs = []
+    
+    for i in range(15):
+        st_key = st_keys[i % len(st_keys)]
+        st_poid = student_profile_ids[st_key]
+        st_reg = next(s["registerNo"] for s in student_profiles if s["_id"] == st_poid)
+        st_name = next(s["fullName"] for s in student_profiles if s["_id"] == st_poid)
+        st_dept = next(s["department"] for s in student_profiles if s["_id"] == st_poid)
+        st_dept_id = next(s["departmentId"] for s in student_profiles if s["_id"] == st_poid)
+        st_cc = next(s["coordinator_id"] for s in student_profiles if s["_id"] == st_poid)
+        
+        marker_uid = cc_aids_uid
+        if st_dept == "CSE":
+            marker_uid = cc_cs_uid
+        elif st_dept == "AI&ML":
+            marker_uid = cc_aiml_uid
+
+        a_doc = {
+            "student_id": st_key,
+            "studentId": st_poid,
+            "registerNo": st_reg,
+            "register_no": st_reg,
+            "fullName": st_name,
+            "department": st_dept,
+            "departmentId": ObjectId(st_dept_id),
+            "date": today - datetime.timedelta(days=i+2),
+            "hour": (i % 6) + 1,
+            "subject": "Core Course " + str((i % 3) + 1),
+            "markedBy": marker_uid,
+            "status": "Absent" if i % 3 != 0 else "Excused",
+            "attendance": "74" if i == 0 else "80",
+            "leaveApproved": i % 3 == 0,
+            "createdAt": today - datetime.timedelta(days=i+2)
+        }
+        absentee_logs.append(a_doc)
+        
     await db.attendance_logs.insert_many(absentee_logs)
-
-    # Also insert into absentees collection (used by new API)
     await db.absentees.insert_many(absentee_logs)
 
-    # ── 5. Leave Applications ─────────────────────────────────────────────────
-    print("Seeding Leave Applications...")
-    leaves = [
-        {
-            "studentId": str(sp[1]), "studentName": "Priya Sharma",
-            "departmentId": str(dept_cs_id),
-            "leaveType": "Sick Leave",
-            "reason": "Severe fever, doctor-advised bed rest.",
-            "startDate": dt(yesterday), "endDate": dt(yesterday),
-            "appliedDate": datetime.datetime.utcnow() - datetime.timedelta(hours=10),
-            "status": "Pending", "delayDays": 1, "calculatedFine": 10.0,
-            "certificateUrl": None, "attachments": []
-        },
-        {
-            "studentId": str(sp[5]), "studentName": "Mohammed Salman",
-            "departmentId": str(dept_it_id),
-            "leaveType": "Medical Leave",
-            "reason": "Dental surgery appointment.",
-            "startDate": dt(two_ago), "endDate": dt(two_ago),
-            "appliedDate": datetime.datetime.utcnow() - datetime.timedelta(days=1),
-            "status": "Approved", "delayDays": 2, "calculatedFine": 20.0,
-            "certificateUrl": None, "attachments": []
-        },
-        {
-            "studentId": str(sp[3]), "studentName": "Neha Verma",
-            "departmentId": str(dept_cs_id),
-            "leaveType": "Emergency Leave",
-            "reason": "Family emergency — travel required.",
-            "startDate": dt(three_ago), "endDate": dt(yesterday),
-            "appliedDate": datetime.datetime.utcnow() - datetime.timedelta(hours=5),
-            "status": "Pending", "delayDays": 0, "calculatedFine": 0.0,
-            "certificateUrl": None, "attachments": []
-        },
-        {
-            "studentId": str(sp[9]), "studentName": "Vikram Mehta",
-            "departmentId": str(dept_ece_id),
-            "leaveType": "Personal Leave",
-            "reason": "Sister's wedding ceremony.",
-            "startDate": dt(three_ago), "endDate": dt(two_ago),
-            "appliedDate": datetime.datetime.utcnow() - datetime.timedelta(days=4),
-            "status": "Rejected", "delayDays": 1, "calculatedFine": 10.0,
-            "certificateUrl": None, "attachments": []
-        },
-    ]
-    await db.leaveApplications.insert_many(leaves)
-    await db.leaves.insert_many(leaves)  # legacy alias
-
-    # ── 6. Fines ──────────────────────────────────────────────────────────────
-    print("Seeding Fines...")
-    fines = [
-        {"studentId": str(sp[1]), "studentName": "Priya Sharma",
-         "departmentId": str(dept_cs_id), "amount": 40.0,
-         "reason": "Late leave submission (2 days delay)", "status": "Unpaid",
-         "createdAt": datetime.datetime.utcnow() - datetime.timedelta(days=3)},
-        {"studentId": str(sp[5]), "studentName": "Mohammed Salman",
-         "departmentId": str(dept_it_id), "amount": 120.0,
-         "reason": "Late leave submission (4 days delay with weekend surcharge)", "status": "Unpaid",
-         "createdAt": datetime.datetime.utcnow() - datetime.timedelta(days=2)},
-        {"studentId": str(sp[3]), "studentName": "Neha Verma",
-         "departmentId": str(dept_cs_id), "amount": 80.0,
-         "reason": "Repeated unexcused absences", "status": "Unpaid",
-         "createdAt": datetime.datetime.utcnow() - datetime.timedelta(days=5)},
-        {"studentId": str(sp[7]), "studentName": "Karan Singh",
-         "departmentId": str(dept_it_id), "amount": 20.0,
-         "reason": "Late leave submission (1 day delay)", "status": "Paid",
-         "receiptNo": "REC-SS-2026-0042",
-         "paymentDate": datetime.datetime.utcnow() - datetime.timedelta(days=1),
-         "createdAt": datetime.datetime.utcnow() - datetime.timedelta(days=4)},
-        {"studentId": str(sp[9]), "studentName": "Vikram Mehta",
-         "departmentId": str(dept_ece_id), "amount": 200.0,
-         "reason": "Low attendance penalty (below 60%)", "status": "Unpaid",
-         "createdAt": datetime.datetime.utcnow() - datetime.timedelta(days=1)},
-    ]
+    # ── 7. Fine Records (10 Records) ──────────────────────────────────────────
+    print("Seeding 10 Fine Records...")
+    fines = []
+    
+    for i in range(10):
+        st_key = st_keys[i % len(st_keys)]
+        st_poid = student_profile_ids[st_key]
+        st_name = next(s["fullName"] for s in student_profiles if s["_id"] == st_poid)
+        st_dept_id = next(s["departmentId"] for s in student_profiles if s["_id"] == st_poid)
+        
+        f_doc = {
+            "fine_id": f"FN{i+1:03d}",
+            "student_id": st_key,
+            "studentId": st_poid,
+            "studentName": st_name,
+            "departmentId": ObjectId(st_dept_id),
+            "days_delayed": str((i % 4) + 1),
+            "amount": float(((i % 4) + 1) * 10.0),
+            "reason": f"Late leave submission ({((i % 4) + 1)} days delay)",
+            "status": "Pending" if i % 2 == 0 else "Paid",
+            "receiptNo": f"REC-SS-2026-{i+100:03d}" if i % 2 != 0 else None,
+            "paymentDate": today - datetime.timedelta(days=1) if i % 2 != 0 else None,
+            "createdAt": today - datetime.timedelta(days=i+3)
+        }
+        fines.append(f_doc)
+        
     await db.fines.insert_many(fines)
 
-    # ── 7. Notifications ──────────────────────────────────────────────────────
-    print("Seeding Notifications...")
-    notifs = [
-        {"recipientId": su[1], "title": "Low Attendance Alert",
-         "message": "Your attendance has dropped to 74.0%. Please contact your coordinator.",
-         "type": "Student", "isRead": False, "createdAt": datetime.datetime.utcnow() - datetime.timedelta(hours=2)},
-        {"recipientId": su[3], "title": "Low Attendance Alert",
-         "message": "Your attendance has dropped to 65.0%. You are at risk of detention.",
-         "type": "Student", "isRead": False, "createdAt": datetime.datetime.utcnow() - datetime.timedelta(hours=1)},
-        {"recipientId": su[5], "title": "Leave Approved",
-         "message": "Your Medical Leave from dental surgery on has been approved.",
-         "type": "Student", "isRead": True,  "createdAt": datetime.datetime.utcnow() - datetime.timedelta(days=1)},
-        {"recipientId": su[5], "title": "Low Attendance Alert",
-         "message": "Your attendance is critically low at 60.0%. Immediate action required.",
-         "type": "Student", "isRead": False, "createdAt": datetime.datetime.utcnow() - datetime.timedelta(hours=3)},
-        {"recipientId": su[9], "title": "Leave Rejected",
-         "message": "Your Personal Leave application has been rejected. Please contact your HOD.",
-         "type": "Student", "isRead": False, "createdAt": datetime.datetime.utcnow() - datetime.timedelta(hours=6)},
-    ]
-    await db.notifications.insert_many(notifs)
-
-    # ── 8. SMS Logs ───────────────────────────────────────────────────────────
-    print("Seeding SMS Logs...")
-    sms_logs = [
-        {"recipient": "Priya Sharma", "phone": "+91-90001-00002",
-         "message": "Alert: Your attendance is at 74.0%. Contact your coordinator.",
-         "status": "Delivered", "sentAt": datetime.datetime.utcnow() - datetime.timedelta(hours=2)},
-        {"recipient": "Mohammed Salman", "phone": "+91-90001-00006",
-         "message": "Alert: Attendance critically low at 60.0%. Immediate action required.",
-         "status": "Delivered", "sentAt": datetime.datetime.utcnow() - datetime.timedelta(hours=3)},
-        {"recipient": "Vikram Mehta", "phone": "+91-90001-00010",
-         "message": "Alert: Your leave application was rejected. Contact HOD.",
-         "status": "Failed", "sentAt": datetime.datetime.utcnow() - datetime.timedelta(hours=6)},
-    ]
-    await db.sms_logs.insert_many(sms_logs)
-
-    # ── 9. Audit Logs ─────────────────────────────────────────────────────────
-    print("Seeding Audit Logs...")
-    audit_logs = [
-        {"userId": coord_cs_id, "action": "Mark Absent",
-         "details": "Marked Priya Sharma absent for Distributed Systems",
-         "createdAt": datetime.datetime.utcnow() - datetime.timedelta(days=1)},
-        {"userId": coord_it_id, "action": "Mark Absent",
-         "details": "Marked Mohammed Salman absent for Mobile Computing",
-         "createdAt": datetime.datetime.utcnow() - datetime.timedelta(hours=4)},
-        {"userId": hod_cs_id,   "action": "Leave Approved",
-         "details": "Approved leave for Mohammed Salman (Medical Leave)",
-         "createdAt": datetime.datetime.utcnow() - datetime.timedelta(hours=22)},
-        {"userId": hod_it_id,   "action": "Leave Rejected",
-         "details": "Rejected leave for Vikram Mehta (Personal Leave)",
-         "createdAt": datetime.datetime.utcnow() - datetime.timedelta(hours=6)},
-        {"userId": dean_id,     "action": "Report Generated",
-         "details": "Dean generated institution-wide Excel attendance report",
-         "createdAt": datetime.datetime.utcnow() - datetime.timedelta(hours=8)},
-    ]
-    await db.audit_logs.insert_many(audit_logs)
-
-    # ── System Settings ───────────────────────────────────────────────────────
+    # ── 8. System Settings ────────────────────────────────────────────────────
+    print("Updating System Settings...")
     await db.settings.update_one({"key": "system"}, {"$set": {
         "key": "system",
         "attendanceThreshold": 75,
@@ -380,23 +476,28 @@ async def seed_db():
         "updatedAt": datetime.datetime.utcnow()
     }}, upsert=True)
 
+    # ── 9. Audit Logs ─────────────────────────────────────────────────────────
+    print("Seeding Audit Logs...")
+    audit_logs = [
+        {"userId": cc_cs_uid, "action": "Mark Absent", "details": "Marked ST001 absent for Core Course 1", "createdAt": datetime.datetime.utcnow()},
+        {"userId": cc_aids_uid, "action": "Mark Absent", "details": "Marked ST101 absent for Core Course 2", "createdAt": datetime.datetime.utcnow()},
+        {"userId": dean_user_id, "action": "Report Generated", "details": "Dean generated institution-wide Excel report", "createdAt": datetime.datetime.utcnow()}
+    ]
+    await db.audit_logs.insert_many(audit_logs)
+
     client.close()
     print("\n[OK] Seeding completed successfully!")
-    print("\n═══════════════════════════════════════════════════════════")
-    print("  LOGIN CREDENTIALS — Password for ALL accounts: Pass123!")
-    print("═══════════════════════════════════════════════════════════")
-    print("  STAFF ACCOUNTS:")
-    print("    Dean         : dean@college.edu")
-    print("    HOD (CSE)    : hod.cs@college.edu")
-    print("    HOD (IT)     : hod.it@college.edu")
-    print("    Coord (CSE)  : coord.cs@college.edu")
-    print("    Coord (IT)   : coord.it@college.edu")
-    print("\n  STUDENT ACCOUNTS (10 students):")
-    for _, email, _, _, dept_name, _, year, _, sec, att, fine, regNo, _ in raw:
-        fine_str = f"  Fine: ₹{fine:.0f}" if fine > 0 else ""
-        print(f"    {email:<35} Att: {att}%{fine_str}")
-    print("═══════════════════════════════════════════════════════════\n")
-
+    print("\n===========================================================")
+    print("  LOGIN CREDENTIALS FOR DEMO")
+    print("===========================================================")
+    print("  Admin         : admin@takshashilauniv.ac.in | Admin@2026")
+    print("  Dean          : dean@takshashilauniv.ac.in  | Dean@2026")
+    print("  HOD (CSE)     : hod.cse@takshashilauniv.ac.in | Hod@2026")
+    print("  HOD (AI&DS)   : hod.aids@takshashilauniv.ac.in | Hod@2026")
+    print("  HOD (AI&ML)   : hod.aiml@takshashilauniv.ac.in | Hod@2026")
+    print("  CC (AI&DS)    : cc.aids@takshashilauniv.ac.in | CC@2026")
+    print("  Student (AI&DS): 23AIDS001                    | 23AIDS001")
+    print("===========================================================\n")
 
 if __name__ == "__main__":
     asyncio.run(seed_db())

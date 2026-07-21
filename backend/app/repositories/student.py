@@ -9,10 +9,15 @@ class StudentRepository(BaseRepository):
         super().__init__(db.students)
 
     async def get_by_user_id(self, user_id: str) -> Optional[Dict[str, Any]]:
-        try:
-            return await self.find_one({"userId": ObjectId(user_id)})
-        except Exception:
+        if not user_id:
             return None
+        res = await self.find_one({"userId": str(user_id)})
+        if not res:
+            try:
+                res = await self.find_one({"userId": ObjectId(user_id)})
+            except Exception:
+                pass
+        return res
 
     async def get_by_register_no(self, reg_no: str) -> Optional[Dict[str, Any]]:
         return await self.find_one({"registerNo": reg_no})

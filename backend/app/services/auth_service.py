@@ -64,11 +64,41 @@ class AuthService:
         }
 
     async def authenticate_user(self, login_in: UserLogin) -> Token:
-        user = await self.user_repo.get_by_email(login_in.email)
+        import re
+        identifier = login_in.email.strip()
+        user = None
+
+        if "@" in identifier:
+            # Case-insensitive email search
+            reg = re.compile(f"^{re.escape(identifier)}$", re.IGNORECASE)
+            user = await self.user_repo.find_one({"email": reg})
+        else:
+            # Case-insensitive id_number or register_number search in users collection
+            reg = re.compile(f"^{re.escape(identifier)}$", re.IGNORECASE)
+            user = await self.user_repo.find_one({
+                "$or": [
+                    {"id_number": reg},
+                    {"register_number": reg}
+                ]
+            })
+
+            # Fallback to students collection
+            if not user:
+                student = await self.student_repo.find_one({
+                    "$or": [
+                        {"registerNo": reg},
+                        {"enrollNo": reg},
+                        {"studentId": reg},
+                        {"register_number": reg}
+                    ]
+                })
+                if student and student.get("userId"):
+                    user = await self.user_repo.get_by_id(str(student["userId"]))
+
         if not user:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Incorrect email or password"
+                detail="Incorrect email, ID, register number or password"
             )
 
         # Check for temporary lockout
@@ -103,14 +133,16 @@ class AuthService:
                     detail=f"Incorrect email or password. {remaining} login attempts remaining before lockout."
                 )
 
-        # Clear login lock states on success
-        if user.get("failedLoginAttempts", 0) > 0 or user.get("lockoutUntil"):
-            await self.user_repo.update(str(user["_id"]), {
-                "failedLoginAttempts": 0,
-                "lockoutUntil": None
-            })
+        # Clear login lock states on success and update last_login
+        now_str = datetime.datetime.utcnow().isoformat()
+        await self.user_repo.update(str(user["_id"]), {
+            "failedLoginAttempts": 0,
+            "lockoutUntil": None,
+            "last_login": now_str
+        })
+        user["last_login"] = now_str
 
-        if user.get("status") != "Active":
+        if user.get("status") != "Active" or not user.get("is_active", True):
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="Inactive account. Please contact your administrator."
@@ -120,9 +152,30 @@ class AuthService:
         access_token = create_access_token(subject=user_id_str, role=user["role"])
         refresh_token = create_refresh_token(subject=user_id_str)
 
+        # Build UserOut schema response
+        user_out = UserOut(
+            id=user_id_str,
+            email=user["email"],
+            fullName=user["fullName"],
+            phone=user.get("phone", ""),
+            role=user["role"],
+            status=user.get("status", "Active"),
+            departmentId=str(user["departmentId"]) if user.get("departmentId") else None,
+            id_number=user.get("id_number"),
+            register_number=user.get("register_number"),
+            coordinator_id=user.get("coordinator_id"),
+            department=user.get("department"),
+            is_active=user.get("is_active", True),
+            is_verified=user.get("is_verified", True),
+            last_login=user.get("last_login", ""),
+            attendance_percentage=str(user.get("attendance_percentage", "")),
+            profile_image=user.get("profile_image", "")
+        )
+
         return Token(
             access_token=access_token,
-            refresh_token=refresh_token
+            refresh_token=refresh_token,
+            user=user_out
         )
 
     async def refresh_access_token(self, refresh_token: str) -> str:

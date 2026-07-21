@@ -26,22 +26,59 @@ async def get_metrics(current_user: dict = Depends(get_current_user)):
     role = current_user.get("role", "")
 
     if role == "Student":
-        # Fetch student record
-        student = await db.students.find_one({"userId": ObjectId(current_user["id"])})
-        if not student:
-            return {"role": "Student", "attendancePercentage": 100.0, "pendingLeaves": 0, "totalFine": 0.0}
-        pending = await db.leaveApplications.count_documents({
-            "studentId": student["_id"], "status": "Pending"
+        # Fetch student record supporting both string and ObjectId userId
+        student = await db.students.find_one({
+            "$or": [
+                {"userId": str(current_user["id"])},
+                {"userId": ObjectId(current_user["id"])}
+            ]
         })
+        if not student:
+            # Fall back to profile data from user doc
+            student = {
+                "fullName": current_user.get("fullName", "Student"),
+                "departmentName": current_user.get("department", "Engineering"),
+                "year": 3,
+                "semester": 6,
+                "registerNo": current_user.get("register_number", current_user.get("id_number", "")),
+                "attendancePercentage": float(current_user.get("attendance_percentage", 90.0) or 90.0),
+                "totalFine": 0.0
+            }
+
+        student_id = student.get("_id")
+        pending = 0
+        if student_id:
+            pending = await db.leaveApplications.count_documents({
+                "studentId": student_id, "status": "Pending"
+            })
+
+        notifs = await db.notifications.find(
+            {"recipientId": ObjectId(current_user["id"])}
+        ).sort("createdAt", -1).limit(10).to_list(length=10)
+        
+        formatted_notifs = []
+        for n in notifs:
+            formatted_notifs.append({
+                "title": n.get("title", "Notification"),
+                "message": n.get("message", ""),
+                "type": n.get("type", "Info"),
+                "createdAt": n["createdAt"].isoformat() if n.get("createdAt") else ""
+            })
+
         return {
             "role": "Student",
-            "fullName": student.get("fullName", ""),
-            "attendancePercentage": round(student.get("attendancePercentage", 100.0), 1),
+            "studentInfo": {
+                "fullName": student.get("fullName", current_user.get("fullName", "")),
+                "departmentName": student.get("departmentName", f"Department of {student.get('department', 'Engineering')}"),
+                "year": student.get("year", 3),
+                "semester": student.get("semester", 6),
+                "registerNo": student.get("registerNo", current_user.get("register_number", ""))
+            },
+            "attendancePercentage": round(float(student.get("attendancePercentage", 90.0)), 1),
+            "pendingLeavesCount": pending,
             "pendingLeaves": pending,
-            "totalFine": round(student.get("totalFine", 0.0), 2),
-            "registerNo": student.get("registerNo", ""),
-            "year": student.get("year", 1),
-            "semester": student.get("semester", 1),
+            "totalFine": round(float(student.get("totalFine", 0.0)), 2),
+            "notifications": formatted_notifs
         }
 
     elif role in ("Coordinator", "HOD"):

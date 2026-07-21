@@ -323,43 +323,50 @@
 </a>
 </nav>
 <script>
-if (redirectIfNotLoggedIn()) return;
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof redirectIfNotLoggedIn === 'function' && redirectIfNotLoggedIn()) return;
 
-        const leaveForm = document.querySelector('form');
-        if (leaveForm) {
-            leaveForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                const formData = new FormData(leaveForm);
-                const leaveType = formData.get('leaveType') || leaveForm.querySelector('select')?.value || 'Medical';
-                const startDate = formData.get('startDate') || leaveForm.querySelector('input[type="date"]')?.value;
-                const endDateEl = leaveForm.querySelectorAll('input[type="date"]')[1];
-                const endDate = formData.get('endDate') || endDateEl?.value || startDate;
-                const reason = formData.get('reason') || leaveForm.querySelector('textarea')?.value;
-                const fileInput = leaveForm.querySelector('input[type="file"]');
+            const leaveForm = document.querySelector('form');
+            if (leaveForm) {
+                leaveForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const formData = new FormData(leaveForm);
+                    const leaveType = formData.get('leaveType') || leaveForm.querySelector('select')?.value || 'Medical';
+                    const startDate = formData.get('startDate') || leaveForm.querySelector('input[type="date"]')?.value;
+                    const endDateEl = leaveForm.querySelectorAll('input[type="date"]')[1];
+                    const endDate = formData.get('endDate') || endDateEl?.value || startDate;
+                    const reason = formData.get('reason') || leaveForm.querySelector('textarea')?.value || 'Leave application';
+                    const fileInput = leaveForm.querySelector('input[type="file"]');
 
-                const payload = new FormData();
-                payload.append('leave_type', leaveType);
-                payload.append('start_date', startDate);
-                payload.append('end_date', endDate);
-                payload.append('reason', reason);
-                if (fileInput?.files[0]) payload.append('certificate', fileInput.files[0]);
+                    if (!startDate) {
+                        showToast('Please select a start date', 'warning');
+                        return;
+                    }
 
-                const btn = leaveForm.querySelector('button[type="submit"]');
-                const orig = btn.innerHTML;
-                setLoading(btn, true, orig);
-                try {
-                    const res = await authFetch('/api/student/leave/apply', { method: 'POST', body: payload });
-                    const data = await res.json();
-                    if (!res.ok) throw new Error(data.detail || 'Leave application failed');
-                    showToast('Leave application submitted successfully!', 'success');
-                    leaveForm.reset();
-                    setTimeout(() => window.location.href = '/erp/student_dashboard/code.html', 2000);
-                } catch (err) {
-                    showToast(err.message, 'error');
-                    setLoading(btn, false, orig);
-                }
-            });
-        }
-        document.getElementById('logoutBtn')?.addEventListener('click', logout);
+                    const payload = new FormData();
+                    payload.append('leave_type', leaveType);
+                    payload.append('start_date', startDate);
+                    payload.append('end_date', endDate);
+                    payload.append('reason', reason);
+                    if (fileInput?.files[0]) payload.append('certificate', fileInput.files[0]);
+
+                    const btn = leaveForm.querySelector('button[type="submit"]');
+                    const orig = btn.innerHTML;
+                    setLoading(btn, true, orig);
+                    try {
+                        const res = await authFetch('/api/student/leave/apply', { method: 'POST', body: payload });
+                        const data = await res.json();
+                        if (!res.ok) throw new Error(data.detail || 'Leave application failed');
+                        showToast('Leave application submitted successfully!', 'success');
+                        leaveForm.reset();
+                        setTimeout(() => window.location.href = '/erp/student_dashboard/code.html', 1500);
+                    } catch (err) {
+                        showToast(err.message, 'error');
+                        setLoading(btn, false, orig);
+                    }
+                });
+            }
+            document.getElementById('logoutBtn')?.addEventListener('click', logout);
+        });
     </script>
 </body></html>

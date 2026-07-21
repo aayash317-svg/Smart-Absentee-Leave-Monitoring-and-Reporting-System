@@ -19,13 +19,18 @@ The **Smart Absentee Leave Monitoring and Reporting System** is a full-stack col
 | Feature | Status |
 |---|---|
 | JWT Authentication (access + refresh tokens) | ✅ Complete |
+| Multi-identifier login (Email / Register No / ID No) | ✅ Complete |
 | Role-Based Access Control (5 roles) | ✅ Complete |
 | Password hashing (bcrypt, cost=12) | ✅ Complete |
 | Brute-force lockout (5 attempts → 5 min ban) | ✅ Complete |
+| Last login timestamp tracking | ✅ Complete |
+| Token response includes full user object | ✅ Complete |
 | All 32 frontend screens wired to live API | ✅ Complete |
 | Student leave application + file upload | ✅ Complete |
 | Progressive fine calculation | ✅ Complete |
 | Coordinator bulk attendance marking | ✅ Complete |
+| Department scope enforcement (Coordinator & HOD) | ✅ Complete |
+| Tiered attendance notifications (75/70/65/60/50%) | ✅ Complete |
 | HOD / Dean leave approval workflow | ✅ Complete |
 | PDF + Excel report generation | ✅ Complete |
 | In-app + SMS notification delivery logs | ✅ Complete |
@@ -45,7 +50,7 @@ The **Smart Absentee Leave Monitoring and Reporting System** is a full-stack col
 |---|---|
 | Backend Framework | FastAPI (Python 3.11) |
 | Database | MongoDB (via Motor async driver) |
-| Authentication | JWT — HS256 (Access + Refresh tokens) |
+| Authentication | JWT — HS256 (Access + Refresh tokens) + multi-identifier login |
 | Password Security | bcrypt (cost factor 12) |
 | Report Generation | ReportLab (PDF), openpyxl (Excel) |
 | Notifications | SMTP Email + Twilio SMS |
@@ -126,7 +131,8 @@ Smart-Absentee-Leave-Monitoring-and-Reporting-System/
 │       │   └── seed.py                 ← Database seeder (10 students + all roles)
 │       │
 │       └── utils/
-│           └── upload.py               ← File validator (5 MB limit, pdf/png/jpg)
+│           ├── upload.py               ← File upload validator (5 MB limit, pdf/png/jpg)
+│           └── attendance.py           ← Tiered attendance alert engine (75/70/65/60/50%)
 │
 ├── stitch_smart_absence_erp/           ← 32 frontend HTML screens
 │   ├── api.js                          ← Shared auth + fetch + toast utility
@@ -172,12 +178,23 @@ Login → Verify credentials → Issue Access Token (short-lived) + Refresh Toke
 → Backend validates on every request
 ```
 
-### 3. Brute-Force Protection
+### 3. Multi-Identifier Login
+Students and staff can log in using **any** of:
+- ✉️ Official Email address (`student@college.edu`)
+- 🪪 ID Number (`STU2026001`)
+- 📋 Register Number (`REG2026CSE01`)
+
+The backend does a case-insensitive lookup across `users` and `students` collections automatically.
+
+### 4. Brute-Force Protection
 ```
 Wrong password → Increment failedLoginAttempts counter in MongoDB
 5 failures     → Account locked for 5 minutes (lockoutUntil timestamp)
-Success        → Counter resets to 0
+Success        → Counter resets to 0, last_login timestamp updated
 ```
+
+### 5. Department Scope Enforcement
+Coordinators and HODs can **only** process attendance and leaves for students within their own department. Cross-department access returns `HTTP 403 Forbidden`.
 
 ### 4. Role-Based Access Control (RBAC)
 
@@ -304,7 +321,7 @@ The full stack (FastAPI + MongoDB) launches with a single command. App available
 ### 🔑 Authentication (`/api/auth`)
 | Method | Endpoint | Auth | Description |
 |---|---|---|---|
-| `POST` | `/api/auth/login` | ❌ Public | Login → returns access + refresh tokens |
+| `POST` | `/api/auth/login` | ❌ Public | Login via email / register no / ID → returns tokens + user object |
 | `POST` | `/api/auth/register` | ❌ Public | Register a new user |
 | `POST` | `/api/auth/refresh` | ❌ Public | Renew access token via refresh token |
 | `GET` | `/api/auth/me` | ✅ JWT | Get logged-in user info |
@@ -329,7 +346,7 @@ The full stack (FastAPI + MongoDB) launches with a single command. App available
 | Method | Endpoint | Auth | Description |
 |---|---|---|---|
 | `GET` | `/api/coordinator/students` | ✅ Staff | Department student list |
-| `POST` | `/api/coordinator/mark-absent` | ✅ Staff | Bulk mark students absent |
+| `POST` | `/api/coordinator/mark-absent` | ✅ Staff | Bulk mark students absent (dept-scoped) |
 | `POST` | `/api/coordinator/attendance/mark` | ✅ Staff | Single student absence mark |
 | `GET` | `/api/coordinator/leave/pending` | ✅ Staff | Pending leave requests |
 | `PUT` | `/api/coordinator/leave/action/{id}` | ✅ Staff | Approve or reject leave |
@@ -341,8 +358,8 @@ The full stack (FastAPI + MongoDB) launches with a single command. App available
 | `GET` | `/api/hod/metrics` | ✅ HOD | Department attendance metrics |
 | `GET` | `/api/hod/report/excel` | ✅ HOD | Download dept Excel report |
 | `GET` | `/api/hod/leaves/pending` | ✅ HOD | Pending leaves for approval |
-| `POST` | `/api/hod/leaves/approve/{id}` | ✅ HOD | Approve a leave |
-| `POST` | `/api/hod/leaves/reject/{id}` | ✅ HOD | Reject a leave |
+| `POST` | `/api/hod/leaves/approve/{id}` | ✅ HOD | Approve a leave (dept-scoped) |
+| `POST` | `/api/hod/leaves/reject/{id}` | ✅ HOD | Reject a leave (dept-scoped) |
 
 ### 🎓 Dean (`/api/dean`)
 | Method | Endpoint | Auth | Description |
@@ -433,6 +450,20 @@ tests/test_student.py::test_file_upload_validation PASSED
 tests/test_student.py::test_leave_apply_schema   PASSED
 ======================== 8 passed in ~3s ============================
 ```
+
+---
+
+## 🔔 Tiered Attendance Notification System
+
+When a student's attendance drops through any threshold, automatic notifications are triggered:
+
+| Threshold | Alert Type | Recipient |
+|---|---|---|
+| Below **75%** | Low Attendance Warning | Student |
+| Below **70%** | Parent Alert (logged) | Student |
+| Below **65%** | Coordinator Notification | Coordinator of dept |
+| Below **60%** | Defaulter List Alert | Student |
+| Below **50%** | Critical HOD Alert | HOD of dept |
 
 ---
 
